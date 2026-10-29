@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Emoji from './components/Emoji';
 import PlayerShowcase from './components/panel/PlayerPanels';
+import { getSession } from './lib/session';
 import { getSnapshot, totals, botAlive, ageLabel, durasi } from './lib/snapshot';
 import { faqList } from './lib/faq-content';
 import { podcastTema, providers } from './lib/panduan-content';
@@ -9,6 +10,7 @@ import { BOT_INVITE, SUPPORT_INVITE } from './lib/site';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
+  const session = await getSession().catch(() => null);
   const snap = await getSnapshot();
   const t = totals(snap?.data);
   const hidup = botAlive(snap);
@@ -26,22 +28,53 @@ export default async function Home() {
               </span>
             </div>
             <h1 className="mt-4 font-display text-4xl font-bold leading-[1.12] tracking-tight sm:text-5xl">
-              Lagu Nonstop.
-              <br />
-              <span className="neon-text">Satu Bot Discord.</span>
+              {session ? (
+                <>
+                  Selamat Dengar Lagi.
+                  <br />
+                  <span className="neon-text">Statistikmu Menanti.</span>
+                </>
+              ) : (
+                <>
+                  Lagu Nonstop.
+                  <br />
+                  <span className="neon-text">Satu Bot Discord.</span>
+                </>
+              )}
             </h1>
             <p className="mt-5 max-w-xl text-base md:text-lg leading-relaxed text-muted">
-              <strong className="text-ink">NOXA Sound</strong> memutar musik dari 8 platform,
-              podcast 15 tema, dan radio lagu populer 24 jam. Semua kontrol lewat tombol
-              di panel, chat tetap bersih karena bot bersih-bersih sendiri. Gratis.
+              {session ? (
+                <>
+                  Akun kamu sudah tertaut. Cek <strong className="text-ink">lagu paling sering</strong>,{' '}
+                  <strong className="text-ink">dengar bareng</strong>, dan <strong className="text-ink">server favoritmu</strong>{' '}
+                  di halaman profil, atau kembali main di Discord dengan .play.
+                </>
+              ) : (
+                <>
+                  <strong className="text-ink">NOXA Sound</strong> memutar musik dari 8 platform,
+                  podcast 15 tema, dan radio lagu populer 24 jam. Semua kontrol lewat tombol
+                  di panel, chat tetap bersih karena bot bersih-bersih sendiri. Gratis.
+                </>
+              )}
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                Add to Discord
-              </a>
-              <Link href="/pemutar" className="btn-ghost">
-                <Emoji name="suara" size={18} /> Lihat Panel Pemutar
-              </Link>
+              {session ? (
+                <>
+                  <Link href="/me" className="btn-primary">Buka Profil</Link>
+                  <Link href="/top" className="btn-ghost">
+                    <Emoji name="number1" size={18} /> Cek Top Lagu
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                    Add to Discord
+                  </a>
+                  <Link href="/pemutar" className="btn-ghost">
+                    <Emoji name="suara" size={18} /> Lihat Panel Pemutar
+                  </Link>
+                </>
+              )}
             </div>
             <div className="mt-5 flex items-center gap-2 text-[13px] text-faint">
               <span className="rounded border border-linebright px-1.5 py-0.5 font-mono">.play</span>
@@ -49,14 +82,19 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Replika 1:1 panel pemutar Discord NOXA (interaktif) */}
-          <div>
-            <PlayerShowcase singleMode="music" />
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
-              <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
-              <Link href="/pemutar" className="font-semibold text-neon hover:underline">Lihat semua mode</Link>
+          {/* Kanan hero: sudah login = maskot melayang (pola NEXO); belum login =
+              panel pemutar replika 1:1 yang bisa dicoba */}
+          {session ? (
+            <MascotHero />
+          ) : (
+            <div>
+              <PlayerShowcase singleMode="music" />
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
+                <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
+                <Link href="/pemutar" className="font-semibold text-neon hover:underline">Lihat semua mode</Link>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -167,6 +205,39 @@ export default async function Home() {
 }
 
 // ---------- Komponen kecil landing (server) ----------
+
+// Maskot hero: muncul HANYA saat sudah login (pola NEXO). Bob desktop,
+// wiggle mobile (lihat globals.css), bayangan oval menyusut, 2 bubble
+// melayang bergantian, glow merah di belakang.
+function MascotHero() {
+  return (
+    <div className="relative mx-auto flex w-full max-w-md select-none flex-col items-center px-4 py-6">
+      {/* Glow siluet */}
+      <div className="absolute inset-0 -z-10 rounded-full bg-crimson/10 blur-3xl" aria-hidden="true" />
+
+      <img
+        src="/mascot.png"
+        alt="Maskot NOXA Sound"
+        className="mascot-anim w-full max-w-sm"
+        draggable={false}
+      />
+
+      {/* Bayangan oval menyusut */}
+      <div
+        className="mascot-shadow -mt-6 h-4 w-48 rounded-full bg-black/70 blur-md"
+        aria-hidden="true"
+      />
+
+      {/* Bubble ucapan */}
+      <div className="bubble-a absolute left-0 top-6 rounded-full border border-linebright bg-surface2 px-3.5 py-1.5 text-[13px] font-semibold text-ink shadow-lg">
+        np? Gas!
+      </div>
+      <div className="bubble-b absolute bottom-10 right-0 rounded-full border border-linebright bg-surface2 px-3.5 py-1.5 text-[13px] font-semibold text-ink shadow-lg">
+        Dengar bareng yuk!
+      </div>
+    </div>
+  );
+}
 
 function StatAngka({ label, angka, emoji }) {
   return (
