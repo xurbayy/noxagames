@@ -20,9 +20,9 @@ export default async function Home() {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-14 md:grid-cols-2 md:pt-20">
           <div>
             <div className="flex items-center gap-2">
-              <span className={`h-2 w-2 rounded-full ${hidup ? 'bg-ok live-dot' : 'bg-warn'}`} />
-              <span className="text-xs font-semibold tracking-wide text-muted">
-                {hidup ? 'Bot online dan siap dipakai' : 'Menyambung ke studio bot...'}
+              <span className={`h-2.5 w-2.5 rounded-full ${hidup ? 'bg-ok live-dot' : 'bg-warn'}`} />
+              <span className="text-[13px] font-semibold tracking-wide text-muted">
+                {hidup ? 'Sedang Online' : 'Bot Sedang Offline'}
               </span>
             </div>
             <h1 className="mt-4 font-display text-4xl font-bold leading-[1.12] tracking-tight sm:text-5xl">
@@ -30,7 +30,7 @@ export default async function Home() {
               <br />
               <span className="neon-text">Satu Bot Discord.</span>
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-muted">
+            <p className="mt-5 max-w-xl text-base md:text-lg leading-relaxed text-muted">
               <strong className="text-ink">NOXA Sound</strong> memutar musik dari 8 platform,
               podcast 15 tema, dan radio lagu populer 24 jam. Semua kontrol lewat tombol
               di panel, chat tetap bersih karena bot bersih-bersih sendiri. Gratis.
@@ -43,7 +43,7 @@ export default async function Home() {
                 <Emoji name="suara" size={18} /> Lihat Panel Pemutar
               </Link>
             </div>
-            <div className="mt-5 flex items-center gap-2 text-xs text-faint">
+            <div className="mt-5 flex items-center gap-2 text-[13px] text-faint">
               <span className="rounded border border-linebright px-1.5 py-0.5 font-mono">.play</span>
               <span>mulai dari situ. sisanya tinggal klik tombol</span>
             </div>
@@ -52,7 +52,7 @@ export default async function Home() {
           {/* Replika 1:1 panel pemutar Discord NOXA (interaktif) */}
           <div>
             <PlayerShowcase singleMode="music" />
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-faint">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
               <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
               <Link href="/pemutar" className="font-semibold text-neon hover:underline">Lihat semua mode</Link>
             </div>
@@ -119,8 +119,8 @@ export default async function Home() {
         <SectionHead emoji="podcast" title="Mau Dengar Apa Malam Ini?" sub="Ketik .podcast tanpa isi, daftar temanya muncul. Episode gaming dan vlog yang menyamar sudah disaring lebih dulu." />
         <div className="flex flex-wrap gap-2.5">
           {podcastTema.map((tema) => (
-            <span key={tema.nama} className="flex items-center gap-2 rounded-full border border-line bg-surface2 px-3.5 py-1.5 text-sm text-muted">
-              <Emoji name={tema.emoji} size={16} /> {tema.nama}
+            <span key={tema.nama} className="flex items-center gap-2 rounded-full border border-line bg-surface2 px-4 py-2 text-[15px] text-muted">
+              <Emoji name={tema.emoji} size={18} /> {tema.nama}
             </span>
           ))}
         </div>
@@ -132,14 +132,14 @@ export default async function Home() {
           <SectionHead emoji="bantuan" title="Sering Ditanyakan" sub="" />
           <div className="space-y-2.5">
             {faqList.map((f) => (
-              <details key={f.q} className="card group px-4 py-3 open:border-linebright">
-                <summary className="cursor-pointer list-none text-sm font-semibold text-ink marker:hidden">
+              <details key={f.q} className="card group px-5 py-4 open:border-linebright">
+                <summary className="cursor-pointer list-none text-[15px] font-semibold text-ink marker:hidden">
                   <span className="flex items-center justify-between gap-3">
                     {f.q}
-                    <span className="text-faint transition-transform group-open:rotate-45">+</span>
+                    <span className="text-lg text-faint transition-transform group-open:rotate-45">+</span>
                   </span>
                 </summary>
-                <p className="mt-2.5 text-sm leading-relaxed text-muted">{f.a}</p>
+                <p className="mt-2.5 text-[15px] leading-relaxed text-muted">{f.a}</p>
               </details>
             ))}
           </div>
@@ -150,9 +150,9 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="card relative overflow-hidden px-6 py-12 text-center">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px hairline" />
-          <Emoji name="musik" size={40} className="mx-auto" />
-          <h2 className="mt-4 font-display text-2xl font-bold sm:text-3xl">Percaya Sama Telinga Sendiri.</h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted">
+          <Emoji name="musik" size={44} className="mx-auto" />
+          <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">Percaya Sama Telinga Sendiri.</h2>
+          <p className="mx-auto mt-3 max-w-lg text-[15px] md:text-base leading-relaxed text-muted">
             Invite botnya, mainkan satu lagu, lalu putuskan. Kalau ada yang bikin bingung,
             server dukungan dibuka setiap hari.
           </p>
@@ -171,12 +171,12 @@ export default async function Home() {
 function StatAngka({ label, angka, emoji }) {
   return (
     <div className="card flex items-center gap-3 p-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
-        <Emoji name={emoji} size={20} />
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+        <Emoji name={emoji} size={22} />
       </span>
       <div className="min-w-0">
-        <div className="font-display text-xl font-bold leading-tight tabular-nums">{angka ?? 0}</div>
-        <div className="truncate text-xs text-faint">{label}</div>
+        <div className="font-display text-2xl font-bold leading-tight tabular-nums">{angka ?? 0}</div>
+        <div className="truncate text-[13px] text-faint">{label}</div>
       </div>
     </div>
   );
@@ -186,10 +186,10 @@ function SectionHead({ emoji, title, sub }) {
   return (
     <div className="mb-8">
       <div className="flex items-center gap-2.5">
-        <Emoji name={emoji} size={24} />
-        <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{title}</h2>
+        <Emoji name={emoji} size={26} />
+        <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
       </div>
-      {sub ? <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">{sub}</p> : null}
+      {sub ? <p className="mt-2.5 max-w-2xl text-[15px] md:text-base leading-relaxed text-muted">{sub}</p> : null}
     </div>
   );
 }
@@ -198,12 +198,12 @@ function FiturCard({ emoji, title, desc }) {
   return (
     <div className="card card-hover flex flex-col p-5">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
-          <Emoji name={emoji} size={22} />
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+          <Emoji name={emoji} size={24} />
         </span>
-        <h3 className="font-display text-[15px] font-bold leading-snug">{title}</h3>
+        <h3 className="font-display text-base font-bold leading-snug">{title}</h3>
       </div>
-      <p className="mt-3 text-sm leading-relaxed text-muted">{desc}</p>
+      <p className="mt-3 text-[15px] leading-relaxed text-muted">{desc}</p>
     </div>
   );
 }
@@ -212,12 +212,12 @@ function LangkahCard({ n, judul, desc }) {
   return (
     <div className="card card-hover p-5">
       <div className="flex items-center gap-3">
-        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-crimson font-display text-base font-bold text-white">
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-crimson font-display text-base font-bold text-white">
           {n}
         </span>
         <h3 className="font-display text-base font-bold">{judul}</h3>
       </div>
-      <p className="mt-3 text-sm leading-relaxed text-muted">{desc}</p>
+      <p className="mt-3 text-[15px] leading-relaxed text-muted">{desc}</p>
     </div>
   );
 }

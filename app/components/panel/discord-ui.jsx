@@ -14,18 +14,25 @@ export const DISCORD_STYLES = {
   danger: { bg: '#DA373C', hover: '#A12828' },
 };
 
+// Hover via CSS pseudo-class, BUKAN handler JS - handler onMouseEnter bisa
+// nyangkut (warna hover tetap menempel setelah kursor pergi saat re-render).
+const STYLE_CLASS = {
+  primary: 'bg-[#5865F2] hover:bg-[#4752C4] active:bg-[#3C45A5]',
+  secondary: 'bg-[#4E5058] hover:bg-[#6D6F78] active:bg-[#3A3C44]',
+  success: 'bg-[#248046] hover:bg-[#1A6334] active:bg-[#14512F]',
+  danger: 'bg-[#DA373C] hover:bg-[#A12828] active:bg-[#7C1F23]',
+};
+
 export function DiscordButton({ emoji, label, style = 'secondary', disabled = false, onClick, title }) {
-  const c = DISCORD_STYLES[style] || DISCORD_STYLES.secondary;
   return (
     <button
       type="button"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       title={title || label}
-      className="inline-flex items-center justify-center gap-1.5 rounded-md px-3 h-10 text-[13px] font-medium text-white transition-colors select-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-      style={{ backgroundColor: disabled ? c.bg : undefined }}
-      onMouseEnter={(e) => { if (!disabled) e.currentTarget.style.backgroundColor = c.hover; }}
-      onMouseLeave={(e) => { if (!disabled) e.currentTarget.style.backgroundColor = c.bg; }}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-md px-3 h-10 text-[13px] font-medium text-white transition-colors select-none ${STYLE_CLASS[style] || STYLE_CLASS.secondary} ${
+        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+      }`}
     >
       {emoji ? <Emoji name={emoji} size={16} /> : null}
       {label ? <span className="whitespace-nowrap">{label}</span> : null}
@@ -181,7 +188,7 @@ export function MenuRow({ emoji, label, selected = false, onClick }) {
   );
 }
 
-/** Header pesan Discord: avatar bot (logo NOXA) + nama + tag APP + badge verified + jam. */
+/** Header pesan Discord: avatar bot (logo NOXA) + nama + tag APP terverifikasi + jam. */
 export function MessageHeader({ botName = 'NOXA', botAvatar, jam }) {
   return (
     <div className="mb-2 flex items-center gap-2 px-1">
@@ -191,9 +198,14 @@ export function MessageHeader({ botName = 'NOXA', botAvatar, jam }) {
         <img src="/logo.png" alt="NOXA" className="h-10 w-10 rounded-full object-cover" draggable={false} />
       )}
       <span className="font-display text-[15px] font-bold text-[#F2F3F5]">{botName}</span>
-      {/* Bot resmi aplikasi: centang verified seperti di Discord */}
-      <Emoji name="centang" size={15} alt="verified" />
-      <span className="rounded bg-[#5865F2] px-1 py-px text-[10px] font-semibold uppercase text-white">App</span>
+      {/* Tag verified gaya Discord: centang menempel di pill APP biru */}
+      <span className="inline-flex items-center gap-1 rounded bg-[#5865F2] px-1.5 py-[2px] text-[10px] font-bold uppercase tracking-wide text-white">
+        App
+        <svg viewBox="0 0 16 16" width="10" height="10" fill="none" aria-label="verified" aria-hidden="true">
+          <circle cx="8" cy="8" r="8" fill="#FFFFFF" opacity="0.22" />
+          <path d="M4.5 8.2 7 10.6 11.6 5.6" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
       <span className="text-[12px] text-[#949BA4]">{jam || 'Hari ini'}</span>
     </div>
   );
