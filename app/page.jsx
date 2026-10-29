@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Emoji from './components/Emoji';
 import PlayerShowcase from './components/panel/PlayerPanels';
-import { getSnapshot, totals, livePlayers, liveSummary, botAlive, ageLabel, durasi, formatDuration } from './lib/snapshot';
+import { getSnapshot, totals, botAlive, ageLabel, durasi } from './lib/snapshot';
 import { faqList } from './lib/faq-content';
 import { podcastTema, providers } from './lib/panduan-content';
 import { BOT_INVITE, SUPPORT_INVITE } from './lib/site';
@@ -11,8 +11,6 @@ export const dynamic = 'force-dynamic';
 export default async function Home() {
   const snap = await getSnapshot();
   const t = totals(snap?.data);
-  const live = liveSummary(snap?.data);
-  const players = livePlayers(snap?.data);
   const hidup = botAlive(snap);
 
   return (
@@ -71,27 +69,6 @@ export default async function Home() {
             <StatAngka label="Lagu Diputar" angka={t.plays} emoji="mulai" />
             <StatAngka label="Total Didengar" angka={durasi(t.durationSec)} emoji="jam" />
           </div>
-          {players.length > 0 && (
-            <div className="mt-6">
-              <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-faint">
-                <span className="h-1.5 w-1.5 rounded-full bg-ok live-dot" />
-                Sedang Mengudara
-              </div>
-              <div className="flex gap-3 overflow-x-auto pb-1">
-                {players.slice(0, 8).map((p, i) => (
-                  <div key={`${p.guildId}-${i}`} className="card flex min-w-56 max-w-56 items-center gap-3 p-3">
-                    <Emoji name={p.mode === 'radio' ? 'radio' : p.mode === 'podcast' ? 'podcast' : 'musik'} size={22} />
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold">{p.title}</div>
-                      <div className="truncate text-xs text-faint">
-                        {p.guildName} {p.listeners > 0 ? `${p.listeners} pendengar` : ''}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
           {snap && !hidup && (
             <div className="mt-4 text-xs text-faint">Data terakhir {ageLabel(snap.ageSec)} (bot sedang offline)</div>
           )}
