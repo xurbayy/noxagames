@@ -152,6 +152,35 @@ export function CodeText({ text }) {
   );
 }
 
+/** Wadah menu dropdown gaya Discord: baris opsi vertikal, rapi, bisa scroll. */
+export function MenuBox({ children, maxHeight = 'max-h-56' }) {
+  return (
+    <div className={`rounded-lg border border-[#3F4147] bg-[#111214] ${maxHeight} overflow-y-auto`}>
+      <div className="p-1">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Satu baris opsi dropdown gaya Discord: emoji + label rata kiri,
+ * centang di kanan kalau terpilih.
+ */
+export function MenuRow({ emoji, label, selected = false, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[13px] transition-colors cursor-pointer ${
+        selected ? 'bg-[#2B2D31] text-white' : 'text-[#DBDEE1] hover:bg-[#2B2D31]'
+      }`}
+    >
+      {emoji ? <Emoji name={emoji} size={16} /> : null}
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {selected ? <Emoji name="centang" size={14} /> : <span className="w-[14px]" />}
+    </button>
+  );
+}
+
 /** Header pesan Discord: avatar bot (logo NOXA) + nama + tag APP + badge verified + jam. */
 export function MessageHeader({ botName = 'NOXA', botAvatar, jam }) {
   return (

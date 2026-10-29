@@ -7,10 +7,10 @@
 //
 // Bentuk embed, urutan baris tombol, label, emoji, gaya warna tombol, dan
 // kondisi disabled disalin dari utils/player.js + utils/podcastPlayer.js bot.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Emoji from '../Emoji';
 import { formatDiscordTime } from '../../lib/format';
-import { DiscordButton, ActionRow, PanelEmbed, CodeText, DiscordMessage } from './discord-ui';
+import { DiscordButton, ActionRow, PanelEmbed, CodeText, DiscordMessage, MenuBox, MenuRow } from './discord-ui';
 
 // ---------- Data demo ----------
 const DEMO_TRACKS = [
@@ -50,8 +50,14 @@ const FILTER_SPEED = [
   ['Double Speed', 'doublespeed', 'double'],
 ];
 const FILTER_OTHER = [
-  ['Karaoke', 'karaoke'], ['8D Audio', '8d'], ['Vaporwave', 'vaporwave'], ['Flanger', 'flanger'],
-  ['Surround', 'surraund'], ['Tremolo', 'tremelo'], ['Phaser', 'phaser'], ['Echo', 'echo'],
+  ['Karaoke', 'karaoke', 'karaoke'],
+  ['8D Audio', '8d', '8d'],
+  ['Vaporwave', 'vaporwave', 'vaporwave'],
+  ['Flanger', 'flanger', 'flanger'],
+  ['Surround', 'surraund', 'surround'],
+  ['Tremolo', 'tremelo', 'tremolo'],
+  ['Phaser', 'phaser', 'phaser'],
+  ['Echo', 'echo', 'echo'],
 ];
 const BASS_SET = new Set(['lowbass', 'mediumbass', 'extremebass', 'earrape']);
 const SPEED_SET = new Set(['slowed', 'nightcore', 'double']);
@@ -536,7 +542,7 @@ function PopButton({ openPop, setOpenPop, popRef, id, emoji, label, style = 'sec
       <DiscordButton emoji={emoji} label={label} style={style} disabled={disabled} title={title}
         onClick={() => setOpenPop(openPop === id ? null : id)} />
       {openPop === id && (
-        <div className="absolute left-0 top-11 z-30 w-72 rounded-xl border border-[#26272B] bg-[#111214] p-3 shadow-[0_10px_30px_rgba(0,0,0,0.55)]">
+        <div className="absolute left-0 top-11 z-30 w-80 max-w-[85vw] max-h-[70vh] overflow-y-auto rounded-xl border border-[#26272B] bg-[#111214] p-3 shadow-[0_10px_30px_rgba(0,0,0,0.55)]">
           {children}
         </div>
       )}
@@ -552,19 +558,15 @@ function QueuePop({ tracks, idx, onJump, podcast = false }) {
   return (
     <div>
       <PopTitle>{podcast ? 'Episode dalam antrean' : 'Lagu dalam antrean'}</PopTitle>
-      <div className="max-h-52 space-y-1 overflow-y-auto pr-1">
+      <MenuBox maxHeight="max-h-56">
         {tracks.map((t, i) => (
-          <button key={i} type="button"
-            onClick={() => i !== idx && onJump(i)}
-            className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors cursor-pointer ${
-              i === idx ? 'bg-[#5865F2]/20 text-[#DBDEE1]' : 'text-[#B5BAC1] hover:bg-[#2B2D31]'
-            }`}
-          >
-            <span className="w-5 shrink-0 text-center text-[11px] text-[#949BA4]">{i + 1}</span>
-            <span className="min-w-0 flex-1 truncate">{t.name}</span>
-          </button>
+          <MenuRow key={i}
+            emoji={i === idx ? (podcast ? 'podcast' : 'musik') : null}
+            label={`${i + 1}. ${t.name}`}
+            selected={i === idx}
+            onClick={() => i !== idx && onJump(i)} />
         ))}
-      </div>
+      </MenuBox>
     </div>
   );
 }
@@ -617,52 +619,44 @@ function SeekPop({ input, setInput, onSubmit }) {
 }
 
 function EffectsPop({ filters, onPick, onReset }) {
+  // Struktur sama persis dengan menu Efek di bot: 3 dropdown (Bass, Kecepatan,
+  // Lainnya multi maks 3) + tombol Reset Semua Efek.
   return (
-    <div className="w-80 max-w-[80vw]">
-      <PopTitle>Efek Audio (menu yang sama di Discord)</PopTitle>
-      <div className="mb-1.5 text-[11px] font-semibold text-[#949BA4]">Bass Boost</div>
-      <div className="mb-2.5 flex flex-wrap gap-1.5">
-        {FILTER_BASS.map(([label, emoji, val]) => (
-          <button key={val} type="button" onClick={() => onPick(val)}
-            className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[12px] cursor-pointer transition-colors ${
-              filters.includes(val) ? 'border-[#5865F2] bg-[#5865F2]/20 text-white' : 'border-[#3F4147] text-[#B5BAC1] hover:border-[#5865F2]'
-            }`}
-          >
-            <Emoji name={emoji} size={13} /> {label}
-          </button>
-        ))}
+    <div className="space-y-3">
+      <div>
+        <PopTitle>Bass Boost</PopTitle>
+        <MenuBox maxHeight="max-h-48">
+          {FILTER_BASS.map(([label, emoji, val]) => (
+            <MenuRow key={val} emoji={emoji} label={label}
+              selected={BASS_SET.has(val) && filters.includes(val)}
+              onClick={() => onPick(val)} />
+          ))}
+        </MenuBox>
       </div>
-      <div className="mb-1.5 text-[11px] font-semibold text-[#949BA4]">Kecepatan</div>
-      <div className="mb-2.5 flex flex-wrap gap-1.5">
-        {FILTER_SPEED.map(([label, emoji, val]) => (
-          <button key={val} type="button" onClick={() => onPick(val)}
-            className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[12px] cursor-pointer transition-colors ${
-              filters.includes(val) ? 'border-[#5865F2] bg-[#5865F2]/20 text-white' : 'border-[#3F4147] text-[#B5BAC1] hover:border-[#5865F2]'
-            }`}
-          >
-            <Emoji name={emoji} size={13} /> {label}
-          </button>
-        ))}
+      <div>
+        <PopTitle>Kecepatan</PopTitle>
+        <MenuBox maxHeight="max-h-40">
+          {FILTER_SPEED.map(([label, emoji, val]) => (
+            <MenuRow key={val} emoji={emoji} label={label}
+              selected={SPEED_SET.has(val) && filters.includes(val)}
+              onClick={() => onPick(val)} />
+          ))}
+        </MenuBox>
       </div>
-      <div className="mb-1.5 text-[11px] font-semibold text-[#949BA4]">Lainnya (maks 3)</div>
-      <div className="mb-3 flex flex-wrap gap-1.5">
-        {FILTER_OTHER.map(([label, emoji]) => {
-          const val = emoji === '8d' ? '8d' : label.toLowerCase().replace(/\s+/g, '');
-          return (
-            <button key={val} type="button" onClick={() => onPick(val)}
-              className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[12px] cursor-pointer transition-colors ${
-                filters.includes(val) ? 'border-[#5865F2] bg-[#5865F2]/20 text-white' : 'border-[#3F4147] text-[#B5BAC1] hover:border-[#5865F2]'
-              }`}
-            >
-              <Emoji name={emoji} size={13} /> {label}
-            </button>
-          );
-        })}
+      <div>
+        <PopTitle>Efek Lainnya (maks 3)</PopTitle>
+        <MenuBox maxHeight="max-h-56">
+          {FILTER_OTHER.map(([label, emoji, val]) => (
+            <MenuRow key={val} emoji={emoji} label={label}
+              selected={filters.includes(val)}
+              onClick={() => onPick(val)} />
+          ))}
+        </MenuBox>
       </div>
       <button type="button" onClick={onReset}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-[#4E5058] px-3 py-1.5 text-[12px] font-medium text-white hover:bg-[#6D6F78] cursor-pointer"
+        className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#4E5058] px-3 py-2 text-[13px] font-medium text-white hover:bg-[#6D6F78] cursor-pointer"
       >
-        <Emoji name="reseteffect" size={13} /> Reset Semua Efek
+        <Emoji name="reseteffect" size={14} /> Reset Semua Efek
       </button>
     </div>
   );
@@ -672,17 +666,13 @@ function ThemePop({ current, onPick }) {
   return (
     <div>
       <PopTitle>Pilih Tema Podcast</PopTitle>
-      <div className="flex max-h-56 flex-wrap gap-1.5 overflow-y-auto pr-1">
+      <MenuBox maxHeight="max-h-64">
         {PODCAST_TEMA.map(([nama, emoji]) => (
-          <button key={emoji} type="button" onClick={() => onPick(emoji)}
-            className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[12px] cursor-pointer transition-colors ${
-              current === emoji ? 'border-[#5865F2] bg-[#5865F2]/20 text-white' : 'border-[#3F4147] text-[#B5BAC1] hover:border-[#5865F2]'
-            }`}
-          >
-            <Emoji name={emoji} size={13} /> {nama}
-          </button>
+          <MenuRow key={emoji} emoji={emoji} label={nama}
+            selected={current === emoji}
+            onClick={() => onPick(emoji)} />
         ))}
-      </div>
+      </MenuBox>
     </div>
   );
 }
@@ -692,18 +682,16 @@ function LangPop({ current, onPick }) {
   return (
     <div>
       <PopTitle>Bahasa Audio</PopTitle>
-      <div className="flex flex-wrap gap-1.5">
+      <MenuBox maxHeight="max-h-56">
         {LANGS.map((l) => (
-          <button key={l} type="button" onClick={() => onPick(l)}
-            className={`rounded-lg border px-2.5 py-1 text-[12px] cursor-pointer transition-colors ${
-              current === l ? 'border-[#5865F2] bg-[#5865F2]/20 text-white' : 'border-[#3F4147] text-[#B5BAC1] hover:border-[#5865F2]'
-            }`}
-          >
-            {l}
-          </button>
+          <MenuRow key={l} label={l}
+            selected={current === l}
+            onClick={() => onPick(l)} />
         ))}
+      </MenuBox>
+      <div className="mt-2 text-[11px] leading-relaxed text-[#949BA4]">
+        Bahasa mengikuti track multi-language yang tersedia di episode.
       </div>
-      <div className="mt-2 text-[11px] text-[#949BA4]">Bahasa mengikuti track multi-language yang tersedia di episode.</div>
     </div>
   );
 }

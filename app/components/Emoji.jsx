@@ -11,7 +11,7 @@ export default function Emoji({ name, size = 20, className = '', alt = '' }) {
       src={src}
       width={size}
       height={size}
-      alt={alt || name}
+      alt={alt}
       className={`inline-block align-middle ${className}`}
       loading="lazy"
       draggable={false}
