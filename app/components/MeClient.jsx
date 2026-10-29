@@ -12,6 +12,7 @@ const POLL_MS = 5000;
 export default function MeClient({ initialUser }) {
   const [state, setState] = useState({ loading: true, profile: null, pending: false, error: null });
   const pollingRef = useRef(null);
+  const tickRef = useRef(0);
 
   const load = useCallback(async (mintabarukan = false) => {
     try {
@@ -40,7 +41,9 @@ export default function MeClient({ initialUser }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Polling: berhenti kalau profil sudah ada dan segar.
+  // Polling: berhenti kalau profil sudah ada. Selama menunggu bot, tiap 4
+  // tick (20 detik) antrekan ulang refresh - kalau bot kelewat satu siklus
+  // poll (restart/ offline sesaat), request tidak pernah menggantung.
   useEffect(() => {
     if (state.profile || state.error) {
       if (pollingRef.current) clearInterval(pollingRef.current);
@@ -48,7 +51,11 @@ export default function MeClient({ initialUser }) {
       return;
     }
     if (!pollingRef.current) {
-      pollingRef.current = setInterval(() => load(), POLL_MS);
+      tickRef.current = 0;
+      pollingRef.current = setInterval(() => {
+        tickRef.current += 1;
+        load(tickRef.current % 4 === 0);
+      }, POLL_MS);
     }
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
@@ -96,7 +103,7 @@ export default function MeClient({ initialUser }) {
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-muted">
             {state.pending
-              ? 'Bot sedang menyiapkan profilmu dari database statistik. Halaman ini terisi otomatis dalam beberapa detik.'
+              ? 'Bot sedang menyiapkan profilmu dari database statistik, biasanya selesai dalam beberapa detik. Halaman ini terisi otomatis - kalau lebih dari semenit, bot mungkin sedang restart.'
               : 'Kamu belum tercatat mendengarkan lewat bot. Mainkan lagu pertama di server Discord, lalu buka halaman ini lagi.'}
           </p>
           {state.pending && (
