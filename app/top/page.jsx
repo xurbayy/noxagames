@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import Emoji from '../components/Emoji';
+import Thumb from '../components/Thumb';
+import TopListenerList from '../components/top/TopListenerList';
+import { getSession } from '../lib/session';
 import { getSnapshot, botAlive, ageLabel, totals, topSongs, topServers, topListeners, durasi } from '../lib/snapshot';
 import { pageMeta } from '../lib/site';
 
@@ -14,10 +17,11 @@ export const metadata = pageMeta({
 const RANK_EMOJI = ['number1', 'number2', 'number3'];
 
 export default async function TopPage() {
+  const session = await getSession().catch(() => null);
   const snap = await getSnapshot();
-  const lagu = topSongs(snap?.data);
-  const server = topServers(snap?.data);
-  const listener = topListeners(snap?.data);
+  const lagu = topSongs(snap?.data).slice(0, 10);
+  const server = topServers(snap?.data).slice(0, 10);
+  const listener = topListeners(snap?.data).slice(0, 10);
   const hidup = botAlive(snap);
   const adaData = lagu.length > 0 || server.length > 0 || listener.length > 0;
 
@@ -42,20 +46,14 @@ export default async function TopPage() {
         <div className="mt-8 space-y-10">
           {lagu.length > 0 && (
             <section>
-              <JudulSeksi emoji="musik" judul="Top Lagu" ket={`Top ${Math.min(lagu.length, 20)} lagu paling lama didengar`} />
+              <JudulSeksi emoji="musik" judul="Top Lagu" ket={`Top ${lagu.length} lagu paling lama didengar`} />
               <div className="card divide-y divide-line overflow-hidden">
                 {lagu.map((s, i) => (
                   <div key={`${s.name}-${i}`} className="flex items-center gap-3 px-4 py-3">
                     <span className="w-8 shrink-0 text-center">
                       {RANK_EMOJI[i] ? <Emoji name={RANK_EMOJI[i]} size={22} /> : <span className="text-sm font-bold tabular-nums text-faint">{i + 1}</span>}
                     </span>
-                    {s.thumb ? (
-                      <img src={s.thumb} alt="" className="h-10 w-10 shrink-0 rounded-lg border border-line object-cover" loading="lazy" />
-                    ) : (
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                        <Emoji name="musik" size={18} />
-                      </span>
-                    )}
+                    <Thumb src={s.thumb} alt="" size="h-10 w-10" rounded="rounded-lg" emoji="musik" emojiSize={18} />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold">{s.name}</div>
                       <div className="text-xs text-faint">{durasi(s.duration)} didengar {s.count > 1 ? `${s.count} putaran` : ''}</div>
@@ -74,27 +72,7 @@ export default async function TopPage() {
           {listener.length > 0 && (
             <section>
               <JudulSeksi emoji="userprofile" judul="Top Listener" ket="Pendengar dengan total durasi terlama" />
-              <div className="card divide-y divide-line overflow-hidden">
-                {listener.map((u, i) => (
-                  <div key={u.id} className="flex items-center gap-3 px-4 py-3">
-                    <span className="w-8 shrink-0 text-center">
-                      {RANK_EMOJI[i] ? <Emoji name={RANK_EMOJI[i]} size={22} /> : <span className="text-sm font-bold tabular-nums text-faint">{i + 1}</span>}
-                    </span>
-                    {u.avatar ? (
-                      <img src={u.avatar} alt="" className="h-10 w-10 shrink-0 rounded-full border border-line" loading="lazy" referrerPolicy="no-referrer" />
-                    ) : (
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
-                        {String(u.username || 'A').slice(0, 1).toUpperCase()}
-                      </span>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-semibold">{u.username}</div>
-                      <div className="text-xs text-faint">{u.plays} lagu selesai didengar</div>
-                    </div>
-                    <span className="shrink-0 text-sm font-bold tabular-nums text-neon">{durasi(u.duration)}</span>
-                  </div>
-                ))}
-              </div>
+              <TopListenerList items={listener} login={Boolean(session)} />
             </section>
           )}
 
@@ -107,9 +85,13 @@ export default async function TopPage() {
                     <span className="w-8 shrink-0 text-center">
                       {RANK_EMOJI[i] ? <Emoji name={RANK_EMOJI[i]} size={22} /> : <span className="text-sm font-bold tabular-nums text-faint">{i + 1}</span>}
                     </span>
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                      <Emoji name="musik" size={18} />
-                    </span>
+                    {g.icon ? (
+                      <img src={g.icon} alt="" className="h-10 w-10 shrink-0 rounded-full border border-line object-cover" loading="lazy" referrerPolicy="no-referrer" />
+                    ) : (
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
+                        {String(g.name || 'S').slice(0, 1).toUpperCase()}
+                      </span>
+                    )}
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold">{g.name}</div>
                       <div className="text-xs text-faint">{g.users} pendengar tercatat</div>
