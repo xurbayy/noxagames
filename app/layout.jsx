@@ -2,6 +2,7 @@ import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import CookieConsent from './components/CookieConsent';
 import { getSession } from './lib/session';
 import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, SITE_URL, absoluteUrl } from './lib/site';
 
@@ -62,6 +63,7 @@ export default async function RootLayout({ children }) {
         <Navbar session={session} />
         <main>{children}</main>
         <Footer />
+        <CookieConsent />
       </body>
     </html>
   );
