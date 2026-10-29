@@ -79,22 +79,22 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-4 py-16">
         <SectionHead emoji="fitur" title="Bukan Sekadar Bot Musik." sub="Dari cari lagu sampai bersih-bersih chat, semua jalan sendiri di server kamu." />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <FiturCard emoji="musik" title="Musik dari 8 Platform" desc="YouTube, Spotify, Apple Music, TIDAL, SoundCloud, Deezer, JioSaavn, YouTube Music. Ketik judulnya, pilih provider, bot nyariin 10 lagu teratas tinggal kamu pilih." wide />
-          <FiturCard emoji="NOXASmart" title="NOXA Smart" desc="Otak di balik layar. Menyaring cover palsu dan video reaksi, mencocokkan lagu antar platform, dan memastikan like kamu nempel ke lagu yang benar." />
-          <FiturCard emoji="radio" title="Radio 24 Jam" desc="Lagu populer nonstop dari pool yang terus tumbuh. Satu lagu tidak diulang sampai pool-nya habis diputar. Server yang 24 jam ada orangnya, ini jawabannya." />
-          <FiturCard emoji="podcast" title="Podcast 15 Tema" desc="Horror, kriminal, bisnis, obrolan santai, dan 11 lagi. Bot menolak vlog dan video gaming yang menyamar jadi podcast, jadi yang tampil benar-benar obrolan." />
-          <FiturCard emoji="efek" title="Efek Audio DSP" desc="Bass boost tiga tingkat, nightcore, slowed, 8D, surround, karaoke. Pasang dan lepas dari panel, kapan saja, tanpa putus-putus suara." />
-          <FiturCard emoji="livelirik" title="Lirik Live" desc="Karaoke real-time yang menyala per baris mengikuti lagu. Liriknya diverifikasi dari beberapa sumber dulu, karena salah lirik itu memalukan." wide />
-          <FiturCard emoji="userprofile" title="Profil Pendengar" desc="Lagu apa yang paling sering kamu dengar, dengar bareng siapa, di server mana. Kartu analitiknya bisa dilihat di Discord dan di web ini." />
-          <FiturCard emoji="chat" title="Live Chat di Panel" desc="Semua yang ada di voice bisa kirim pesan lewat tombol Chat, langsung muncul di panel. Buat debat lagu berikutnya tanpa spam channel." />
+          <FiturCard emoji="musik" title="Musik dari 8 Platform" desc="YouTube, Spotify, Apple Music, TIDAL, dan teman-temannya. Ketik judulnya, bot nyariin 10 lagu teratas, kamu tinggal pilih." />
+          <FiturCard emoji="NOXASmart" title="NOXA Smart" desc="Otak di balik layar: menyaring cover palsu, mencocokkan lagu antar platform, dan memastikan like nempel ke lagu yang benar." />
+          <FiturCard emoji="radio" title="Radio 24 Jam" desc="Lagu populer nonstop, tidak ada yang diulang sampai pool-nya habis diputar. Jawaban buat server yang 24 jam ada orangnya." />
+          <FiturCard emoji="podcast" title="Podcast 15 Tema" desc="Horror, kriminal, bisnis, dan 12 tema lagi. Vlog dan gaming yang menyamar sudah disaring, yang tampil benar-benar obrolan." />
+          <FiturCard emoji="efek" title="Efek Audio DSP" desc="Bass boost tiga tingkat, nightcore, slowed, 8D, surround, karaoke. Pasang dan lepas dari panel tanpa putus-putus suara." />
+          <FiturCard emoji="livelirik" title="Lirik Live" desc="Karaoke real-time yang menyala per baris mengikuti lagu. Liriknya diverifikasi dulu, karena salah lirik itu memalukan." />
+          <FiturCard emoji="userprofile" title="Profil Pendengar" desc="Lagu paling sering kamu dengar, dengar bareng siapa, dan server favoritmu. Kartu analitiknya ada di Discord dan di sini." />
+          <FiturCard emoji="chat" title="Live Chat di Panel" desc="Semua yang ada di voice bisa kirim pesan lewat tombol Chat, langsung muncul di panel. Debat lagu berikutnya jadi rame." />
         </div>
 
-        {/* Provider strip */}
-        <div className="mt-8 card p-4">
+        {/* Provider strip: grid rapi 4x2, bukan baris meliuk */}
+        <div className="mt-6 card p-4">
           <div className="mb-3 text-xs font-bold uppercase tracking-wider text-faint">Sumber Lagunya</div>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             {providers.map((p) => (
-              <span key={p.nama} className="flex items-center gap-1.5 text-sm text-muted">
+              <span key={p.nama} className="flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-muted">
                 <Emoji name={p.emoji} size={18} /> {p.nama}
               </span>
             ))}
@@ -194,14 +194,16 @@ function SectionHead({ emoji, title, sub }) {
   );
 }
 
-function FiturCard({ emoji, title, desc, wide }) {
+function FiturCard({ emoji, title, desc }) {
   return (
-    <div className={`card card-hover p-5 ${wide ? 'sm:col-span-2' : ''}`}>
-      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
-        <Emoji name={emoji} size={24} />
-      </span>
-      <h3 className="mt-3.5 font-display text-base font-bold">{title}</h3>
-      <p className="mt-1.5 text-sm leading-relaxed text-muted">{desc}</p>
+    <div className="card card-hover flex flex-col p-5">
+      <div className="flex items-center gap-3">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+          <Emoji name={emoji} size={22} />
+        </span>
+        <h3 className="font-display text-[15px] font-bold leading-snug">{title}</h3>
+      </div>
+      <p className="mt-3 text-sm leading-relaxed text-muted">{desc}</p>
     </div>
   );
 }
