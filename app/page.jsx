@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Emoji from './components/Emoji';
+import PlayerShowcase from './components/panel/PlayerPanels';
 import { getSnapshot, totals, livePlayers, liveSummary, botAlive, ageLabel, durasi, formatDuration } from './lib/snapshot';
 import { faqList } from './lib/faq-content';
 import { podcastTema, providers } from './lib/panduan-content';
@@ -48,8 +49,14 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Mock panel pemutar ala Discord */}
-          <HeroPlayerMock hidup={hidup} />
+          {/* Replika 1:1 panel pemutar Discord NOXA (interaktif) */}
+          <div>
+            <PlayerShowcase singleMode="music" />
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-faint">
+              <span>Replika panel pemutar yang dikirim bot ke Discord. Semua tombolnya bisa dicoba di sini.</span>
+              <Link href="/pemutar" className="font-semibold text-neon hover:underline">Lihat semua mode</Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -181,54 +188,6 @@ export default async function Home() {
 }
 
 // ---------- Komponen kecil landing (server) ----------
-
-function HeroPlayerMock({ hidup }) {
-  return (
-    <div className="card relative overflow-hidden p-5 shadow-[0_0_80px_rgba(184,0,18,0.12)]">
-      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-faint">
-        <span className={`h-1.5 w-1.5 rounded-full ${hidup ? 'bg-ok live-dot' : 'bg-warn'}`} />
-        Panel Pemutar NOXA
-      </div>
-      <div className="mt-4 flex gap-4">
-        <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-linebright bg-gradient-to-br from-maroon via-darkcrimson to-surface2">
-          <span className="flex items-end gap-1 h-10">
-            <span className="eq-bar w-2 h-10 rounded-sm bg-neon" style={{ animationDelay: '0ms' }} />
-            <span className="eq-bar w-2 h-10 rounded-sm bg-crimson" style={{ animationDelay: '160ms' }} />
-            <span className="eq-bar w-2 h-10 rounded-sm bg-neon/80" style={{ animationDelay: '320ms' }} />
-            <span className="eq-bar w-2 h-10 rounded-sm bg-glow/80" style={{ animationDelay: '480ms' }} />
-          </span>
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="truncate font-display text-lg font-bold">Midnight City Drive</div>
-          <div className="truncate text-sm text-muted">Diputar untuk server kamu</div>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface3">
-            <div className="h-full w-2/5 rounded-full bg-gradient-to-r from-crimson to-neon" />
-          </div>
-          <div className="mt-1 flex justify-between text-[11px] text-faint">
-            <span>1:58</span>
-            <span>4:52</span>
-          </div>
-        </div>
-      </div>
-      <div className="mt-4 flex items-center justify-center gap-2">
-        {[['mundur', 22], ['jeda', 26], ['lewati', 22]].map(([nama, s]) => (
-          <span key={nama} className="flex h-10 w-10 items-center justify-center rounded-full border border-linebright bg-surface3">
-            <Emoji name={nama} size={s} />
-          </span>
-        ))}
-        <span className="ml-1 flex h-10 w-10 items-center justify-center rounded-full border border-linebright bg-surface3">
-          <Emoji name="autoplay" size={20} />
-        </span>
-        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-linebright bg-surface3">
-          <Emoji name="sukapenuh" size={18} />
-        </span>
-      </div>
-      <div className="mt-4 rounded-xl border border-line bg-bg/50 px-3 py-2 text-xs text-faint">
-        Mode musik, podcast, dan radio berbagi panel yang sama dengan identitas berbeda.
-      </div>
-    </div>
-  );
-}
 
 function StatAngka({ label, angka, emoji }) {
   return (

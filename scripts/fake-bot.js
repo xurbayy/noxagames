@@ -42,8 +42,30 @@ function snapshot() {
       botPingMs: 42,
       uptimeSec: 486_000,
       players: [
-        { guildId: '1111111111111111111', guildName: 'Dengar Bareng Indopedia', mode: 'music', title: 'Teh Hijau - Tulus', thumbnail: null, requester: 'aurora', listeners: 5, positionSec: 62, durationSec: 254 },
-        { guildId: '2222222222222222222', guildName: 'Gamers Malam', mode: 'radio', title: 'Radio Populer 24/7', thumbnail: null, requester: null, listeners: 4, positionSec: 3600, durationSec: 0 },
+        {
+          guildId: '1111111111111111111', guildName: 'Dengar Bareng Indopedia', mode: 'music',
+          title: 'Teh Hijau - Tulus', thumbnail: null, url: 'https://youtube.com', requester: 'aurora',
+          ownerName: 'aurora', listeners: 5, positionSec: 62, durationSec: 254,
+          volume: 110, loop: 'track', shuffle: false, autoplay: true, filters: ['nightcore'],
+          queueCount: 4, nextTitle: 'Lathi - Weird Genius', quality: 'Boost Tier 2 · 256k',
+          uploader: 'Tulus - Topic', likeCount: 12, embedColor: null, language: null, theme: null,
+        },
+        {
+          guildId: '2222222222222222222', guildName: 'Gamers Malam', mode: 'radio',
+          title: 'Radio Populer NOXA 24/7', thumbnail: null, url: null, requester: null,
+          ownerName: 'admin_gamers', listeners: 4, positionSec: 3600, durationSec: 0,
+          volume: 100, loop: 'off', shuffle: false, autoplay: true, filters: [],
+          queueCount: 6, nextTitle: null, quality: 'Standard 96k',
+          uploader: null, likeCount: 0, embedColor: null, language: null, theme: null,
+        },
+        {
+          guildId: '3333333333333333333', guildName: 'Kostan Melody', mode: 'podcast',
+          title: 'Episode 42: Rahasia Studio Broadcast', thumbnail: null, url: 'https://youtube.com',
+          requester: 'cinthya', ownerName: 'cinthya', listeners: 3, positionSec: 935, durationSec: 4112,
+          volume: 90, loop: 'off', shuffle: false, autoplay: false, filters: [],
+          queueCount: 2, nextTitle: 'Episode 43: Malam Pemburu Bintang', quality: 'Standard 96k',
+          uploader: 'NOXA Podcast Demo', likeCount: 4, embedColor: null, language: 'Bahasa Asli', theme: 'obrolansantai',
+        },
       ],
     },
   };

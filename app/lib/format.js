@@ -32,3 +32,17 @@ export function ageLabel(ageSec) {
   if (h < 24) return `${h} jam lalu`;
   return `${Math.floor(h / 24)} hari lalu`;
 }
+
+/**
+ * Format waktu gaya panel Discord bot: mm:ss dengan menit pad 2 digit,
+ * h:mm:ss kalau lebih dari satu jam (sama dengan formatPodcastDuration bot).
+ */
+export function formatDiscordTime(secs, forceHours = false) {
+  const s = Math.max(0, Math.floor(Number(secs) || 0));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const d = s % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  if (h > 0 || forceHours) return `${pad(h)}:${pad(m)}:${pad(d)}`;
+  return `${pad(m)}:${pad(d)}`;
+}

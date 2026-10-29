@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const LINKS = [
+  { href: '/pemutar', label: 'Pemutar' },
   { href: '/panduan', label: 'Panduan' },
   { href: '/top', label: 'Top' },
   { href: '/premium', label: 'Premium' },
