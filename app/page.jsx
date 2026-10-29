@@ -19,8 +19,8 @@ export default async function Home() {
     <div>
       {/* ================= HERO ================= */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-16 pt-14 md:grid-cols-2 md:pt-20">
-          <div>
+        <div className="mx-auto max-w-6xl px-4 pb-16 pt-14 md:pt-20">
+          <div className="max-w-2xl">
             <div className="flex items-center gap-2">
               <span className={`h-2.5 w-2.5 rounded-full ${hidup ? 'bg-ok live-dot' : 'bg-warn'}`} />
               <span className="text-[13px] font-semibold tracking-wide text-muted">
@@ -42,7 +42,7 @@ export default async function Home() {
                 </>
               )}
             </h1>
-            <p className="mt-5 max-w-xl text-base md:text-lg leading-relaxed text-muted">
+            <p className="mt-5 text-base md:text-lg leading-relaxed text-muted">
               {session ? (
                 <>
                   Akun kamu sudah tertaut. Cek <strong className="text-ink">lagu paling sering</strong>,{' '}
@@ -82,12 +82,14 @@ export default async function Home() {
             </div>
           </div>
 
-          {/* Kanan hero: sudah login = maskot melayang (pola NEXO); belum login =
-              panel pemutar replika 1:1 versi COMPACT elegan (ukuran penuh di /pemutar) */}
+          {/* Bawah hero full width: sudah login = maskot; belum login = panel
+              pemutar 1:1 versi compact, MELEBAR penuh selebar konten */}
           {session ? (
-            <MascotHero />
+            <div className="mt-14 flex justify-center">
+              <MascotHero />
+            </div>
           ) : (
-            <div className="mx-auto w-full max-w-md">
+            <div className="mt-14">
               <PlayerShowcase singleMode="music" compact />
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
                 <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
