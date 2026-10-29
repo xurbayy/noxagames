@@ -216,7 +216,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
         <PanelEmbed
           compact={compact}
           color="#B80012"
-          author="NOXA Music • Sedang Memutar"
+          author="NOXA Sound • Sedang Memutar"
           title={`${song.name}`}
           titleUrl="#"
           description={
@@ -363,7 +363,7 @@ function RadioPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
             { name: 'Status', value: <CodeText text="Siaran Langsung 24/7" />, inline: true },
             { name: 'Penghentian & Alih Mode', value: 'Admin langsung stop/alihkan. Member lain via voting mayoritas.', inline: false },
           ]}
-          footer="NOXA MUSIC • 24/7 POPULAR RADIO"
+          footer="NOXA SOUND • 24/7 POPULAR RADIO"
           timestamp={jam}
         />
         <ActionRow compact={compact}>
@@ -416,7 +416,7 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
         <PanelEmbed
           compact={compact}
           color="#3B0004"
-          author="NOXA Music • Studio Podcast"
+          author="NOXA Sound • Studio Podcast"
           title={ep.name}
           titleUrl="#"
           description={
@@ -512,7 +512,7 @@ function StandbyPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
               Antrian kosong. Pesan ini akan otomatis dibersihkan <Emoji name="bersih" size={16} />
             </span>
           }
-          footer="NOXA Music • Auto-Clean"
+          footer="NOXA Sound • Auto-Clean"
           timestamp={jam}
         />
         <ActionRow compact={compact}>

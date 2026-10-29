@@ -24,7 +24,7 @@ function MusicLive({ p, jam }) {
       <div className="space-y-3">
         <PanelEmbed
           color={p.embedColor || '#B80012'}
-          author="NOXA Music • Sedang Memutar"
+          author="NOXA Sound • Sedang Memutar"
           title={p.title}
           titleUrl={p.url || null}
           description={
@@ -102,7 +102,7 @@ function RadioLive({ p, jam }) {
             { name: 'Status', value: <CodeText text="Siaran Langsung 24/7" />, inline: true },
             { name: 'Penghentian & Alih Mode', value: 'Admin langsung stop/alihkan. Member lain via voting mayoritas.', inline: false },
           ]}
-          footer="NOXA MUSIC • 24/7 POPULAR RADIO"
+          footer="NOXA SOUND • 24/7 POPULAR RADIO"
           timestamp={jam}
         />
         <ActionRow>
@@ -121,7 +121,7 @@ function PodcastLive({ p, jam }) {
       <div className="space-y-3">
         <PanelEmbed
           color={p.embedColor || '#3B0004'}
-          author="NOXA Music • Studio Podcast"
+          author="NOXA Sound • Studio Podcast"
           title={p.title}
           titleUrl={p.url || null}
           description={
