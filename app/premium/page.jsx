@@ -36,8 +36,8 @@ export default function PremiumPage() {
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <RencanaCard emoji="sukapenuh" judul="Kenapa ditunda" desc="Semua fitur inti musik, podcast, dan radio sekarang gratis. Premium hanya akan berisi kenyamanan tambahan, bukan paywall untuk kontrol dasar." />
-        <RencanaCard emoji="jam" judul="Kapan rilis" desc="Rilis menyusul setelah statistik web dan panel admin stabil dipakai sehari-hari. Pengumuman pertama lewat server dukungan." />
+        <RencanaCard emoji="sukapenuh" judul="Kenapa ditunda" desc="Semua fitur inti sekarang gratis dan harus tetap begitu. Premium nanti cuma kenyamanan tambahan, bukan gembok di fitur dasar." />
+        <RencanaCard emoji="jam" judul="Kapan rilis" desc="Belum ada tanggal. Rilis menunggu statistik web dan panel admin benar-benar stabil dipakai sehari-hari. Pengumumannya di server dukungan." />
         <RencanaCard emoji="warning" judul="Prinsipnya" desc="Tidak ada pay-to-win. Audio tetap jernih untuk semua orang, premium hanya menyenangkan, bukan membuka pintu yang dikunci." />
       </div>
     </div>
