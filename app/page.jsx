@@ -83,12 +83,12 @@ export default async function Home() {
           </div>
 
           {/* Kanan hero: sudah login = maskot melayang (pola NEXO); belum login =
-              panel pemutar replika 1:1 yang bisa dicoba */}
+              panel pemutar replika 1:1 versi COMPACT elegan (ukuran penuh di /pemutar) */}
           {session ? (
             <MascotHero />
           ) : (
-            <div>
-              <PlayerShowcase singleMode="music" />
+            <div className="mx-auto w-full max-w-md">
+              <PlayerShowcase singleMode="music" compact />
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
                 <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
                 <Link href="/pemutar" className="font-semibold text-neon hover:underline">Lihat semua mode</Link>

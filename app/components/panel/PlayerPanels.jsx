@@ -94,7 +94,7 @@ function capFilter(f) {
 }
 
 // ---------- Showcase ----------
-export default function PlayerShowcase({ singleMode = null, botAvatar = null }) {
+export default function PlayerShowcase({ singleMode = null, botAvatar = null, compact = false }) {
   const [tab, setTab] = useState(singleMode || 'music');
   const [jam, setJam] = useState('Hari ini');
 
@@ -129,16 +129,16 @@ export default function PlayerShowcase({ singleMode = null, botAvatar = null }) 
         </div>
       )}
 
-      {tab === 'music' && <MusicPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} />}
-      {tab === 'radio' && <RadioPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} />}
-      {tab === 'podcast' && <PodcastPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} />}
-      {tab === 'standby' && <StandbyPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} />}
+      {tab === 'music' && <MusicPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} compact={compact} />}
+      {tab === 'radio' && <RadioPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} compact={compact} />}
+      {tab === 'podcast' && <PodcastPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} compact={compact} />}
+      {tab === 'standby' && <StandbyPanelDemo jam={jam} botAvatar={botAvatar} onSwitch={setTab} compact={compact} />}
     </div>
   );
 }
 
 // ---------- Panel MUSIK (4 baris, 19 tombol, urutan sama dengan bot) ----------
-function MusicPanelDemo({ jam, botAvatar, onSwitch }) {
+function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const [idx, setIdx] = useState(0);
   const [pos, setPos] = useState(38);
   const [paused, setPaused] = useState(false);
@@ -212,8 +212,9 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch }) {
 
   return (
     <div>
-      <MessageAndRows jam={jam} botAvatar={botAvatar}>
+      <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
+          compact={compact}
           color="#B80012"
           author="NOXA Music • Sedang Memutar"
           title={`${song.name}`}
@@ -256,7 +257,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch }) {
         />
 
         {/* Baris 1: mundur, jeda, maju, lewati, hentikan */}
-        <ActionRow>
+        <ActionRow compact={compact}>
           <DiscordButton emoji="mundur" label="Mundur" disabled={isRewindDisabled}
             onClick={() => { setPos((p) => Math.max(0, p - 10)); setOpenPop(null); }} />
           <DiscordButton emoji={paused ? 'mulai' : 'jeda'} label={paused ? 'Lanjut' : 'Jeda'} style={paused ? 'primary' : 'secondary'}
@@ -270,7 +271,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch }) {
         </ActionRow>
 
         {/* Baris 2: like, ulangi, antrian, lirik, chat */}
-        <ActionRow>
+        <ActionRow compact={compact}>
           <DiscordButton emoji={likeCount > 0 ? 'sukapenuh' : 'sukakosong'} label={`${likeCount}`}
             onClick={() => setLiked((l) => !l)} title="Suka lagu ini" />
           <DiscordButton emoji={loop.emoji} label={loop.label} style={loop.style}
@@ -291,7 +292,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch }) {
         </ActionRow>
 
         {/* Baris 3: tambah, podcast, suara, autoplay, efek */}
-        <ActionRow>
+        <ActionRow compact={compact}>
           <DiscordButton emoji="tambahmusik" label="Tambah"
             onClick={() => { setIdx(0); setPos(0); setPaused(false); setOpenPop(null); }} />
           <DiscordButton emoji="podcast" label="Podcast" onClick={() => onSwitch('podcast')} />
@@ -307,7 +308,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch }) {
         </ActionRow>
 
         {/* Baris 4: profile, playlist, acak, bantuan */}
-        <ActionRow>
+        <ActionRow compact={compact}>
           <PopButton {...popProps} id="profile" emoji="userprofile" label="Profile">
             <InfoPop judul="Profile">
               Di Discord, tombol ini menampilkan kartu analitik mendengarkan yang sama dengan profil di halaman <b>/me</b> web ini.
@@ -334,12 +335,13 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch }) {
 }
 
 // ---------- Panel RADIO 24/7 (1 tombol) ----------
-function RadioPanelDemo({ jam, botAvatar, onSwitch }) {
+function RadioPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const [openPop, setOpenPop] = useState(null);
   return (
     <div>
-      <MessageAndRows jam={jam} botAvatar={botAvatar}>
+      <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
+          compact={compact}
           color="#5C0008"
           title={DEMO_RADIO.name}
           titleUrl="#"
@@ -364,7 +366,7 @@ function RadioPanelDemo({ jam, botAvatar, onSwitch }) {
           footer="NOXA MUSIC • 24/7 POPULAR RADIO"
           timestamp={jam}
         />
-        <ActionRow>
+        <ActionRow compact={compact}>
           <DiscordButton emoji="berhenti" label="Hentikan Radio" onClick={() => onSwitch('standby')} />
         </ActionRow>
       </MessageAndRows>
@@ -373,7 +375,7 @@ function RadioPanelDemo({ jam, botAvatar, onSwitch }) {
 }
 
 // ---------- Panel PODCAST (3 baris, 13 tombol) ----------
-function PodcastPanelDemo({ jam, botAvatar, onSwitch }) {
+function PodcastPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const [idx, setIdx] = useState(0);
   const [pos, setPos] = useState(935);
   const [paused, setPaused] = useState(false);
@@ -410,8 +412,9 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch }) {
 
   return (
     <div>
-      <MessageAndRows jam={jam} botAvatar={botAvatar}>
+      <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
+          compact={compact}
           color="#3B0004"
           author="NOXA Music • Studio Podcast"
           title={ep.name}
@@ -439,7 +442,7 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch }) {
         />
 
         {/* Baris 1 */}
-        <ActionRow>
+        <ActionRow compact={compact}>
           <DiscordButton emoji="mundurpodcast" label="Mundur 30d"
             onClick={() => setPos((p) => Math.max(0, p - 30))} />
           <DiscordButton emoji={paused ? 'mulai' : 'jeda'} label={paused ? 'Lanjut' : 'Jeda'} style={paused ? 'primary' : 'secondary'}
@@ -453,7 +456,7 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch }) {
         </ActionRow>
 
         {/* Baris 2 */}
-        <ActionRow>
+        <ActionRow compact={compact}>
           <DiscordButton emoji={likeCount > 0 ? 'sukapenuh' : 'sukakosong'} label={`${likeCount}`} onClick={() => setLiked((l) => !l)} />
           <PopButton {...popProps} id="seek" emoji="waktu" label="Lompat Waktu">
             <SeekPop input={seekInput} setInput={setSeekInput}
@@ -476,7 +479,7 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch }) {
         </ActionRow>
 
         {/* Baris 3 */}
-        <ActionRow>
+        <ActionRow compact={compact}>
           <PopButton {...popProps} id="lang" emoji="bahasa" label="Bahasa">
             <LangPop current={lang} onPick={(l) => { setLang(l); setOpenPop(null); }} />
           </PopButton>
@@ -493,13 +496,14 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch }) {
 }
 
 // ---------- Panel STANDBY (1 baris, 3 tombol) ----------
-function StandbyPanelDemo({ jam, botAvatar, onSwitch }) {
+function StandbyPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const [openPop, setOpenPop] = useState(null);
   const popRef = useRef(null);
   return (
     <div>
-      <MessageAndRows jam={jam} botAvatar={botAvatar}>
+      <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
+          compact={compact}
           color="#B80012"
           title="Sesi Selesai"
           titleEmoji="finish"
@@ -511,7 +515,7 @@ function StandbyPanelDemo({ jam, botAvatar, onSwitch }) {
           footer="NOXA Music • Auto-Clean"
           timestamp={jam}
         />
-        <ActionRow>
+        <ActionRow compact={compact}>
           <DiscordButton emoji="tambahmusik" label="Tambah Lagu" onClick={() => onSwitch('music')} />
           <DiscordButton emoji="podcast" label="Podcast" onClick={() => onSwitch('podcast')} />
           <PopButton openPop={openPop} setOpenPop={setOpenPop} popRef={popRef} id="help" emoji="bantuan" label="Bantuan">
@@ -526,9 +530,9 @@ function StandbyPanelDemo({ jam, botAvatar, onSwitch }) {
 }
 
 // ---------- Bagian bersama ----------
-function MessageAndRows({ jam, botAvatar, children }) {
+function MessageAndRows({ jam, botAvatar, compact = false, children }) {
   return (
-    <DiscordMessage botAvatar={botAvatar}>
+    <DiscordMessage botAvatar={botAvatar} jam={jam} compact={compact}>
       <div className="space-y-3">
         {children}
       </div>
