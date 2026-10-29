@@ -89,7 +89,7 @@ export default async function Home() {
               <MascotHero />
             </div>
           ) : (
-            <div className="mt-14">
+            <div className="mt-14 mx-auto w-full max-w-3xl">
               <PlayerShowcase singleMode="music" compact />
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
                 <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>

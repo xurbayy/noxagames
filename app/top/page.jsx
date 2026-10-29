@@ -20,7 +20,10 @@ export default async function TopPage() {
   const session = await getSession().catch(() => null);
   const snap = await getSnapshot();
   const lagu = topSongs(snap?.data).slice(0, 10);
-  const server = topServers(snap?.data).slice(0, 10);
+  // Server yang tidak bisa diambil linknya (tanpa vanity & bot tak punya izin
+  // bikin invite) tidak ditampilkan - leaderboard hanya berisi yang bisa
+  // dikunjungi.
+  const server = topServers(snap?.data).filter((g) => g.inviteUrl).slice(0, 10);
   const listener = topListeners(snap?.data).slice(0, 10);
   const hidup = botAlive(snap);
   const adaData = lagu.length > 0 || server.length > 0 || listener.length > 0;

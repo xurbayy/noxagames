@@ -22,9 +22,11 @@ export default function Navbar({ session }) {
   useEffect(() => { setOpen(false); }, [pathname]);
 
   async function logout() {
+    // Full navigation, BUKAN router.push - Router Cache Next 16 bisa
+    // menyajikan halaman dari cache dengan sesi lama, bikin logout
+    // kelihatan gagal. Reload penuh = server render baru tanpa sesi.
     await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/');
-    router.refresh();
+    window.location.href = '/';
   }
 
   const isHome = pathname === '/';
