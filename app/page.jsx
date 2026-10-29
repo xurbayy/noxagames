@@ -230,7 +230,7 @@ function MascotHero() {
 
       {/* Bubble ucapan */}
       <div className="bubble-a absolute left-0 top-6 rounded-full border border-linebright bg-surface2 px-3.5 py-1.5 text-[13px] font-semibold text-ink shadow-lg">
-        np? Gas!
+        .play? Gas!
       </div>
       <div className="bubble-b absolute bottom-10 right-0 rounded-full border border-linebright bg-surface2 px-3.5 py-1.5 text-[13px] font-semibold text-ink shadow-lg">
         Dengar bareng yuk!
