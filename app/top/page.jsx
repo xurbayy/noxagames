@@ -114,6 +114,16 @@ export default async function TopPage() {
                       <div className="truncate text-sm font-semibold">{g.name}</div>
                       <div className="text-xs text-faint">{g.users} pendengar tercatat</div>
                     </div>
+                    {g.inviteUrl ? (
+                      <a
+                        href={g.inviteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-ghost shrink-0 !rounded-lg !px-2.5 !py-1.5 text-xs"
+                      >
+                        <Emoji name="callme" size={13} /> Kunjungi
+                      </a>
+                    ) : null}
                     <span className="shrink-0 text-sm font-bold tabular-nums text-neon">{durasi(g.duration)}</span>
                   </div>
                 ))}

@@ -33,14 +33,13 @@ export default function Navbar({ session }) {
     <header className={`sticky top-0 z-50 border-b border-line/70 backdrop-blur-md ${isHome ? 'bg-bg/70' : 'bg-bg/85'}`}>
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-crimson/15 border border-crimson/40">
-            {/* Logo glyph: bar equalizer statis */}
-            <span className="flex items-end gap-[2px] h-4">
-              <span className="w-[3px] h-2 rounded-sm bg-neon" />
-              <span className="w-[3px] h-4 rounded-sm bg-crimson" />
-              <span className="w-[3px] h-2.5 rounded-sm bg-neon/70" />
-            </span>
-          </span>
+          <img
+            src="/logo.png"
+            alt="Logo NOXA Sound"
+            className="h-9 w-9"
+            style={{ filter: 'drop-shadow(0 0 10px rgba(255, 16, 31, 0.35))' }}
+            draggable={false}
+          />
           <span className="font-display text-lg font-bold tracking-tight">
             NOXA <span className="neon-text">Sound</span>
           </span>

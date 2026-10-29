@@ -6,6 +6,8 @@
 // persisten antar instance. Turso = SQLite asli yang di-host, tier gratis,
 // dan satu tempat yang sama untuk semua instance.
 import { createClient } from '@libsql/client';
+import { mkdirSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
 
 let _db = null;
 
@@ -16,8 +18,11 @@ export function getDb() {
   if (url && url.startsWith('libsql://')) {
     _db = createClient({ url, authToken: token || undefined });
   } else {
-    // Dev lokal: file SQLite di folder .data/ (dibuat otomatis).
-    _db = createClient({ url: 'file:.data/noxa-web.db' });
+    // Dev lokal: file SQLite di folder .data/. Folder HARUS dibuat dulu -
+    // libsql tidak membuat folder sendiri dan gagal CANTOPEN kalau hilang.
+    const file = resolve('.data/noxa-web.db');
+    mkdirSync(dirname(file), { recursive: true });
+    _db = createClient({ url: `file:${file}` });
   }
   return _db;
 }

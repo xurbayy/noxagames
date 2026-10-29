@@ -152,24 +152,20 @@ export function CodeText({ text }) {
   );
 }
 
-/** Header pesan Discord: avatar bot + nama + tag APP + jam. */
+/** Header pesan Discord: avatar bot (logo NOXA) + nama + tag APP + badge verified + jam. */
 export function MessageHeader({ botName = 'NOXA', botAvatar, jam }) {
   return (
     <div className="mb-2 flex items-center gap-2 px-1">
       {botAvatar ? (
         <img src={botAvatar} alt="" className="h-10 w-10 rounded-full object-cover" loading="lazy" />
       ) : (
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-crimson/30 border border-crimson/40">
-          <span className="flex items-end gap-[2px] h-4">
-            <span className="w-[3px] h-2 rounded-sm bg-neon" />
-            <span className="w-[3px] h-4 rounded-sm bg-crimson" />
-            <span className="w-[3px] h-2.5 rounded-sm bg-neon/70" />
-          </span>
-        </span>
+        <img src="/logo.png" alt="NOXA" className="h-10 w-10 rounded-full object-cover" draggable={false} />
       )}
       <span className="font-display text-[15px] font-bold text-[#F2F3F5]">{botName}</span>
+      {/* Bot resmi aplikasi: centang verified seperti di Discord */}
+      <Emoji name="centang" size={15} alt="verified" />
       <span className="rounded bg-[#5865F2] px-1 py-px text-[10px] font-semibold uppercase text-white">App</span>
-      <span className="text-[12px] text-[#949BA4]">{jam || 'hari ini'}</span>
+      <span className="text-[12px] text-[#949BA4]">{jam || 'Hari ini'}</span>
     </div>
   );
 }
