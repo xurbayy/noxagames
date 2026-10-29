@@ -91,33 +91,35 @@ export function PanelEmbed({
   return (
     <div className="relative flex overflow-hidden rounded-[4px] bg-[#2B2D31] border border-[#26272B]" style={{ borderLeft: `4px solid ${color}` }}>
       <div className="min-w-0 flex-1 px-4 py-3.5">
-        {author ? (
-          <div className="mb-2 flex items-center gap-2 text-[13px] font-semibold text-[#F2F3F5]">
-            {authorEmoji ? <Emoji name={authorEmoji} size={18} /> : null}
-            <span>{author}</span>
-          </div>
-        ) : null}
-        {title ? (
-          <a
-            href={titleUrl || '#'}
-            target={titleUrl ? '_blank' : undefined}
-            rel="noopener noreferrer"
-            onClick={(e) => { if (!titleUrl) e.preventDefault(); }}
-            className="mb-2 block text-[15.5px] font-semibold leading-snug text-[#00A8FC] hover:underline"
-          >
-            {titleEmoji ? <Emoji name={titleEmoji} size={18} className="mr-1.5" /> : null}
-            {title}
-          </a>
-        ) : null}
-        {description ? <div className="mb-2.5 text-[13.5px] leading-relaxed text-[#DBDEE1]">{description}</div> : null}
+        {/* Baris atas: author + title + deskripsi di kiri, THUMBNAIL kecil di
+            kanan atas (posisi persis Discord). Fields full width DI BAWAHNYA. */}
         <div className="flex gap-3">
           <div className="min-w-0 flex-1">
-            {rendered}
+            {author ? (
+              <div className="mb-2 flex items-center gap-2 text-[13px] font-semibold text-[#F2F3F5]">
+                {authorEmoji ? <Emoji name={authorEmoji} size={18} /> : null}
+                <span>{author}</span>
+              </div>
+            ) : null}
+            {title ? (
+              <a
+                href={titleUrl || '#'}
+                target={titleUrl ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                onClick={(e) => { if (!titleUrl) e.preventDefault(); }}
+                className="mb-2 block text-[15.5px] font-semibold leading-snug text-[#00A8FC] hover:underline"
+              >
+                {titleEmoji ? <Emoji name={titleEmoji} size={18} className="mr-1.5" /> : null}
+                {title}
+              </a>
+            ) : null}
+            {description ? <div className="text-[13.5px] leading-relaxed text-[#DBDEE1]">{description}</div> : null}
           </div>
           {thumbnail ? (
-            <img src={thumbnail} alt="" className="ml-1 h-20 w-20 shrink-0 rounded-lg border border-[#26272B] object-cover" loading="lazy" />
+            <img src={thumbnail} alt="" className="h-20 w-20 shrink-0 self-start rounded-lg border border-[#26272B] object-cover" loading="lazy" />
           ) : null}
         </div>
+        {rendered.length > 0 && <div className="mt-2.5 space-y-1.5">{rendered}</div>}
         {image ? (
           <img src={image} alt="" className="mt-2.5 max-h-52 w-full rounded-[4px] border border-[#26272B] object-cover" loading="lazy" />
         ) : null}
