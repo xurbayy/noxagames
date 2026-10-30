@@ -38,8 +38,7 @@ export default function Navbar({ session }) {
           <img
             src="/logo.png"
             alt="Logo NOXA Sound"
-            className="h-11 w-11 rounded-full ring-1 ring-crimson/40"
-            style={{ filter: 'drop-shadow(0 0 12px rgba(255, 16, 31, 0.35))' }}
+            className="h-11 w-11 rounded-full"
             draggable={false}
           />
           <span className="font-display text-xl font-bold tracking-tight">
@@ -77,12 +76,13 @@ export default function Navbar({ session }) {
                 )}
                 <span className="max-w-32 truncate text-ink">{session.username}</span>
               </Link>
-              <button
-                onClick={logout}
+              <a
+                href="/api/auth/logout"
+                prefetch={false}
                 className="rounded-xl px-3 py-2.5 text-[13px] font-medium text-faint hover:text-ink transition-colors"
               >
                 Keluar
-              </button>
+              </a>
             </div>
           ) : (
             <Link
@@ -130,9 +130,13 @@ export default function Navbar({ session }) {
               <Link href="/me" prefetch={false} className="block rounded-xl px-3 py-3 text-[15px] font-medium text-muted hover:bg-surface2 hover:text-ink">
                 Profil Gw
               </Link>
-              <button onClick={logout} className="block w-full rounded-xl px-3 py-3 text-left text-[15px] font-medium text-faint hover:bg-surface2">
+              <a
+                href="/api/auth/logout"
+                prefetch={false}
+                className="block w-full rounded-xl px-3 py-3 text-left text-[15px] font-medium text-faint hover:bg-surface2"
+              >
                 Keluar
-              </button>
+              </a>
             </>
           ) : (
             <Link href="/login" prefetch={false} className="mt-2 block rounded-xl bg-crimson px-4 py-3 text-center text-[15px] font-bold text-white">

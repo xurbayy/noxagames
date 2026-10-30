@@ -1,7 +1,7 @@
 'use client';
 
-// Profil pendengar: tarik /api/me, minta bot isi profil via /api/me/refresh,
-// lalu polling sampai data masuk (bot poll antrean tiap ~20 detik).
+// Profil pendengar: terisi instan dari server component (initialProfile).
+// Polling hanya berjalan jika data belum pernah diambil bot sebelumnya.
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Emoji from './Emoji';
@@ -9,41 +9,50 @@ import { durasi } from '../lib/format';
 
 const POLL_MS = 5000;
 
-export default function MeClient({ initialUser }) {
-  const [state, setState] = useState({ loading: true, profile: null, pending: false, error: null });
+export default function MeClient({ initialUser, initialProfile = null }) {
+  const [state, setState] = useState({
+    loading: !initialProfile,
+    profile: initialProfile || null,
+    pending: !initialProfile,
+    error: null,
+  });
   const pollingRef = useRef(null);
-  const tickRef = useRef(0);
 
-  const load = useCallback(async (mintabarukan = false) => {
+  const load = useCallback(async () => {
     try {
-      if (mintabarukan) {
-        await fetch('/api/me/refresh', { method: 'POST' });
-      }
       const res = await fetch('/api/me', { cache: 'no-store' });
       if (res.status === 401) {
         window.location.href = '/login?returnTo=%2Fme';
         return;
       }
       const data = await res.json();
-      setState({
-        loading: false,
-        profile: data.profile || null,
-        pending: Boolean(data.pending) || !data.profile,
-        error: null,
-      });
+      if (data.profile) {
+        setState({
+          loading: false,
+          profile: data.profile,
+          pending: false,
+          error: null,
+        });
+      } else {
+        setState((s) => ({
+          ...s,
+          loading: false,
+          pending: Boolean(data.pending),
+        }));
+      }
     } catch {
       setState((s) => ({ ...s, loading: false, error: 'Koneksi bermasalah. Coba lagi.' }));
     }
   }, []);
 
+  // Jika profile belum ada saat render server, ambil via API
   useEffect(() => {
-    load(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!initialProfile) {
+      load();
+    }
+  }, [initialProfile, load]);
 
-  // Polling: berhenti kalau profil sudah ada. Selama menunggu bot, tiap 4
-  // tick (20 detik) antrekan ulang refresh - kalau bot kelewat satu siklus
-  // poll (restart/ offline sesaat), request tidak pernah menggantung.
+  // Polling hanya aktif jika profil belum tersedia
   useEffect(() => {
     if (state.profile || state.error) {
       if (pollingRef.current) clearInterval(pollingRef.current);
@@ -51,10 +60,8 @@ export default function MeClient({ initialUser }) {
       return;
     }
     if (!pollingRef.current) {
-      tickRef.current = 0;
       pollingRef.current = setInterval(() => {
-        tickRef.current += 1;
-        load(tickRef.current % 4 === 0);
+        load();
       }, POLL_MS);
     }
     return () => {
@@ -67,7 +74,7 @@ export default function MeClient({ initialUser }) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      {/* Header */}
+      {/* Header tanpa tombol refresh */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           {initialUser?.avatar ? (
@@ -82,12 +89,7 @@ export default function MeClient({ initialUser }) {
             <h1 className="font-display text-xl font-bold">{initialUser?.username}</h1>
           </div>
         </div>
-        <div className="flex gap-2">
-          <button onClick={() => load(true)} className="btn-ghost !px-3 !py-2 text-xs">
-            <Emoji name="refresh" size={14} /> Segarkan
-          </button>
-          <Link href="/" className="btn-ghost !px-3 !py-2 text-xs">Kembali</Link>
-        </div>
+        <Link href="/" className="btn-ghost !px-3.5 !py-2 text-xs">Kembali</Link>
       </div>
 
       {state.loading && <MemuatState />}
@@ -103,7 +105,7 @@ export default function MeClient({ initialUser }) {
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-muted">
             {state.pending
-              ? 'Bot sedang menyiapkan profilmu dari database statistik, biasanya selesai dalam beberapa detik. Halaman ini terisi otomatis - kalau lebih dari semenit, bot mungkin sedang restart.'
+              ? 'Bot sedang menyiapkan profilmu dari database statistik, biasanya selesai dalam beberapa detik.'
               : 'Kamu belum tercatat mendengarkan lewat bot. Mainkan lagu pertama di server Discord, lalu buka halaman ini lagi.'}
           </p>
           {state.pending && (
@@ -122,7 +124,7 @@ export default function MeClient({ initialUser }) {
           <h2 className="font-display text-lg font-bold">Akun Discord ini belum tercatat</h2>
           <p className="max-w-md text-sm leading-relaxed text-muted">
             Bot tidak menemukan aktivitas mendengar untuk ID ini. Pastikan kamu sudah pernah
-            mendengarkan lewat bot di server mana pun, lalu tekan Segarkan.
+            mendengarkan lewat bot di server mana pun.
           </p>
         </div>
       )}
@@ -139,12 +141,12 @@ function ProfilIsi({ p }) {
 
   return (
     <div className="mt-8 space-y-6">
-      {/* Angka total */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {/* Angka total: StatBox vertikal yang tidak memotong teks */}
+      <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
         <StatBox emoji="jam" label="Total Didengar" angka={durasi(u.totalDuration)} />
-        <StatBox emoji="mulai" label="Lagu Selesai" angka={u.totalPlays} />
+        <StatBox emoji="mulai" label="Lagu Selesai" angka={`${u.totalPlays} lagu`} />
         <StatBox emoji="userprofile" label="Gabung Sejak" angka={formatTanggal(u.firstSeen)} />
-        <StatBox emoji="party" label="Server Favorit" angka={p.topServer ? p.topServer.name : '-'} kecil />
+        <StatBox emoji="party" label="Server Favorit" angka={p.topServer ? p.topServer.name : '-'} />
       </div>
 
       {/* Top lagu */}
@@ -248,15 +250,18 @@ function ProfilIsi({ p }) {
   );
 }
 
-function StatBox({ emoji, label, angka, kecil }) {
+// StatBox vertikal yang tidak pernah memotong teks panjang
+function StatBox({ emoji, label, angka }) {
   return (
-    <div className="card flex items-center gap-3 p-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
-        <Emoji name={emoji} size={20} />
-      </span>
-      <div className="min-w-0">
-        <div className={`font-display font-bold leading-tight tabular-nums ${kecil ? 'truncate text-sm' : 'text-xl'}`}>{angka}</div>
-        <div className="truncate text-xs text-faint">{label}</div>
+    <div className="card flex flex-col justify-between p-4 min-h-[96px]">
+      <div className="flex items-center gap-2">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-crimson/12 border border-crimson/25">
+          <Emoji name={emoji} size={16} />
+        </span>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-faint leading-none">{label}</span>
+      </div>
+      <div className="mt-2.5 font-display text-[15px] sm:text-base font-bold leading-snug text-ink break-words">
+        {angka}
       </div>
     </div>
   );

@@ -1,19 +1,25 @@
 import { NextResponse } from 'next/server';
-import { destroySession, destroyAdminSession } from '../../../lib/session';
+import { cookies } from 'next/headers';
 import { canonicalOrigin } from '../../../lib/site';
 
 export const dynamic = 'force-dynamic';
 
-// POST /api/auth/logout (dari navbar) & GET /api/auth/logout?admin=1 (dari panel).
-export async function POST(request) {
-  await destroySession();
-  return NextResponse.redirect(new URL('/', canonicalOrigin(request.url)), { status: 303 });
+async function clearAuth(request) {
+  const store = await cookies();
+  const opts = { path: '/', maxAge: 0, httpOnly: true, sameSite: 'lax' };
+  store.set('noxa_session', '', opts);
+  store.set('noxa_admin_session', '', opts);
+  store.delete('noxa_session');
+  store.delete('noxa_admin_session');
+  return NextResponse.redirect(new URL('/', canonicalOrigin(request.url)));
 }
 
+// GET untuk link biasa di navbar (<a href="/api/auth/logout">).
+// Browser reload penuh ke halaman utama dengan cookie terhapus tuntas.
 export async function GET(request) {
-  const url = new URL(request.url);
-  const admin = url.searchParams.get('admin') === '1';
-  if (admin) await destroyAdminSession();
-  await destroySession();
-  return NextResponse.redirect(new URL(admin ? '/' : '/', canonicalOrigin(request.url)));
+  return clearAuth(request);
+}
+
+export async function POST(request) {
+  return clearAuth(request);
 }

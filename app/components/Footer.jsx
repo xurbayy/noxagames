@@ -3,7 +3,7 @@ import { SITE_NAME, SUPPORT_INVITE } from '../lib/site';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-line bg-surface mt-16">
+    <footer className="border-t border-line bg-bg mt-16">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 md:grid-cols-4">
         <div>
           <div className="font-display text-base font-bold">

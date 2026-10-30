@@ -4,11 +4,6 @@ import { getDb, schemaReady } from '../../lib/db';
 
 export const dynamic = 'force-dynamic';
 
-// GET /api/me - profil pendengar dari snapshot data_requests terbaru.
-// Kalau profil basi (>10 menit) atau belum ada, kirim profile: null supaya
-// client memanggil /api/me/refresh lalu polling di sini.
-const PROFILE_STALE_MS = 10 * 60 * 1000;
-
 export async function GET() {
   const session = await getSession();
   if (!session) return json({ error: 'belum login' }, 401);
@@ -18,20 +13,39 @@ export async function GET() {
   try {
     await schemaReady();
     const db = getDb();
-    const res = await db.execute({
-      sql: "SELECT id, status, data, created_at, filled_at FROM data_requests WHERE discord_id = ? ORDER BY created_at DESC LIMIT 1",
+
+    // 1. Cari profil yang SUDAH SELESAI diisi bot (status = 'done')
+    // Jika ada, langsung kembalikan tanpa membuat user menunggu antrean baru!
+    const doneRes = await db.execute({
+      sql: "SELECT data, filled_at FROM data_requests WHERE discord_id = ? AND status = 'done' ORDER BY filled_at DESC LIMIT 1",
       args: [session.discordId],
     });
-    const row = res.rows[0];
-    if (!row) {
-      return json({ user, profile: null, fresh: false });
+
+    if (doneRes.rows.length > 0 && doneRes.rows[0].data) {
+      let profile = null;
+      try { profile = JSON.parse(doneRes.rows[0].data); } catch {}
+      if (profile) {
+        return json({ user, profile, fresh: true, pending: false });
+      }
     }
-    if (row.status === 'done' && row.data) {
-      let profile;
-      try { profile = JSON.parse(row.data); } catch { profile = null; }
-      const age = Date.now() - Number(row.filled_at || row.created_at);
-      return json({ user, profile, fresh: age < PROFILE_STALE_MS });
+
+    // 2. Jika belum ada profil selesai, cek apakah ada antrean yang sedang diproses
+    const pendingRes = await db.execute({
+      sql: "SELECT id, status, created_at FROM data_requests WHERE discord_id = ? ORDER BY created_at DESC LIMIT 1",
+      args: [session.discordId],
+    });
+
+    const row = pendingRes.rows[0];
+    if (row && (row.status === 'pending' || row.status === 'processing')) {
+      return json({ user, profile: null, fresh: false, pending: true });
     }
+
+    // 3. Jika belum pernah ada request sama sekali, otomatis buat antrean baru
+    await db.execute({
+      sql: "INSERT INTO data_requests (discord_id, status, created_at) VALUES (?, 'pending', ?)",
+      args: [session.discordId, Date.now()],
+    }).catch(() => {});
+
     return json({ user, profile: null, fresh: false, pending: true });
   } catch {
     return json({ user, profile: null, fresh: false });

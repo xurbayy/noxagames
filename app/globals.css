@@ -145,10 +145,9 @@ body {
   .badge-danger { background-color: var(--color-crimson); color: #fff; }
   .badge-neutral { background-color: var(--color-surface3); color: var(--color-muted); border: 1px solid var(--color-line); }
 
-  /* Teks display merah menyala dengan glow halus */
+  /* Teks display merah tegas tanpa bayangan */
   .neon-text {
     color: var(--color-neon);
-    text-shadow: 0 0 22px rgba(255, 0, 26, 0.45);
   }
 
   /* Garis merah tipis dekoratif */

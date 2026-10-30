@@ -102,7 +102,7 @@ export default async function Home() {
       </section>
 
       {/* ================= STATISTIK LIVE ================= */}
-      <section className="border-y border-line bg-surface/60">
+      <section className="border-y border-line bg-bg">
         <div className="mx-auto max-w-6xl px-5 py-10">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <StatAngka label="Server Terpakai" angka={t.servers} emoji="musik" />
@@ -144,7 +144,7 @@ export default async function Home() {
       </section>
 
       {/* ================= CARA PAKAI ================= */}
-      <section className="border-y border-line bg-surface/60">
+      <section className="border-y border-line bg-bg">
         <div className="mx-auto max-w-6xl px-5 py-20 md:py-24">
           <SectionHead emoji="stayready" title="Cukup Ketik Titik." sub="Tanpa dashboard, tanpa belasan slash command. Satu prefix titik untuk semuanya." />
           <div className="grid gap-4 md:grid-cols-3">
@@ -168,7 +168,7 @@ export default async function Home() {
       </section>
 
       {/* ================= FAQ ================= */}
-      <section className="border-t border-line bg-surface/60">
+      <section className="border-t border-line bg-bg">
         <div className="mx-auto max-w-4xl px-5 py-20 md:py-24">
           <SectionHead emoji="bantuan" title="Sering Ditanyakan" sub="" />
           <div className="space-y-2.5">
