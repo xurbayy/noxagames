@@ -31,20 +31,29 @@ export async function POST(request) {
   const db = getDb();
   const now = Date.now();
 
-  // Aturan Cerdas: Jika user sudah punya paket aktif, hanya boleh perpanjang paket yang sama
+  // Aturan Stacking:
+  // - Paket INDIVIDU (Premium / Premium+) tidak bisa ditumpuk sesamanya -
+  //   hanya boleh perpanjang paket individu yang sama.
+  // - Paket Ultimate (server) BERBEDA cakupan, jadi BISA ditumpuk dengan
+  //   paket individu yang aktif.
   const activeSubRes = await db.execute({
-    sql: "SELECT plan_id, tier_name, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+    sql: "SELECT plan_id, tier_name, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
     args: [String(session.discordId), now],
   });
+  const aktifIndividu = activeSubRes.rows.find((r) => r.plan_id !== 'premium-ultimate');
+  const aktifUltimate = activeSubRes.rows.find((r) => r.plan_id === 'premium-ultimate');
 
-  if (activeSubRes.rows.length > 0) {
-    const activeSub = activeSubRes.rows[0];
-    if (activeSub.plan_id !== plan.id) {
-      return json({
-        ok: false,
-        error: `Kamu sedang berlangganan ${activeSub.tier_name}. Kamu hanya dapat memperpanjang paket tersebut, atau tunggu hingga kedaluwarsa untuk beralih paket.`,
-      }, 400);
-    }
+  if (plan.id !== 'premium-ultimate' && aktifIndividu && aktifIndividu.plan_id !== plan.id) {
+    return json({
+      ok: false,
+      error: `Kamu sedang berlangganan ${aktifIndividu.tier_name}. Paket individu tidak bisa ditumpuk - perpanjang paket yang sama, atau beli Ultimate (paket server) yang cakupannya berbeda.`,
+    }, 400);
+  }
+  if (plan.id === 'premium-ultimate' && aktifUltimate) {
+    return json({
+      ok: false,
+      error: `Kamu sudah punya NOXA Pass Ultimate aktif. Gunakan tombol perpanjang atau ganti server lewat profil.`,
+    }, 400);
   }
 
   const durasiData = plan.durasi.find((d) => d.bulan === Number(durationMonths)) || plan.durasi[0];

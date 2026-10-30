@@ -66,8 +66,8 @@ export async function POST(request) {
     const tierName = tx.plan_id === 'premium-ultimate' ? 'NOXA Premium Ultimate' : tx.plan_id === 'premium-plus' ? 'NOXA Premium+' : 'NOXA Premium';
 
     const existRes = await db.execute({
-      sql: "SELECT id, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
-      args: [String(tx.discord_id), now],
+      sql: "SELECT id, expires_at FROM premium_subscriptions WHERE discord_id = ? AND plan_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+      args: [String(tx.discord_id), String(tx.plan_id), now],
     });
 
     let expiresAt = now + durasiMs;

@@ -12,7 +12,7 @@ const PILIHAN_DURASI = [
   { index: 3, bulan: 12, label: '1 Tahun', badge: 'Diskon Terbesar 31%' },
 ];
 
-export default function PremiumPricing({ session = null, activeSubscription = null }) {
+export default function PremiumPricing({ session = null, activeSubscription = null, activeServer = null }) {
   const [durasiPilihan, setDurasiPilihan] = useState(0);
   const [tabTabel, setTabTabel] = useState(false);
 
@@ -149,19 +149,19 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
         </p>
       </div>
 
-      {/* Banner Info Langganan Aktif (Perpanjang Cerdas) */}
+      {/* Banner Info Langganan Aktif (Perpanjang Cerdas + Stacking) */}
       {activeSubscription && Number(activeSubscription.expires_at) > Date.now() && (
         <div className="card border-[#22C55E]/70 bg-[#0F2415] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full">
           <div className="flex items-center gap-3">
             <img
-              src={activeSubscription.plan_id === 'premium-ultimate' ? '/badges/noxa-premium-ultimate.png' : activeSubscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
+              src={activeSubscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
               alt=""
               width={40}
               height={40}
               className="h-10 w-10 shrink-0 object-contain"
             />
             <div>
-              <div className="text-sm font-bold text-ink">{activeSubscription.tier_name} sedang aktif</div>
+              <div className="text-sm font-bold text-ink">{activeSubscription.tier_name} (Individu) sedang aktif</div>
               <div className="text-xs text-muted">
                 Berlaku sampai {new Date(Number(activeSubscription.expires_at)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} · klik "Perpanjang Sekarang" pada kartu paketmu untuk menambah durasi.
               </div>
@@ -169,6 +169,22 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
           </div>
           <span className="noxa-badge bg-[#14532D] border border-[#22C55E] text-[#86EFAC] whitespace-nowrap">
             {Math.max(0, Math.ceil((Number(activeSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
+          </span>
+        </div>
+      )}
+      {activeServer && Number(activeServer.expires_at) > Date.now() && (
+        <div className="card border-purple-500/70 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full">
+          <div className="flex items-center gap-3">
+            <img src="/badges/noxa-premium-ultimate.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
+            <div>
+              <div className="text-sm font-bold text-ink">{activeServer.tier_name} (Server) sedang aktif</div>
+              <div className="text-xs text-muted">
+                Benefit untuk 1 server pilihan (ID: {activeServer.guild_id || 'belum dipilih'}) · ganti server lewat profil, cooldown 7 hari.
+              </div>
+            </div>
+          </div>
+          <span className="noxa-badge bg-[#240B3B] border border-purple-500 text-purple-200 whitespace-nowrap">
+            {Math.max(0, Math.ceil((Number(activeServer.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
           </span>
         </div>
       )}
@@ -180,10 +196,12 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
           const totalHarga = hargaDurasi.harga || plan.hargaBulanan * currentDurasi.bulan;
           const hargaPerBulan = Math.round(totalHarga / currentDurasi.bulan);
 
-          // Perpanjang cerdas: user dengan langganan aktif hanya bisa memperpanjang paket yang sama
-          const adaLangganan = Boolean(activeSubscription && Number(activeSubscription.expires_at) > Date.now());
-          const isPlanAktif = adaLangganan && activeSubscription.plan_id === plan.id;
-          const isTerkunci = adaLangganan && !isPlanAktif;
+          // Perpanjang cerdas + STACKING: individu tidak tumpuk sesamanya;
+          // Ultimate (paket server) berdiri sendiri dan bisa ditumpuk dgn individu.
+          const adaIndividu = Boolean(activeSubscription && Number(activeSubscription.expires_at) > Date.now());
+          const adaUltimate = Boolean(activeServer && Number(activeServer.expires_at) > Date.now());
+          const isPlanAktif = plan.id === 'premium-ultimate' ? adaUltimate : (adaIndividu && activeSubscription.plan_id === plan.id);
+          const isTerkunci = plan.id === 'premium-ultimate' ? adaUltimate : (adaIndividu && !isPlanAktif);
 
           return (
             <div

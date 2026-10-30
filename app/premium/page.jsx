@@ -17,18 +17,19 @@ export default async function PremiumPage() {
   const session = await getSession().catch(() => null);
 
   let activeSubscription = null;
+  let activeServer = null;
   if (session?.discordId) {
     try {
       await schemaReady();
       const db = getDb();
       const now = Date.now();
       const subRes = await db.execute({
-        sql: "SELECT plan_id, tier_name, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+        sql: "SELECT plan_id, tier_name, guild_id, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
         args: [session.discordId, now],
       });
-      if (subRes.rows.length > 0) {
-        activeSubscription = subRes.rows[0];
-      }
+      // Stacking: individu (Premium/Premium+) dan Ultimate (server) berdiri sendiri
+      activeSubscription = subRes.rows.find((r) => r.plan_id !== 'premium-ultimate') || null;
+      activeServer = subRes.rows.find((r) => r.plan_id === 'premium-ultimate') || null;
     } catch {}
   }
 
@@ -66,7 +67,7 @@ export default async function PremiumPage() {
 
       {/* Konten Utama Pricing & Tiers */}
       <main className="mx-auto max-w-6xl px-4 sm:px-5">
-        <PremiumPricing session={session} activeSubscription={activeSubscription} />
+        <PremiumPricing session={session} activeSubscription={activeSubscription} activeServer={activeServer} />
       </main>
     </div>
   );

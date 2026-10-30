@@ -133,10 +133,10 @@ async function aktifkanLangganan(db, tx, now) {
   const durasiMs = durasiBulan * 30 * 24 * 60 * 60 * 1000;
   const tierName = tx.plan_id === 'premium-ultimate' ? 'NOXA Premium Ultimate' : tx.plan_id === 'premium-plus' ? 'NOXA Premium+' : 'NOXA Premium';
 
-  // Cek apakah ada langganan yang masih aktif (Perpanjang Cerdas)
+  // Cek langganan aktif DENGAN PLAN YANG SAMA (stacking: plan beda = baris baru)
   const existRes = await db.execute({
-    sql: "SELECT id, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
-    args: [String(tx.discord_id), now],
+    sql: "SELECT id, expires_at FROM premium_subscriptions WHERE discord_id = ? AND plan_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+    args: [String(tx.discord_id), String(tx.plan_id), now],
   });
 
   let expiresAt = now + durasiMs;

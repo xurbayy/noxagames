@@ -116,13 +116,20 @@ export async function POST(request) {
     // - Paket sama sudah aktif  -> perpanjang baris lama (bukan buat baru)
     // - Paket lain sudah aktif  -> tolak (aturan perpanjang cerdas)
     const adaRes = await db.execute({
-      sql: "SELECT id, plan_id, expires_at, guild_id, last_switch_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+      sql: "SELECT id, plan_id, expires_at, guild_id, last_switch_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
       args: [cleanId, now],
     });
-    const aktif = adaRes.rows[0];
+    const aktifIndividu = adaRes.rows.find((r) => r.plan_id !== 'premium-ultimate');
+    const aktifUltimate = adaRes.rows.find((r) => r.plan_id === 'premium-ultimate');
+    // Ultimate (server) boleh ditumpuk dengan individu. Individu tidak tumpuk sesama.
+    const aktif = plan.id === 'premium-ultimate' ? aktifUltimate : (aktifIndividu || null);
+    const konflikIndividu = plan.id !== 'premium-ultimate' && aktifIndividu && aktifIndividu.plan_id !== plan.id;
+    if (konflikIndividu) {
+      return json({ ok: false, error: `User ini sedang aktif ${aktifIndividu.plan_id}. Paket individu tidak bisa ditumpuk sesamanya - cabut dulu atau tunggu kedaluwarsa.` }, 400);
+    }
     if (aktif) {
       if (aktif.plan_id !== plan.id) {
-        return json({ ok: false, error: `User ini sedang aktif ${aktif.plan_id}. Cabut dulu atau tunggu kedaluwarsa sebelum memberi paket berbeda.` }, 400);
+        return json({ ok: false, error: `User ini sudah punya ${aktif.plan_id} aktif.` }, 400);
       }
       const baseTime = Number(aktif.expires_at) > now ? Number(aktif.expires_at) : now;
       const newExpires = baseTime + durasiBulan * 30 * 24 * 60 * 60 * 1000;
