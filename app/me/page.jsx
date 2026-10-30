@@ -35,6 +35,21 @@ export default async function MePage() {
     }
   } catch {}
 
+  // Info paket server aktif: logo & nama server tujuan dari snapshot bridge.
+  let serverPackage = null;
+  if (activeSubscription?.guild_id) {
+    try {
+      const snap = await getSnapshot();
+      const gid = String(activeSubscription.guild_id);
+      const cocokPaket = topServers(snap?.data).find((g) => String(g.id) === gid);
+      serverPackage = {
+        guildId: gid,
+        name: cocokPaket?.name || initialProfile?.topServer?.id === gid ? (cocokPaket?.name || null) : (cocokPaket?.name || null),
+        icon: cocokPaket?.icon || null,
+      };
+    } catch {}
+  }
+
   // Ikon server favorit dari snapshot bridge (profil user hanya bawa ID & nama).
   let serverIcon = null;
   let serverPremiumTier = null;
@@ -57,6 +72,7 @@ export default async function MePage() {
       subscription={activeSubscription}
       serverIcon={serverIcon}
       serverPremiumTier={serverPremiumTier}
+      serverPackage={serverPackage}
     />
   );
 }

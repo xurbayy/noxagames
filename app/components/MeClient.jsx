@@ -11,7 +11,7 @@ import { premiumEmojiName, BENEFIT_INVENTORY, nilaiBenefit } from '../lib/premiu
 
 const POLL_MS = 5000;
 
-export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverIcon = null, serverPremiumTier = null }) {
+export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverIcon = null, serverPremiumTier = null, serverPackage = null }) {
   const [gantiServerBuka, setGantiServerBuka] = useState(false);
   const [gantiServerId, setGantiServerId] = useState('');
   const [gantiServerPesan, setGantiServerPesan] = useState(null);
@@ -224,6 +224,29 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             </div>
           </div>
           <div className="flex flex-col gap-2 shrink-0">
+            {paketServer && (
+              <div className="flex items-center gap-2.5 rounded-xl border border-line bg-surface p-2 pr-4">
+                {serverPackage?.icon ? (
+                  <img
+                    src={serverPackage.icon}
+                    alt=""
+                    className="h-9 w-9 shrink-0 rounded-full border border-line object-cover"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
+                    {String(serverPackage?.name || 'S').slice(0, 1).toUpperCase()}
+                  </span>
+                )}
+                <div className="min-w-0">
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-faint">Aktif di server</div>
+                  <div className="truncate text-xs sm:text-sm font-bold text-ink">
+                    {serverPackage?.name || `Server ${subscription.guild_id}`}
+                  </div>
+                </div>
+              </div>
+            )}
             <Link
               href="/premium"
               className="btn-ghost !py-2 !px-4 text-xs font-semibold"
