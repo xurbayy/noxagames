@@ -49,11 +49,15 @@ export async function GET(request) {
     commands: [],
     dataRequests: claimed.map((r) => {
       let action = 'profile';
+      let payload = null;
       try {
         const parsed = JSON.parse(r.data);
-        if (parsed?.action) action = parsed.action;
+        if (parsed && typeof parsed === 'object') {
+          payload = parsed;
+          if (parsed.action) action = parsed.action;
+        }
       } catch {}
-      return { id: Number(r.id), discordId: String(r.discord_id), action };
+      return { id: Number(r.id), discordId: String(r.discord_id), action, payload };
     }),
   });
 }
