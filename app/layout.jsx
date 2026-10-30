@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
+import FloatingRadio from './components/FloatingRadio';
 import { getSession } from './lib/session';
 import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, SITE_URL, absoluteUrl } from './lib/site';
 
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <CookieConsent />
+        <FloatingRadio />
       </body>
     </html>
   );
