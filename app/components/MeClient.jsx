@@ -265,7 +265,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         </div>
       )}
 
-      {p?.user?.exists && adaAktivitas(p) && <ProfilIsi p={p} serverIcon={serverIcon} />}
+      {p?.user?.exists && adaAktivitas(p) && <ProfilIsi p={p} serverIcon={serverIcon} serverPremiumTier={serverPremiumTier} />}
     </div>
   );
 }
@@ -277,7 +277,7 @@ function adaAktivitas(p) {
   return Boolean(p?.user?.exists) && (Number(p.user.totalPlays) > 0 || Number(p.user.totalDuration) > 0);
 }
 
-function ProfilIsi({ p, serverIcon }) {
+function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
   const u = p.user;
   const lagu = Array.isArray(p.topSongs) ? p.topSongs : [];
   const co = Array.isArray(p.coListeners) ? p.coListeners : [];
