@@ -6,6 +6,7 @@ import { getSession } from './lib/session';
 import { getSnapshot, totals, botAlive, ageLabel, durasi } from './lib/snapshot';
 import { faqList } from './lib/faq-content';
 import { podcastTema, providers } from './lib/panduan-content';
+import { PREMIUM_PLANS, labelHarga } from './lib/premiumPlan';
 import { BOT_INVITE, SUPPORT_INVITE } from './lib/site';
 
 export const dynamic = 'force-dynamic';
@@ -244,6 +245,47 @@ export default async function Home() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ================= PREMIUM ================= */}
+      <section id="premium" className="scroll-mt-24 mx-auto max-w-6xl px-5 py-20 md:py-24">
+        <Reveal>
+          <SectionHead title="Mau Lebih Bebas Lagi?" sub="Tiga paket langganan, bayar sekali via QRIS." />
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-3">
+          {PREMIUM_PLANS.map((plan, i) => (
+            <Reveal key={plan.id} delay={i * 80}>
+              <div className={`card card-hover flex h-full flex-col p-6 ${plan.populer ? 'ring-1 ring-slate-300/40' : ''}`}>
+                <div className="flex items-center gap-3">
+                  <img src={plan.badge} alt={plan.badgeAlt} width={44} height={44} className="h-11 w-11 object-contain" draggable={false} />
+                  <div>
+                    <h3 className="font-display text-base font-bold">{plan.nama}</h3>
+                    <div className="text-xs text-faint">{plan.target}</div>
+                  </div>
+                </div>
+                <div className="mt-4 flex items-baseline gap-1.5">
+                  <span className="font-display text-2xl font-bold tabular-nums">{labelHarga(plan.hargaBulanan)}</span>
+                  <span className="text-xs text-muted">/bulan</span>
+                </div>
+                <ul className="mt-4 flex-1 space-y-2 text-sm text-muted">
+                  {plan.fiturRingkas.slice(0, 3).map((f) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <span className="mt-0.5 shrink-0 text-neon">✓</span>
+                      <span className="break-words">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/premium"
+                  prefetch={false}
+                  className={`mt-5 w-full justify-center ${plan.populer ? 'btn-primary' : 'btn-ghost'}`}
+                >
+                  Lihat Paket →
+                </Link>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 

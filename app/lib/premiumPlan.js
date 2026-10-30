@@ -93,7 +93,7 @@ export const PREMIUM_PLANS = [
       'Antrean tanpa batas',
       'Prioritas CPU & bandwidth VPS',
       'Volume 200% + Equalizer 15-Band',
-      'Kustom warna panel pemutar',
+      'Playlist tanpa batas',
       'Badge Ultraviolet + Role VIP',
     ],
     target: 'Hingga 3 Server Discord',
@@ -134,7 +134,7 @@ export const FITUR_KOMPARASI = [
     items: [
       { nama: 'Lencana (Badge) Profil Web & Discord', gratis: false, premium: 'Gold Badge', plus: 'Platinum Badge', ultimate: 'Ultraviolet Cyber' },
       { nama: 'Simpan Playlist Kustom Pribadi', gratis: '3 playlist', premium: '10 playlist', plus: '25 playlist', ultimate: 'Tanpa Batas (∞)' },
-      { nama: 'Kustomisasi Warna Panel Player', gratis: false, premium: false, plus: false, ultimate: true },
+      { nama: 'Riwayat Lagu di Profil', gratis: '10 teratas', premium: '25 teratas', plus: '50 teratas', ultimate: 'Tanpa Batas (∞)' },
       { nama: 'Dukungan Tiket di Server Support', gratis: 'Komunitas', premium: 'Prioritas', plus: 'Prioritas Tinggi', ultimate: 'VIP 24/7 Direct' },
     ],
   },
