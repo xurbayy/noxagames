@@ -188,17 +188,17 @@ export default function PremiumManagement() {
 
       {/* KPI Kartu Ringkas */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 mb-6">
-        <div className="card p-4">
+        <div className="stat-tile p-4">
           <div className="text-xs text-muted">Pelanggan Aktif</div>
           <div className="mt-1 font-display text-2xl font-bold tabular-nums text-ink">{totalAktif}</div>
           <div className="mt-0.5 text-[11px] text-faint">Akun / Server terdaftar</div>
         </div>
-        <div className="card p-4">
+        <div className="stat-tile p-4">
           <div className="text-xs text-muted">Total Transaksi</div>
           <div className="mt-1 font-display text-2xl font-bold tabular-nums text-ink">{(data.transactions || []).length}</div>
           <div className="mt-0.5 text-[11px] text-faint">Riwayat invoice QiosPay</div>
         </div>
-        <div className="card p-4 col-span-2 md:col-span-1">
+        <div className="stat-tile p-4 col-span-2 md:col-span-1">
           <div className="text-xs text-muted">Total Pendapatan Masuk</div>
           <div className="mt-1 font-display text-2xl font-bold tabular-nums text-neon">{labelHarga(totalOmzet)}</div>
           <div className="mt-0.5 text-[11px] text-faint">Status lunas (paid)</div>
@@ -239,10 +239,10 @@ export default function PremiumManagement() {
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-semibold text-sm text-ink">{s.username}</span>
-                        <span className="rounded border px-2 py-0.2 text-[10px] font-bold uppercase tracking-wider border-line bg-surface3 text-muted">
+                        <span className="noxa-badge border border-line bg-surface3 text-muted">
                           {s.tierName}
                         </span>
-                        <span className={`rounded-full px-2 py-0.2 text-[10px] font-bold uppercase ${s.status === 'active' ? 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]' : 'bg-[#2B0003] text-[#FF8A9B] border border-crimson'}`}>
+                        <span className={`noxa-badge ${s.status === 'active' ? 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]' : 'bg-[#2B0003] text-[#FF8A9B] border border-crimson'}`}>
                           {s.status === 'active' ? `${s.sisaHari} hari lagi` : 'Kedaluwarsa'}
                         </span>
                       </div>
@@ -327,7 +327,7 @@ export default function PremiumManagement() {
         {data.transactions?.length === 0 ? (
           <p className="text-xs text-faint py-4 text-center">Belum ada riwayat transaksi.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto noxa-scroll">
             <table className="w-full text-left text-xs min-w-[580px]">
               <thead>
                 <tr className="border-b border-line text-faint text-[11px] uppercase tracking-wider">
@@ -347,7 +347,7 @@ export default function PremiumManagement() {
                     <td className="py-2.5 px-3 text-muted">{tx.planId} ({tx.durationMonths} bln)</td>
                     <td className="py-2.5 px-3 text-ink font-bold tabular-nums">{labelHarga(tx.amount)}</td>
                     <td className="py-2.5 px-3">
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${tx.status === 'paid' ? 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]' : 'bg-[#3A2503] text-[#FBBF24] border border-[#F59E0B]'}`}>
+                      <span className={`noxa-badge ${tx.status === 'paid' ? 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]' : 'bg-[#3A2503] text-[#FBBF24] border border-[#F59E0B]'}`}>
                         {tx.status}
                       </span>
                     </td>

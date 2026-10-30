@@ -46,8 +46,9 @@ body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  /* Teks dasar 17px supaya nyaman dibaca di semua perangkat (permintaan pemilik) */
+  /* Teks dasar 17px + line-height lega ala NEXO supaya nyaman dibaca */
   font-size: 1.0625rem;
+  line-height: 1.65;
   overflow-x: hidden;
   width: 100%;
   /* Aura studio: satu semburat merah tipis di atas, sisanya hitam rata.
@@ -199,6 +200,11 @@ textarea:focus-visible {
     transform: translateY(0);
     box-shadow: var(--shadow-hair);
   }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
 
   .btn-ghost {
     display: inline-flex;
@@ -222,6 +228,11 @@ textarea:focus-visible {
     background-color: var(--color-surface3);
     transform: translateY(-1px);
     box-shadow: var(--shadow-soft);
+  }
+  .btn-ghost:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
   }
 
   /* Perintah prefix: chip monospace yang fleksibel dan tidak merusak layout mobile */
@@ -291,6 +302,142 @@ textarea:focus-visible {
   50% { opacity: 0.35; }
 }
 .live-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+
+/* ════════════════════════════════════════════════════════════════
+   SISTEM UI SOLID (diadaptasi 1:1 dari web NEXO negoxiastore)
+   Bahasa visual yang sama: badge terstandar, tombol aksi solid dengan
+   bayangan warna lembut, tile statistik, scrollbar tabel yang terlihat,
+   skeleton, dan shimmer premium. Warna diadaptasi ke palet merah NOXA.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── BADGE TERSTANDAR (semua status pakai kelas ini + utilitas warna solid) ── */
+.noxa-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* ── TOMBOL AKSI SOLID (latar pekat + teks kontras + bayangan warna lembut) ── */
+.btn-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+.btn-solid:hover { transform: translateY(-1px); }
+.btn-solid:active { transform: translateY(0); }
+.btn-solid:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-solid-accent { background: var(--color-crimson); color: #fff; box-shadow: 0 2px 8px rgba(177, 18, 38, 0.3); }
+.btn-solid-accent:hover { background: var(--color-neon); }
+.btn-solid-danger { background: #C74B3C; color: #fff; box-shadow: 0 2px 8px rgba(199, 75, 60, 0.28); }
+.btn-solid-danger:hover { background: #A83F32; }
+.btn-solid-success { background: #1F7A44; color: #fff; box-shadow: 0 2px 8px rgba(88, 196, 114, 0.25); }
+.btn-solid-success:hover { background: #58C472; }
+.btn-solid-neutral { background: var(--color-surface2); color: var(--color-ink); border-color: var(--color-linebright); box-shadow: var(--shadow-hair); }
+.btn-solid-neutral:hover { background: var(--color-surface3); }
+.btn-solid-light { background: var(--color-ink); color: #030303; box-shadow: 0 2px 8px rgba(247, 243, 241, 0.18); }
+.btn-solid-light:hover { background: #ffffff; }
+
+/* ── TILE STATISTIK (kartu KPI solid dengan hover aksen) ── */
+.stat-tile {
+  border-radius: 0.75rem;
+  background: var(--color-surface3);
+  border: 1px solid var(--color-line);
+  padding: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.stat-tile:hover {
+  border-color: rgba(255, 75, 43, 0.3);
+  box-shadow: 0 0 12px rgba(177, 18, 38, 0.12);
+}
+
+/* ── SCROLLBAR HORIZONTAL TABEL: tebal dan terlihat ── */
+.noxa-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-linebright) rgba(247, 243, 241, 0.05);
+}
+.noxa-scroll::-webkit-scrollbar { height: 12px; }
+.noxa-scroll::-webkit-scrollbar-track {
+  background: rgba(247, 243, 241, 0.05);
+  border-radius: 999px;
+}
+.noxa-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-linebright);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.noxa-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6B4A4D;
+  background-clip: content-box;
+}
+
+/* ── SKELETON LOADING ── */
+.skeleton {
+  background: var(--color-surface3);
+  border-radius: 0.75rem;
+  animation: pulseSoft 1.4s infinite;
+}
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ── SHIMMER (indikator premium) ── */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.25) 45%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.25) 55%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: shimmerSlide 2.8s ease-in-out infinite;
+}
+@keyframes shimmerSlide {
+  0% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+/* ── KETERBACAAN DI HP: font mikro dinaikkan (pola NEXO) ── */
+@media (max-width: 639px) {
+  .text-\[10px\], .text-\[11px\] {
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+  .text-xs { font-size: 0.8rem; line-height: 1.45; }
+}
+
+/* Reduced motion mematikan shimmer & skeleton */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer::after, .skeleton { animation: none !important; }
+}
 
 /* Maskot hero (pola NEXO): desktop bob lembut, mobile wiggle lebih lincah,
    bayangan oval menyusut sinkron dengan bob, bubble melayang bergantian. */

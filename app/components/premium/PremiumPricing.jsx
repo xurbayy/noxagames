@@ -162,7 +162,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
               </div>
             </div>
           </div>
-          <span className="rounded-full bg-[#14532D] border border-[#22C55E] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#86EFAC] whitespace-nowrap">
+          <span className="noxa-badge bg-[#14532D] border border-[#22C55E] text-[#86EFAC] whitespace-nowrap">
             {Math.max(0, Math.ceil((Number(activeSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
           </span>
         </div>
@@ -201,7 +201,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
 
               {/* Badge Populer */}
               {plan.populer && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-slate-200 to-slate-400 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 shimmer rounded-full bg-gradient-to-r from-slate-200 to-slate-400 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]">
                   Paling Banyak Dipilih
                 </div>
               )}
@@ -323,7 +323,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
         </div>
 
         {tabTabel && (
-          <div className="card overflow-x-auto p-4 sm:p-6 shadow-[var(--shadow-lift)]">
+          <div className="card overflow-x-auto noxa-scroll p-4 sm:p-6 shadow-[var(--shadow-lift)]">
             <h3 className="font-display text-lg font-bold mb-4">Matriks Perbandingan Fitur Semua Paket</h3>
             <div className="min-w-[620px]">
               <table className="w-full text-left text-xs sm:text-sm">

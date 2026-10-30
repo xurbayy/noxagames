@@ -51,7 +51,19 @@ export default function AdminShell() {
 
       {err && <div className="card border-crimson/50 p-4 text-sm text-ink">{err}</div>}
 
-      {!data && !err && <div className="card p-10 text-center text-sm text-faint">Menyambung data...</div>}
+      {!data && !err && (
+        <div className="card p-6 space-y-3">
+          <div className="skeleton h-5 w-40" />
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="skeleton h-20" />
+            <div className="skeleton h-20" />
+            <div className="skeleton h-20" />
+            <div className="skeleton h-20" />
+          </div>
+          <div className="skeleton h-24" />
+          <p className="text-center text-xs text-faint">Menyambung data...</p>
+        </div>
+      )}
 
       {data && (
         <div className="space-y-8">
@@ -518,7 +530,7 @@ function TopList({ judul, emoji, items, render }) {
 
 function StatBox({ emoji, label, angka }) {
   return (
-    <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 sm:p-4">
+    <div className="stat-tile flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 sm:p-4">
       <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
         <Emoji name={emoji} size={18} />
       </span>

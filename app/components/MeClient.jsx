@@ -95,7 +95,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-faint">Profil Pendengar</span>
               {subscription && (
-                <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${
+                <span className={`noxa-badge normal-case tracking-normal ${
                   subscription.plan_id === 'premium-ultimate'
                     ? 'border-purple-500 bg-[#240B3B] text-purple-200'
                     : subscription.plan_id === 'premium-plus'
@@ -175,7 +175,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-display text-sm font-bold text-ink">{subscription.tier_name} Aktif</span>
-                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                <span className={`noxa-badge ${
                   Math.max(0, Math.ceil((Number(subscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24))) <= 5
                     ? 'bg-[#B45309] text-white border border-[#F59E0B]'
                     : 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]'
@@ -409,7 +409,7 @@ function ProfilIsi({ p, serverIcon }) {
 // StatBox vertikal yang tidak pernah memotong teks panjang
 function StatBox({ emoji, label, angka }) {
   return (
-    <div className="card flex flex-col justify-between p-3.5 sm:p-4 min-h-[96px]">
+    <div className="stat-tile flex flex-col justify-between p-3.5 sm:p-4 min-h-[96px]">
       <div className="flex items-center gap-2">
         <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-[#2B0003] border border-crimson">
           <Emoji name={emoji} size={15} />
