@@ -53,8 +53,8 @@ export default async function LoginPage({ searchParams }) {
         </h1>
         <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted">
           {adminMode
-            ? 'Panel admin hanya untuk pemilik dan staf yang terdaftar. Masuk pakai akun Discord yang sudah diizinkan.'
-            : 'Masuk pakai Discord untuk melihat statistik mendengarkanmu: lagu favorit, durasi total, dan siapa yang sering dengar bareng.'}
+            ? 'Panel admin hanya untuk pemilik dan staf terdaftar.'
+            : 'Masuk dengan Discord untuk melihat statistik dengarmu.'}
         </p>
 
         {gagal && (

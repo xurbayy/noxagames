@@ -46,6 +46,8 @@ body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  /* Teks dasar 17px supaya nyaman dibaca di semua perangkat (permintaan pemilik) */
+  font-size: 1.0625rem;
   overflow-x: hidden;
   width: 100%;
   /* Aura studio: satu semburat merah tipis di atas, sisanya hitam rata.
@@ -256,10 +258,7 @@ textarea:focus-visible {
   /* Teks display: gradasi hangat merah -> amber, tanpa bayangan.
      Ini yang membedakan NOXA dari nuansa merah-tunggal ala Netflix. */
   .neon-text {
-    background-image: linear-gradient(96deg, var(--color-neon), var(--color-amber));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-neon);
   }
 
   /* Garis merah tipis dekoratif */

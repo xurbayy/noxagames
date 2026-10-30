@@ -58,8 +58,8 @@ export default async function PremiumPage() {
 
           <div className="anim-in delay-2 accent-bar mx-auto mt-5" aria-hidden="true" />
 
-          <p className="anim-in delay-2 mx-auto mt-5 max-w-xl text-sm sm:text-base leading-relaxed text-muted break-words">
-            Dari pendengar solo yang ingin bebas voting, tongkrongan server yang butuh radio 24/7 nonstop, hingga guild besar multi-server. Pilih paket yang paling cocok dengan kebutuhanmu.
+          <p className="anim-in delay-2 mx-auto mt-5 max-w-xl text-base sm:text-lg leading-relaxed text-muted break-words">
+            Dari pendengar solo sampai guild besar. Pilih paketmu.
           </p>
         </div>
       </section>

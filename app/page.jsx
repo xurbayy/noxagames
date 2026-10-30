@@ -41,18 +41,14 @@ export default async function Home() {
               )}
             </h1>
             <div className="anim-in delay-1 accent-bar mt-5 mx-auto lg:mx-0" aria-hidden="true" />
-            <p className="anim-in delay-2 mt-6 text-base md:text-lg leading-relaxed text-muted">
+            <p className="anim-in delay-2 mt-6 text-lg md:text-xl leading-relaxed text-muted">
               {session ? (
                 <>
-                  Akun kamu sudah tertaut. Cek <strong className="text-ink">lagu paling sering</strong>,{' '}
-                  <strong className="text-ink">dengar bareng</strong>, dan <strong className="text-ink">server favoritmu</strong>{' '}
-                  di halaman profil, atau kembali main di Discord dengan .play.
+                  Statistikmu sudah tertaut. Cek <strong className="text-ink">lagu favoritmu</strong> di profil, atau lanjut dengar di Discord.
                 </>
               ) : (
                 <>
-                  <strong className="text-ink">NOXA Sound</strong> memutar musik dari 8 platform,
-                  podcast 15 tema, dan radio lagu populer 24 jam. Semua kontrol lewat tombol
-                  di panel, chat tetap bersih karena bot bersih-bersih sendiri. Gratis.
+                  Musik <strong className="text-ink">8 platform</strong>, podcast 15 tema, radio 24 jam. Cukup ketik <strong className="text-ink">.play</strong>. Gratis.
                 </>
               )}
             </p>
@@ -117,18 +113,18 @@ export default async function Home() {
       {/* ================= FITUR ================= */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
         <Reveal>
-          <SectionHead title="Bukan Sekadar Bot Musik." sub="Dari cari lagu sampai bersih-bersih chat, semua jalan sendiri di server kamu." />
+          <SectionHead title="Bukan Sekadar Bot Musik." sub="Semua jalan sendiri di server kamu." />
         </Reveal>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Reveal delay={60}><FiturCard emoji="musik" title="Musik dari 8 Platform" desc="YouTube, Spotify, Apple Music, TIDAL, dan teman-temannya. Ketik judulnya, bot nyariin 10 lagu teratas, kamu tinggal pilih." /></Reveal>
-          <Reveal delay={120}><FiturCard emoji="NOXASmart" title="NOXA Smart" desc="Otak di balik layar: menyaring cover palsu, mencocokkan lagu antar platform, dan memastikan like nempel ke lagu yang benar." /></Reveal>
-          <Reveal delay={180}><FiturCard emoji="radio" title="Radio 24 Jam" desc="Lagu populer nonstop, tidak ada yang diulang sampai pool-nya habis diputar. Jawaban buat server yang 24 jam ada orangnya." /></Reveal>
-          <Reveal delay={240}><FiturCard emoji="podcast" title="Podcast 15 Tema" desc="Horror, kriminal, bisnis, dan 12 tema lagi. Vlog dan gaming yang menyamar sudah disaring, yang tampil benar-benar obrolan." /></Reveal>
-          <Reveal delay={60}><FiturCard emoji="efek" title="Efek Audio DSP" desc="Bass boost tiga tingkat, nightcore, slowed, 8D, surround, karaoke. Pasang dan lepas dari panel tanpa putus-putus suara." /></Reveal>
-          <Reveal delay={120}><FiturCard emoji="livelirik" title="Lirik Live" desc="Karaoke real-time yang menyala per baris mengikuti lagu. Liriknya diverifikasi dulu, karena salah lirik itu memalukan." /></Reveal>
-          <Reveal delay={180}><FiturCard emoji="userprofile" title="Profil Pendengar" desc="Lagu paling sering kamu dengar, dengar bareng siapa, dan server favoritmu. Kartu analitiknya ada di Discord dan di sini." /></Reveal>
-          <Reveal delay={240}><FiturCard emoji="chat" title="Live Chat di Panel" desc="Semua yang ada di voice bisa kirim pesan lewat tombol Chat, langsung muncul di panel. Debat lagu berikutnya jadi rame." /></Reveal>
+          <Reveal delay={60}><FiturCard emoji="musik" title="Musik dari 8 Platform" desc="Ketik judul lagunya, bot cariin 10 hasil teratas. Tinggal pilih." /></Reveal>
+          <Reveal delay={120}><FiturCard emoji="NOXASmart" title="NOXA Smart" desc="Cover palsu disaring, lagu antar platform dicocokkan otomatis." /></Reveal>
+          <Reveal delay={180}><FiturCard emoji="radio" title="Radio 24 Jam" desc="Lagu populer nonstop 24 jam, tidak ada yang diulang." /></Reveal>
+          <Reveal delay={240}><FiturCard emoji="podcast" title="Podcast 15 Tema" desc="Horror, kriminal, bisnis, dan 12 lagi. Tanpa vlog menyamar." /></Reveal>
+          <Reveal delay={60}><FiturCard emoji="efek" title="Efek Audio DSP" desc="Bass boost, nightcore, 8D, dan kawan-kawannya. Pasang-lepas tanpa putus suara." /></Reveal>
+          <Reveal delay={120}><FiturCard emoji="livelirik" title="Lirik Live" desc="Menyala per baris mengikuti lagu, lirik terverifikasi." /></Reveal>
+          <Reveal delay={180}><FiturCard emoji="userprofile" title="Profil Pendengar" desc="Lagu favorit, dengar bareng siapa, dan server favoritmu." /></Reveal>
+          <Reveal delay={240}><FiturCard emoji="chat" title="Live Chat di Panel" desc="Pesan dari voice langsung muncul di panel." /></Reveal>
         </div>
 
         {/* Provider strip */}
@@ -148,12 +144,12 @@ export default async function Home() {
       <section id="cara-pakai" className="scroll-mt-24 bg-bg">
         <div className="mx-auto max-w-6xl px-5 py-20 md:py-24">
           <Reveal>
-            <SectionHead title="Cukup Ketik Titik." sub="Tanpa dashboard, tanpa belasan slash command. Satu prefix titik untuk semuanya." />
+            <SectionHead title="Cukup Ketik Titik." sub="Satu prefix titik untuk semuanya." />
           </Reveal>
           <div className="grid gap-4 md:grid-cols-3">
-            <Reveal delay={60}><LangkahCard n={1} judul="Invite bot" desc="Tekan Tambahkan ke Discord, selesai. Tidak ada setup, tidak ada konfigurasi yang harus dibaca dulu." /></Reveal>
-            <Reveal delay={140}><LangkahCard n={2} judul="Ketik perintahnya" desc="Masuk voice channel, lalu ketik .play lathi. Mau podcast? .podcast horror. Admin yang mau nyalakan radio tinggal .radio on." /></Reveal>
-            <Reveal delay={220}><LangkahCard n={3} judul="Panelnya kerja" desc="Jeda, skip, volume, efek, like, semuanya jadi tombol di channel. Pesan lain dari bot otomatis terhapus 45 detik, panelnya saja yang tinggal." /></Reveal>
+            <Reveal delay={60}><LangkahCard n={1} judul="Invite bot" desc="Tekan tombol invite, selesai. Tanpa setup." /></Reveal>
+            <Reveal delay={140}><LangkahCard n={2} judul="Ketik perintahnya" desc="Masuk voice, ketik .play lathi. Podcast? .podcast horror." /></Reveal>
+            <Reveal delay={220}><LangkahCard n={3} judul="Panelnya kerja" desc="Semua kontrol jadi tombol di channel, chat bersih otomatis." /></Reveal>
           </div>
         </div>
       </section>
@@ -161,7 +157,7 @@ export default async function Home() {
       {/* ================= PODCAST TEMA ================= */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
         <Reveal>
-          <SectionHead title="Mau Dengar Apa Malam Ini?" sub="Ketik .podcast tanpa isi, daftar temanya muncul. Episode gaming dan vlog yang menyamar sudah disaring lebih dulu." />
+          <SectionHead title="Mau Dengar Apa Malam Ini?" sub="Episode gaming dan vlog yang menyamar sudah disaring." />
         </Reveal>
         <Reveal delay={80}>
           <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 sm:grid-cols-3 md:grid-cols-5">
@@ -183,7 +179,7 @@ export default async function Home() {
       {/* ================= KONTAK ================= */}
       <section id="kontak" className="mx-auto max-w-6xl scroll-mt-24 px-5 py-20 md:py-24">
         <Reveal>
-          <SectionHead title="Butuh Bantuan?" sub="Pertanyaan, laporan bug, dan permintaan fitur semuanya lewat server dukungan resmi." />
+          <SectionHead title="Butuh Bantuan?" sub="Semuanya lewat server dukungan resmi." />
         </Reveal>
         <div className="grid gap-4 md:grid-cols-3">
           <Reveal delay={60}>
@@ -191,8 +187,7 @@ export default async function Home() {
               <Emoji name="callme" size={22} />
               <h3 className="mt-3 font-display text-base font-bold">Server Dukungan</h3>
               <p className="mt-1.5 flex-1 text-sm leading-relaxed text-muted">
-                Tempat admin dan member lain saling bantu. Buka tiket di channel bantuan
-                kalau ada yang macet.
+                Buka tiket, admin dan member lain siap bantu.
               </p>
               <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
                 Gabung Server
@@ -259,9 +254,8 @@ export default async function Home() {
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px hairline" />
             <Emoji name="musik" size={44} className="mx-auto" />
             <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">Percaya Sama Telinga Sendiri.</h2>
-            <p className="mx-auto mt-3 max-w-lg text-[15px] md:text-base leading-relaxed text-muted">
-              Invite botnya, mainkan satu lagu, lalu putuskan. Kalau ada yang bikin bingung,
-              server dukungan dibuka setiap hari.
+            <p className="mx-auto mt-3 max-w-lg text-base md:text-lg leading-relaxed text-muted">
+              Mainkan satu lagu, lalu putuskan sendiri.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">Tambahkan ke Discord</a>
@@ -311,7 +305,7 @@ function StatAngka({ label, angka, emoji }) {
       </span>
       <div className="min-w-0 flex-1">
         <div className="font-display text-xl sm:text-2xl font-bold leading-tight tabular-nums break-words">{angka ?? 0}</div>
-        <div className="text-[11px] sm:text-xs text-faint leading-tight mt-0.5 break-words">{label}</div>
+        <div className="text-xs sm:text-sm text-faint leading-tight mt-0.5 break-words">{label}</div>
       </div>
     </div>
   );
@@ -324,7 +318,7 @@ function SectionHead({ title, sub }) {
     <div className="mb-8 sm:mb-10 text-center">
       <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-tight md:text-4xl break-words">{title}</h2>
       <div className="accent-bar mx-auto mt-4" aria-hidden="true" />
-      {sub ? <p className="mx-auto mt-4 max-w-2xl text-[14px] sm:text-[15px] md:text-base leading-relaxed text-muted break-words">{sub}</p> : null}
+      {sub ? <p className="mx-auto mt-4 max-w-2xl text-[15px] sm:text-base md:text-lg leading-relaxed text-muted break-words">{sub}</p> : null}
     </div>
   );
 }
@@ -338,7 +332,7 @@ function FiturCard({ emoji, title, desc }) {
         </span>
         <h3 className="font-display text-sm sm:text-base font-bold leading-snug break-words">{title}</h3>
       </div>
-      <p className="mt-3 flex-1 text-xs sm:text-sm leading-relaxed text-muted break-words">{desc}</p>
+      <p className="mt-3 flex-1 text-sm md:text-[15px] leading-relaxed text-muted break-words">{desc}</p>
     </div>
   );
 }

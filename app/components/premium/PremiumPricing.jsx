@@ -253,7 +253,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                   <div className="text-[11px] font-bold uppercase tracking-wider text-faint mb-3">
                     Fitur Unggulan
                   </div>
-                  <ul className="space-y-2.5 text-xs sm:text-sm flex-1">
+                  <ul className="space-y-2.5 text-sm md:text-[15px] flex-1">
                     {plan.fiturRingkas.map((f, i) => (
                       <li key={i} className="flex items-start gap-2.5 leading-snug">
                         <span className="mt-0.5 shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#3B0004] border border-crimson text-neon">
