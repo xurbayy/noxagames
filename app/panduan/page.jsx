@@ -12,17 +12,13 @@ export const metadata = pageMeta({
 
 export default function PanduanPage() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10">
+    <div className="mx-auto max-w-5xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)]">
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
             <Emoji name="panduan" size={26} />
             <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Panduan Perintah</h1>
           </div>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-            Semua kontrol berjalan lewat prefix titik di channel teks mana pun.
-            Satu-satunya slash command adalah <span className="cmd">/help</span> untuk membuka panduan langsung di Discord.
-          </p>
         </div>
         <BackButton href="/" className="hidden sm:inline-flex" />
       </div>

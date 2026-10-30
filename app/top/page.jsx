@@ -4,7 +4,7 @@ import BackButton from '../components/BackButton';
 import TopTabsView from '../components/top/TopTabsView';
 import { getSession } from '../lib/session';
 import { getSnapshot, botAlive, ageLabel, topSongs, topServers, topListeners } from '../lib/snapshot';
-import { pageMeta } from '../lib/site';
+import { pageMeta, SUPPORT_INVITE } from '../lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,23 +18,27 @@ export default async function TopPage() {
   const session = await getSession().catch(() => null);
   const snap = await getSnapshot();
   const lagu = topSongs(snap?.data).slice(0, 10);
-  // Server yang bisa dikunjungi (punya inviteUrl atau vanity)
-  const server = topServers(snap?.data).filter((g) => g.inviteUrl).slice(0, 10);
-  const listener = topListeners(snap?.data).slice(0, 10);
+  // Hanya tampilkan server yang memiliki link invite (bisa dikunjungi).
+  // Server tanpa invite link (seperti Aurum Continental) tidak ditampilkan.
+  const server = topServers(snap?.data)
+    .filter((g) => Boolean(g && g.inviteUrl))
+    .slice(0, 10);
+  // Bot kadang masih menyertakan pendengar dengan 0 lagu selesai / 0 durasi
+  // (baris statistik kosong). Entri seperti itu tidak layak masuk peringkat.
+  const listener = topListeners(snap?.data)
+    .filter((u) => Number(u.plays) > 0 && Number(u.duration) > 0)
+    .slice(0, 10);
   const hidup = botAlive(snap);
   const adaData = lagu.length > 0 || server.length > 0 || listener.length > 0;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
+    <div className="mx-auto max-w-4xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)]">
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
             <Emoji name="number1" size={26} />
             <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Top NOXA Sound</h1>
           </div>
-          <p className="mt-2 text-sm text-muted">
-            Peringkat dari seluruh aktivitas dengar di semua server Discord. Data dihitung dari durasi nyata yang didengarkan, bukan sekali request.
-          </p>
         </div>
         <BackButton href="/" className="hidden sm:inline-flex" />
       </div>
@@ -70,9 +74,17 @@ function MenungguState({ hidup }) {
       </span>
       <h2 className="font-display text-lg font-bold">Statistik belum tersedia</h2>
       <p className="max-w-md text-sm leading-relaxed text-muted">
-        {hidup
-          ? 'Bot sudah terhubung, tapi belum ada aktivitas dengar yang tercatat. Mainkan lagu pertama di server kamu dan peringkat ini akan terisi.'
-          : 'Bot belum mengirim data ke web. Peringkat akan muncul otomatis begitu bot online dan ada aktivitas dengar.'}
+        {hidup ? (
+          'Belum ada aktivitas dengar yang tercatat. Mainkan lagu pertama di server kamu dan peringkat ini akan terisi.'
+        ) : (
+          <>
+            Bot belum mengirim data ke web. Kalau bot tidak merespons di Discord, buka{' '}
+            <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="font-semibold text-neon hover:underline">
+              server dukungan
+            </a>{' '}
+            dulu.
+          </>
+        )}
       </p>
     </div>
   );

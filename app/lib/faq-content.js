@@ -3,7 +3,7 @@
 export const faqList = [
   {
     q: 'Bayar tidak?',
-    a: 'Tidak. Semua fitur musik, podcast, dan radio bebas dipakai. Kalau suatu saat ada premium, itu cuma kenyamanan tambahan, bukan kunci fitur dasar.',
+    a: 'Tidak. Semua fitur musik, podcast, dan radio bebas dipakai. NOXA Pass hanya kenyamanan tambahan - tidak mengunci fitur dasar.',
   },
   {
     q: 'Gimana cara mulainya?',

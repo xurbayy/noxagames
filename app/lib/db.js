@@ -73,5 +73,39 @@ async function ensureSchema() {
       PRIMARY KEY (bucket, window_start)
     );
     CREATE INDEX IF NOT EXISTS idx_rate_limit_window ON rate_limit(window_start);
+
+    -- Transaksi pembayaran QiosPay (QRIS / Virtual Account)
+    CREATE TABLE IF NOT EXISTS transactions (
+      id                 TEXT PRIMARY KEY,
+      discord_id         TEXT NOT NULL,
+      username           TEXT,
+      guild_id           TEXT,
+      plan_id            TEXT NOT NULL,
+      duration_months    INTEGER NOT NULL,
+      amount             INTEGER NOT NULL,
+      status             TEXT DEFAULT 'pending',
+      qiospay_invoice_id TEXT,
+      qris_url           TEXT,
+      qris_string        TEXT,
+      created_at         INTEGER NOT NULL,
+      paid_at            INTEGER
+    );
+    CREATE INDEX IF NOT EXISTS idx_trx_user ON transactions(discord_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_trx_status ON transactions(status);
+
+    -- Langganan premium aktif
+    CREATE TABLE IF NOT EXISTS premium_subscriptions (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      discord_id  TEXT NOT NULL,
+      guild_id    TEXT,
+      plan_id     TEXT NOT NULL,
+      tier_name   TEXT NOT NULL,
+      status      TEXT DEFAULT 'active',
+      starts_at   INTEGER NOT NULL,
+      expires_at  INTEGER NOT NULL,
+      created_at  INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_sub_user ON premium_subscriptions(discord_id, status);
+    CREATE INDEX IF NOT EXISTS idx_sub_guild ON premium_subscriptions(guild_id, status);
   `);
 }

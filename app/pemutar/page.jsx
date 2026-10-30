@@ -12,18 +12,13 @@ export const metadata = pageMeta({
 
 export default function PemutarPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)]">
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
             <Emoji name="suara" size={26} />
             <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Tampilan Pemutar</h1>
           </div>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-            Empat keadaan panel yang bot kirim ke channel Discord: musik, radio 24/7,
-            podcast, dan standby. Tombolnya lengkap dan bisa diklik di sini buat
-            mencoba. Kalau mau mengontrol yang asli, lakukan dari Discord server kamu.
-          </p>
         </div>
         <BackButton href="/" className="hidden sm:inline-flex" />
       </div>

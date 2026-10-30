@@ -1,55 +1,73 @@
 import Link from 'next/link';
 import Emoji from '../components/Emoji';
+import BackButton from '../components/BackButton';
+import PremiumPricing from '../components/premium/PremiumPricing';
+import { getSession } from '../lib/session';
+import { getDb, schemaReady } from '../lib/db';
 import { pageMeta, SUPPORT_INVITE } from '../lib/site';
 
 export const metadata = pageMeta({
-  title: 'NOXA Sound Premium',
-  description: 'Fitur premium NOXA Sound sedang disiapkan. Ikuti kabarnya di server dukungan resmi.',
+  title: 'Paket Langganan Premium',
+  description:
+    'Pilih paket NOXA Premium, Premium+, atau Ultimate. Dapatkan bypass vote-skip, mode radio 24/7, audio Ultra HD 320kbps, antrean tanpa batas, dan badge eksklusif.',
   path: '/premium',
 });
 
-export default function PremiumPage() {
-  return (
-    <div className="mx-auto max-w-3xl px-4 py-16">
-      <div className="card relative overflow-hidden px-6 py-12 text-center">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px hairline" />
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-crimson/12 border border-crimson/25">
-          <Emoji name="party" size={30} />
-        </span>
-        <h1 className="mt-5 font-display text-3xl font-bold tracking-tight">
-          NOXA Sound <span className="neon-text">Premium</span>
-        </h1>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
-          Masih di studio. Fitur premium sedang disiapkan supaya pas rilis semuanya
-          sudah teruji dan tidak mengganggu fitur gratis yang sekarang.
-        </p>
-        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-linebright bg-surface2 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-muted">
-          <span className="h-1.5 w-1.5 rounded-full bg-warn live-dot" />
-          Segera Hadir
-        </div>
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">
-            Ikuti Kabarnya
-          </a>
-          <Link href="/" className="btn-ghost">Kembali ke Beranda</Link>
-        </div>
-      </div>
+export default async function PremiumPage() {
+  const session = await getSession().catch(() => null);
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <RencanaCard emoji="sukapenuh" judul="Kenapa ditunda" desc="Semua fitur inti sekarang gratis dan harus tetap begitu. Premium nanti cuma kenyamanan tambahan, bukan gembok di fitur dasar." />
-        <RencanaCard emoji="jam" judul="Kapan rilis" desc="Belum ada tanggal. Rilis menunggu statistik web dan panel admin benar-benar stabil dipakai sehari-hari. Pengumumannya di server dukungan." />
-        <RencanaCard emoji="warning" judul="Prinsipnya" desc="Tidak ada pay-to-win. Audio tetap jernih untuk semua orang, premium hanya menyenangkan, bukan membuka pintu yang dikunci." />
-      </div>
-    </div>
-  );
-}
+  let activeSubscription = null;
+  if (session?.discordId) {
+    try {
+      await schemaReady();
+      const db = getDb();
+      const now = Date.now();
+      const subRes = await db.execute({
+        sql: "SELECT plan_id, tier_name, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+        args: [session.discordId, now],
+      });
+      if (subRes.rows.length > 0) {
+        activeSubscription = subRes.rows[0];
+      }
+    } catch {}
+  }
 
-function RencanaCard({ emoji, judul, desc }) {
   return (
-    <div className="card card-hover p-5">
-      <Emoji name={emoji} size={22} />
-      <h2 className="mt-3 font-display text-sm font-bold">{judul}</h2>
-      <p className="mt-1.5 text-xs leading-relaxed text-muted">{desc}</p>
+    <div className="min-h-[calc(100vh-6rem)] pb-24 pt-28">
+      {/* Header Hero */}
+      <section className="relative overflow-hidden pb-12 sm:pb-16 text-center px-4 sm:px-5">
+        <div className="bg-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
+        <div className="relative mx-auto max-w-4xl">
+          <div className="anim-in inline-flex items-center gap-2 rounded-full border border-purple-500 bg-[#240B3B] px-3.5 py-1.5 text-xs font-bold tracking-wide text-purple-200 shadow-[var(--shadow-hair)]">
+            <img
+              src="/badges/noxa-premium-ultimate.png"
+              alt=""
+              width={18}
+              height={18}
+              className="h-4.5 w-4.5 object-contain filter drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]"
+              draggable={false}
+            />
+            <span>Pilihan Paket NOXA Sound</span>
+          </div>
+
+          <h1 className="anim-in delay-1 mt-5 font-display text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-ink break-words">
+            Tingkatkan Pengalaman Musikmu.
+            <br />
+            <span className="neon-text">3 Pilihan Paket Worth-It.</span>
+          </h1>
+
+          <div className="anim-in delay-2 accent-bar mx-auto mt-5" aria-hidden="true" />
+
+          <p className="anim-in delay-2 mx-auto mt-5 max-w-xl text-sm sm:text-base leading-relaxed text-muted break-words">
+            Dari pendengar solo yang ingin bebas voting, tongkrongan server yang butuh radio 24/7 nonstop, hingga guild besar multi-server. Pilih paket yang paling cocok dengan kebutuhanmu.
+          </p>
+        </div>
+      </section>
+
+      {/* Konten Utama Pricing & Tiers */}
+      <main className="mx-auto max-w-6xl px-4 sm:px-5">
+        <PremiumPricing session={session} activeSubscription={activeSubscription} />
+      </main>
     </div>
   );
 }

@@ -74,18 +74,19 @@ export async function GET(request) {
       ? `https://cdn.discordapp.com/avatars/${me.id}/${me.avatar}.png?size=64`
       : `https://cdn.discordapp.com/embed/avatars/0.png`;
 
+    const isIdAdmin = isAdminDiscordId(me.id);
+    if (isIdAdmin) {
+      await createAdminSession(me.id, me.username, avatarUrl);
+    }
+    await createSession({ discordId: me.id, username: me.username, avatar: avatarUrl });
+
     if (adminMode) {
-      if (!isAdminDiscordId(me.id)) {
-        // Non-admin nyasar ke login admin: OAuth sah, jadi tetap buat session
-        // member supaya bisa lanjut ke profil tanpa login ulang.
-        await createSession({ discordId: me.id, username: me.username, avatar: avatarUrl });
+      if (!isIdAdmin) {
         return NextResponse.redirect(new URL('/no-access', ORIGIN));
       }
-      await createAdminSession(me.id, me.username, avatarUrl);
       return NextResponse.redirect(new URL('/admin', ORIGIN));
     }
 
-    await createSession({ discordId: me.id, username: me.username, avatar: avatarUrl });
     return NextResponse.redirect(new URL(returnTo, ORIGIN));
   } catch (e) {
     const pesan = (e && (e.message || String(e))) || 'tak_diketahui';

@@ -30,13 +30,13 @@ export function DiscordButton({ emoji, label, style = 'secondary', disabled = fa
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       title={title || label}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-md font-medium text-white transition-colors select-none ${
-        compact ? 'h-8 px-2.5 text-[12px]' : 'h-10 px-3 text-[13px]'
+      className={`inline-flex items-center justify-center gap-1 sm:gap-1.5 rounded-md font-medium text-white transition-colors select-none ${
+        compact ? 'h-7 sm:h-8 px-2 sm:px-2.5 text-[11px] sm:text-[12px]' : 'h-8 sm:h-10 px-2.5 sm:px-3 text-[12px] sm:text-[13px]'
       } ${STYLE_CLASS[style] || STYLE_CLASS.secondary} ${
-        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+        disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer active:scale-95'
       }`}
     >
-      {emoji ? <Emoji name={emoji} size={compact ? 14 : 16} /> : null}
+      {emoji ? <Emoji name={emoji} size={compact ? 13 : 16} /> : null}
       {label ? <span className="whitespace-nowrap">{label}</span> : null}
     </button>
   );
@@ -47,7 +47,7 @@ export function DiscordButton({ emoji, label, style = 'secondary', disabled = fa
  */
 export function ActionRow({ children, compact = false }) {
   return (
-    <div className={`flex flex-wrap items-center gap-2 rounded-lg border border-[#26272B] bg-[#2B2D31]/80 ${compact ? 'px-2 py-1.5' : 'px-2.5 py-2'}`}>
+    <div className={`flex flex-wrap items-center gap-1 sm:gap-2 rounded-lg border border-[#26272B] bg-[#2B2D31]/80 ${compact ? 'px-1.5 py-1 sm:px-2 sm:py-1.5' : 'px-2 py-1.5 sm:px-2.5 sm:py-2'}`}>
       {children}
     </div>
   );

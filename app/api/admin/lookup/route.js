@@ -1,4 +1,4 @@
-import { getAdminSession } from '../../../lib/session';
+import { getAdminActor } from '../../../lib/session';
 import { json } from '../../../lib/api-helpers';
 import { getDb, schemaReady } from '../../../lib/db';
 import { dbRateLimit } from '../../../lib/rate-limit';
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 // POST /api/admin/lookup {discordId} - antrekan pengambilan profil user.
 // GET  /api/admin/lookup?discordId=... - ambil hasil profil terbaru user itu.
 export async function POST(request) {
-  const admin = await getAdminSession();
+  const admin = await getAdminActor();
   if (!admin) return json({ ok: false, error: 'bukan admin' }, 403);
 
   let body;
@@ -21,7 +21,7 @@ export async function POST(request) {
   try {
     await schemaReady();
     const db = getDb();
-    const lolos = await dbRateLimit(db, `lookup:${admin.adminDiscordId}`, 20, 60_000);
+    const lolos = await dbRateLimit(db, `lookup:${admin.id}`, 20, 60_000);
     if (!lolos) return json({ ok: false, error: 'Terlalu sering. Tunggu sebentar.' }, { status: 429 });
     await db.execute({
       sql: "INSERT INTO data_requests (discord_id, status, created_at) VALUES (?, 'pending', ?)",
@@ -34,7 +34,7 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  const admin = await getAdminSession();
+  const admin = await getAdminActor();
   if (!admin) return json({ error: 'bukan admin' }, 403);
 
   const url = new URL(request.url);

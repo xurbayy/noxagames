@@ -14,34 +14,57 @@
   --color-surface3: #1A070C;    /* kartu terangkat / hover */
   --color-darkcrimson: #3B0004; /* bayangan merah gelap */
   --color-maroon: #5C0008;      /* gradasi dekoratif */
-  --color-crimson: #B80012;     /* aksen utama */
-  --color-neon: #FF101F;        /* cahaya merah terang */
-  --color-glow: #FF001A;        /* efek glow */
-  --color-ink: #F7F1F1;         /* teks utama */
-  --color-muted: #A89899;       /* teks sekunder */
-  --color-faint: #6E5C5E;       /* teks tersier */
-  --color-line: #291318;        /* border kartu */
-  --color-linebright: #45222A;  /* border hover */
+  --color-crimson: #B11226;     /* aksen utama (merah anggur, bukan merah Netflix) */
+  --color-neon: #FF4B2B;        /* aksen terang: vermilion hangat */
+  --color-amber: #F0A63C;       /* aksen kedua, senada amber NEXO */
+  --color-glow: #FF3B1F;        /* efek glow */
+  --color-ink: #F7F3F1;         /* teks utama */
+  --color-muted: #A89F9C;       /* teks sekunder (netral, tanpa cast merah) */
+  --color-faint: #726868;       /* teks tersier */
+  --color-line: #2A2022;        /* border kartu */
+  --color-linebright: #453032;  /* border hover */
   --color-ok: #58C472;          /* status hidup */
   --color-warn: #C87F0A;        /* status menunggu */
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-space), var(--font-inter), sans-serif;
+
+  /* Bayangan disamakan bahasa visualnya dengan web NEXO: tipis, netral, tidak
+     berwarna. Di tema gelap bayangan berfungsi sebagai "bayangan jatuh" halus,
+     bukan glow - jadi kartu tetap terasa mengambang tanpa bikin mata sakit. */
+  --shadow-hair: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.38);
+  --shadow-lift: 0 8px 24px -10px rgba(0, 0, 0, 0.7);
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  /* Aura studio: semburat merah sangat tipis di sudut atas */
-  background-image:
-    radial-gradient(900px 420px at 85% -10%, rgba(184, 0, 18, 0.16), transparent 65%),
-    radial-gradient(700px 380px at 5% 0%, rgba(92, 0, 8, 0.22), transparent 60%);
+  overflow-x: hidden;
+  width: 100%;
+  /* Aura studio: satu semburat merah tipis di atas, sisanya hitam rata.
+     Dikurangi dari versi sebelumnya supaya latar tidak terlihat "berasap" dan
+     pola hexagon di tiap seksi tetap jadi aksen utama (pola NEXO: latar bersih). */
+  background-image: radial-gradient(900px 420px at 50% -12%, rgba(177, 18, 38, 0.1), transparent 70%);
   background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Fokus keyboard jelas dan rapi, sama seperti NEXO */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-neon);
+  outline-offset: 3px;
+  border-radius: 8px;
 }
 
 ::selection {
@@ -49,15 +72,46 @@ body {
   color: #fff;
 }
 
-/* Scrollbar gelap merah */
+/* Scrollbar tipis, menyatu dengan latar (gaya NEXO) */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: #080303; }
 ::-webkit-scrollbar-thumb {
-  background: #3B0004;
+  background: #2E1216;
   border-radius: 8px;
-  border: 2px solid #080303;
 }
-::-webkit-scrollbar-thumb:hover { background: #5C0008; }
+::-webkit-scrollbar-thumb:hover { background: #4A1D23; }
+
+/* ── BACKDROP SARANG LEBAH (hexagon) ──
+   Padanan `.bg-grid` milik NEXO, tapi bentuknya hexagon supaya tetap nyambung
+   dengan logo NOXA. Dipasang sebagai lapisan dekoratif (div absolute), warnanya
+   merah sangat tipis dan dipudarkan ke tepi lewat mask - bukan blok yang ramai. */
+.bg-grid {
+  background-image: url('/hex-grid.svg');
+  background-size: 72px 41.57px;
+  background-repeat: repeat;
+  /* Dibuat lebih samar + sedikit blur supaya jadi tekstur latar, bukan garis
+     yang bersaing dengan teks (permintaan: paragraf tetap enak dibaca). */
+  opacity: 0.08;
+  filter: blur(1.5px);
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 45%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 45%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ── BACKDROP HEXAGON PADAT (varian beranda) ──
+   Bedanya dengan `.bg-grid`: di sini hexagon DIISI warna, bukan digaris tepi.
+   Jadi latar tetap terasa berpola tanpa "garis-garis", dan teks tetap enak
+   dibaca karena opacity rendah + blur lembut. */
+.bg-hex {
+  background-image: url('/hex-tiles.svg');
+  background-size: 96px 55.42px;
+  background-repeat: repeat;
+  opacity: 0.14;
+  filter: blur(2px);
+  mask-image: radial-gradient(ellipse 95% 80% at 50% 0%, #000 35%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 80% at 50% 0%, #000 35%, transparent 100%);
+  pointer-events: none;
+}
 
 /* ── SCROLL PROGRESS (garis merah atas ala NEXO) ── */
 #scroll-bar {
@@ -66,7 +120,7 @@ body {
   left: 0;
   height: 3px;
   z-index: 9999;
-  background: linear-gradient(90deg, var(--color-crimson), var(--color-neon));
+  background: linear-gradient(90deg, var(--color-crimson), var(--color-amber));
   width: 0;
   border-radius: 0 2px 2px 0;
   transition: width 0.08s linear;
@@ -99,21 +153,26 @@ body {
 .delay-4 { animation-delay: 0.38s; }
 
 @layer components {
-  /* Kartu dasar: flat, border tipis, sudut lembut */
+  /* Kartu dasar: border tipis + bayangan tipis netral (pola NEXO) */
   .card {
     background-color: var(--color-surface2);
     border: 1px solid var(--color-line);
     border-radius: 1rem;
+    box-shadow: var(--shadow-hair);
   }
   .card-hover {
-    transition: border-color 0.18s ease, background-color 0.18s ease;
+    transition: border-color 0.18s ease, background-color 0.18s ease,
+      transform 0.18s ease, box-shadow 0.18s ease;
   }
   .card-hover:hover {
     border-color: var(--color-linebright);
     background-color: var(--color-surface3);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
   }
 
-  /* Tombol primary: solid merah, hanya tombol yang boleh berbayang */
+  /* Tombol: bentuk pill seperti NEXO, tanpa glow berwarna. Kedalaman cukup
+     dari satu bayangan netral tipis + gerak 1px saat hover. */
   .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -121,20 +180,22 @@ body {
     gap: 0.5rem;
     background-color: var(--color-crimson);
     color: #fff;
-    font-weight: 600;
-    border-radius: 0.75rem;
-    padding: 0.7rem 1.25rem;
-    box-shadow: 0 4px 18px rgba(184, 0, 18, 0.35);
+    font-weight: 700;
+    white-space: nowrap;
+    border-radius: 9999px;
+    padding: 0.7rem 1.5rem;
+    box-shadow: var(--shadow-hair);
     transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
   }
   .btn-primary:hover {
     background-color: var(--color-neon);
-    box-shadow: 0 6px 24px rgba(255, 16, 31, 0.45);
+    box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
   }
   .btn-primary:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(184, 0, 18, 0.3);
+    transform: translateY(0);
+    box-shadow: var(--shadow-hair);
   }
 
   .btn-ghost {
@@ -142,29 +203,37 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background-color: transparent;
+    background-color: var(--color-surface2);
     color: var(--color-ink);
-    font-weight: 600;
+    font-weight: 700;
+    white-space: nowrap;
     border: 1px solid var(--color-linebright);
-    border-radius: 0.75rem;
-    padding: 0.7rem 1.25rem;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    border-radius: 9999px;
+    padding: 0.7rem 1.5rem;
+    box-shadow: var(--shadow-hair);
+    transition: border-color 0.15s ease, background-color 0.15s ease,
+      transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
   }
   .btn-ghost:hover {
     border-color: var(--color-crimson);
-    background-color: rgba(184, 0, 18, 0.08);
+    background-color: var(--color-surface3);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-soft);
   }
 
-  /* Perintah prefix: chip monospace */
+  /* Perintah prefix: chip monospace yang fleksibel dan tidak merusak layout mobile */
   .cmd {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.85em;
-    background-color: rgba(184, 0, 18, 0.12);
+    background-color: rgba(177, 18, 38, 0.14);
     border: 1px solid var(--color-linebright);
-    color: #FF8A93;
+    color: #FFBE8C;
     border-radius: 0.375rem;
     padding: 0.1rem 0.4rem;
-    white-space: nowrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    display: inline;
   }
 
   /* Badge status solid flat (aturan yang sama dengan web NEXO):
@@ -184,15 +253,19 @@ body {
   .badge-danger { background-color: var(--color-crimson); color: #fff; }
   .badge-neutral { background-color: var(--color-surface3); color: var(--color-muted); border: 1px solid var(--color-line); }
 
-  /* Teks display merah tegas tanpa bayangan */
+  /* Teks display: gradasi hangat merah -> amber, tanpa bayangan.
+     Ini yang membedakan NOXA dari nuansa merah-tunggal ala Netflix. */
   .neon-text {
-    color: var(--color-neon);
+    background-image: linear-gradient(96deg, var(--color-neon), var(--color-amber));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   /* Garis merah tipis dekoratif */
   .hairline {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(184, 0, 18, 0.55), transparent);
+    background: linear-gradient(90deg, transparent, rgba(177, 18, 38, 0.55), transparent);
   }
 
   /* Accent underline ala NEXO: bar di bawah judul seksi */
@@ -200,7 +273,7 @@ body {
     width: 180px;
     height: 7px;
     border-radius: 9999px;
-    background: linear-gradient(90deg, var(--color-crimson), var(--color-neon));
+    background: linear-gradient(90deg, var(--color-crimson), var(--color-amber));
   }
 }
 

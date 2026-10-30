@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getAdminSession } from '../lib/session';
+import { getAdminActor } from '../lib/session';
 import AdminShell from '../components/admin/AdminShell';
 import { pageMeta } from '../lib/site';
 
@@ -11,7 +11,8 @@ export const metadata = {
 };
 
 export default async function AdminPage() {
-  const admin = await getAdminSession();
+  // Login Discord biasa sudah cukup kalau ID-nya terdaftar sebagai admin.
+  const admin = await getAdminActor();
   if (!admin) redirect('/login?admin=1');
-  return <AdminShell admin={{ username: admin.adminUsername, avatar: admin.adminAvatar }} />;
+  return <AdminShell />;
 }

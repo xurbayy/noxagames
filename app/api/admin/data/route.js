@@ -1,4 +1,4 @@
-import { getAdminSession } from '../../../lib/session';
+import { getAdminActor } from '../../../lib/session';
 import { json } from '../../../lib/api-helpers';
 import { getSnapshot, ageLabel, botAlive, totals, topSongs, topServers, topListeners, livePlayers, liveSummary } from '../../../lib/snapshot';
 
@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 // GET /api/admin/data - snapshot + ringkasan untuk panel admin (polling client).
 export async function GET() {
-  const admin = await getAdminSession();
+  const admin = await getAdminActor();
   if (!admin) return json({ error: 'bukan admin' }, 403);
 
   const snap = await getSnapshot();

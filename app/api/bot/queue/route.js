@@ -28,7 +28,7 @@ export async function GET(request) {
   let candidates = [];
   try {
     const res = await db.execute(
-      "SELECT id, discord_id FROM data_requests WHERE status = 'pending' ORDER BY created_at ASC LIMIT 20"
+      "SELECT id, discord_id, data FROM data_requests WHERE status = 'pending' ORDER BY created_at ASC LIMIT 20"
     );
     candidates = res.rows;
   } catch {}
@@ -47,6 +47,13 @@ export async function GET(request) {
   return json({
     nextPollMs: claimed.length ? 1000 : undefined, // profil ditunggu user, percepat
     commands: [],
-    dataRequests: claimed.map((r) => ({ id: Number(r.id), discordId: String(r.discord_id) })),
+    dataRequests: claimed.map((r) => {
+      let action = 'profile';
+      try {
+        const parsed = JSON.parse(r.data);
+        if (parsed?.action) action = parsed.action;
+      } catch {}
+      return { id: Number(r.id), discordId: String(r.discord_id), action };
+    }),
   });
 }

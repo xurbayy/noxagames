@@ -84,9 +84,34 @@ export async function getAdminSession() {
   }
 }
 
+const DEFAULT_ADMIN_IDS = ['836383639439671366'];
+
 export function isAdminDiscordId(discordId) {
-  const ids = (process.env.ADMIN_DISCORD_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
-  return ids.includes(String(discordId));
+  if (!discordId) return false;
+  const envIds = (process.env.ADMIN_DISCORD_IDS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const allowed = new Set([...DEFAULT_ADMIN_IDS, ...envIds]);
+  return allowed.has(String(discordId));
+}
+
+/**
+ * Identitas admin untuk panel & API: cukup login Discord biasa selama ID-nya
+ * ada di ADMIN_DISCORD_IDS, tanpa sesi admin kedua. Sesi admin khusus tetap
+ * diterima supaya /login?admin=1 masih bisa dipakai bila perlu.
+ */
+export async function getAdminActor() {
+  const admin = await getAdminSession().catch(() => null);
+  if (admin) {
+    return {
+      id: String(admin.adminDiscordId),
+      username: admin.adminUsername,
+      avatar: admin.adminAvatar || null,
+    };
+  }
+  const member = await getSession().catch(() => null);
+  if (member && isAdminDiscordId(member.discordId)) {
+    return { id: String(member.discordId), username: member.username, avatar: member.avatar || null };
+  }
+  return null;
 }
 
 export async function destroySession() {

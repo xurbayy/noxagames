@@ -117,7 +117,7 @@ export default function PlayerShowcase({ singleMode = null, botAvatar = null, co
               key={key}
               type="button"
               onClick={() => setTab(key)}
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors cursor-pointer ${
+              className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
                 tab === key
                   ? 'border-crimson bg-crimson/15 text-ink'
                   : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'

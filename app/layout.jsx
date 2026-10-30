@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import ScrollProgress from './components/ScrollProgress';
-import { getSession } from './lib/session';
+import { getSession, isAdminDiscordId } from './lib/session';
 import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, SITE_URL, absoluteUrl } from './lib/site';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
@@ -31,6 +31,22 @@ export const metadata = {
   },
   twitter: { card: 'summary_large_image', title: `${SITE_NAME} | ${SITE_TAGLINE}`, description: SITE_DESCRIPTION },
   robots: { index: true, follow: true },
+  icons: {
+    // Satu set ikon dari logo resmi NOXA (pola NEXO): tab browser, Google,
+    // dan preview link Discord/WhatsApp semuanya dapat ukuran yang pas.
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-48x48.png', type: 'image/png', sizes: '48x48' },
+      { url: '/favicon-96x96.png', type: 'image/png', sizes: '96x96' },
+      { url: '/android-chrome-192x192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/logo.png', type: 'image/png', sizes: '512x512' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    other: [{ rel: 'manifest', url: '/site.webmanifest' }],
+  },
 };
 
 export const viewport = {
@@ -56,14 +72,14 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="id" className={`${inter.variable} ${space.variable}`}>
-      <body className="min-h-screen antialiased">
+      <body className="flex min-h-screen flex-col antialiased">
         <ScrollProgress />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Navbar session={session} />
-        <main>{children}</main>
+        <Navbar session={session} isAdmin={Boolean(session && isAdminDiscordId(session.discordId))} />
+        <main className="flex-1">{children}</main>
         <Footer />
         <CookieConsent />
       </body>

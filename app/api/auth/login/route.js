@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { randomBytes } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { canonicalOrigin } from '../../../lib/site';
-import { createSession, createAdminSession } from '../../../lib/session';
+import { createSession, createAdminSession, getSession, isAdminDiscordId } from '../../../lib/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +20,13 @@ export async function GET(request) {
   const adminMode = raw === '@admin';
   const returnTo = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/me';
 
+  // Jika sudah login member dan ID terdaftar admin, langsung aktifkan sesi admin tanpa OAuth ulang.
+  const member = await getSession().catch(() => null);
+  if (member && isAdminDiscordId(member.discordId)) {
+    await createAdminSession(member.discordId, member.username, member.avatar);
+    return NextResponse.redirect(new URL(adminMode ? '/admin' : returnTo, ORIGIN));
+  }
+
   const clientId = process.env.DISCORD_CLIENT_ID;
   const clientSecret = process.env.DISCORD_CLIENT_SECRET;
 
@@ -34,11 +41,11 @@ const bolehDevLogin =
     : false;
 
   if (bolehDevLogin) {
+    await createAdminSession('836383639439671366', 'xurbayy', null);
+    await createSession({ discordId: '836383639439671366', username: 'xurbayy', avatar: null });
     if (adminMode) {
-      await createAdminSession('0', 'dev-admin', null);
       return NextResponse.redirect(new URL('/admin', ORIGIN));
     }
-    await createSession({ discordId: '0', username: 'dev-tester', avatar: null });
     return NextResponse.redirect(new URL(returnTo, ORIGIN));
   }
 
