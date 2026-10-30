@@ -20,7 +20,7 @@ export async function POST(request) {
     return json({ ok: false, error: 'Format data tidak valid.' }, 400);
   }
 
-  const { planId, durationMonths = 1, guildId = null } = body || {};
+  let { planId, durationMonths = 1, guildId = null } = body || {};
 
   const plan = PREMIUM_PLANS.find((p) => p.id === planId);
   if (!plan) {
@@ -37,7 +37,7 @@ export async function POST(request) {
   // - Paket Ultimate (server) BERBEDA cakupan, jadi BISA ditumpuk dengan
   //   paket individu yang aktif.
   const activeSubRes = await db.execute({
-    sql: "SELECT plan_id, tier_name, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
+    sql: "SELECT plan_id, tier_name, guild_id, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
     args: [String(session.discordId), now],
   });
   const aktifIndividu = activeSubRes.rows.find((r) => r.plan_id !== 'premium-ultimate');
@@ -50,14 +50,28 @@ export async function POST(request) {
     }, 400);
   }
   if (plan.id === 'premium-ultimate' && aktifUltimate) {
-    return json({
-      ok: false,
-      error: `Kamu sudah punya NOXA Pass Ultimate aktif. Gunakan tombol perpanjang atau ganti server lewat profil.`,
-    }, 400);
+    // PERPANJANG: pertahankan server aktif. Jika payload tanpa guildId,
+    // pakai guild_id langganan aktif. Ganti server = lewat profil (cooldown 7 hari).
+    if (!guildId) {
+      guildId = aktifUltimate.guild_id ? String(aktifUltimate.guild_id) : null;
+    } else if (String(guildId) !== String(aktifUltimate.guild_id)) {
+      return json({
+        ok: false,
+        error: 'Perpanjangan mempertahankan server aktifmu. Untuk memindahkan server, gunakan tombol Ganti Server di halaman profilmu (cooldown 7 hari).',
+      }, 400);
+    }
+    if (!guildId) {
+      return json({ ok: false, error: 'Langganan Ultimate aktif belum punya server tujuan. Isi ID Server atau hubungi admin.' }, 400);
+    }
   }
 
   const durasiData = plan.durasi.find((d) => d.bulan === Number(durationMonths)) || plan.durasi[0];
   const totalAmount = durasiData.harga || plan.hargaBulanan * durasiData.bulan;
+
+  // Ultimate baru wajib punya server tujuan (17-20 digit)
+  if (plan.id === 'premium-ultimate' && !/^\d{17,20}$/.test(String(guildId || ''))) {
+    return json({ ok: false, error: 'Paket Ultimate aktif di 1 server pilihan. Masukkan ID Server Discord yang valid.' }, 400);
+  }
 
   const txId = `TRX-${Date.now().toString(36).toUpperCase()}-${randomBytes(3).toString('hex').toUpperCase()}`;
   const expiresAt = now + 15 * 60 * 1000; // 15 menit

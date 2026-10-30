@@ -21,6 +21,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
   const [modalLoginWajib, setModalLoginWajib] = useState(false); // prompt login jika belum masuk
   const [setujuLogin, setSetujuLogin] = useState(false); // checkbox persetujuan wajib di modal login
   const [guildIdInput, setGuildIdInput] = useState('');
+  const [guildTerkunci, setGuildTerkunci] = useState(false); // perpanjang ultimate = server aktif dipertahankan
   const [prosesBeli, setProsesBeli] = useState(false);
   const [transaksiAktif, setTransaksiAktif] = useState(null); // { transactionId, qrisUrl, invoiceUrl, amount, expiresAt }
   const [statusBayar, setStatusBayar] = useState(null); // 'pending' | 'paid' | 'error'
@@ -41,6 +42,15 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
     setTransaksiAktif(null);
     setStatusBayar(null);
     setPesanError(null);
+    // Perpanjang Ultimate: server aktif otomatis dipertahankan (terkunci).
+    // Ganti server hanya lewat profil (cooldown 7 hari).
+    if (plan.id === 'premium-ultimate' && activeServer && Number(activeServer.expires_at) > Date.now()) {
+      setGuildIdInput(String(activeServer.guild_id || ''));
+      setGuildTerkunci(true);
+    } else {
+      setGuildIdInput('');
+      setGuildTerkunci(false);
+    }
   }
 
   // Submit checkout ke backend
@@ -547,10 +557,13 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                       value={guildIdInput}
                       onChange={(e) => setGuildIdInput(e.target.value)}
                       placeholder="Contoh: 123456789012345678"
-                      className="w-full rounded-xl border border-linebright bg-bg px-3.5 py-2.5 text-xs text-ink outline-none focus:border-crimson font-mono"
+                      readOnly={guildTerkunci}
+                      className={`w-full rounded-xl border border-linebright bg-bg px-3.5 py-2.5 text-xs text-ink outline-none focus:border-crimson font-mono ${guildTerkunci ? 'opacity-70 cursor-not-allowed' : ''}`}
                     />
                     <p className="mt-1 text-[11px] text-faint">
-                      Aktifkan Discord Developer Mode (Pengaturan → Lanjutan), klik kanan nama server, lalu Copy Server ID. Benefit hanya aktif di server ini; ganti server bisa lewat profil dengan cooldown 7 hari.
+                      {guildTerkunci
+                        ? 'Perpanjangan mempertahankan server aktif ini. Ingin memindahkan server? Gunakan tombol Ganti Server di halaman profilmu (cooldown 7 hari).'
+                        : 'Aktifkan Discord Developer Mode (Pengaturan → Lanjutan), klik kanan nama server, lalu Copy Server ID. Benefit hanya aktif di server ini; ganti server bisa lewat profil dengan cooldown 7 hari.'}
                     </p>
                   </div>
                 )}
