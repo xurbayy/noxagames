@@ -108,4 +108,12 @@ async function ensureSchema() {
     CREATE INDEX IF NOT EXISTS idx_sub_user ON premium_subscriptions(discord_id, status);
     CREATE INDEX IF NOT EXISTS idx_sub_guild ON premium_subscriptions(guild_id, status);
   `);
+
+  // Kolom ganti server (migrasi idempoten; error = kolom sudah ada)
+  try {
+    await db.execute('ALTER TABLE premium_subscriptions ADD COLUMN last_switch_at INTEGER');
+  } catch {}
+  try {
+    await db.execute('ALTER TABLE transactions ADD COLUMN guild_name TEXT');
+  } catch {}
 }

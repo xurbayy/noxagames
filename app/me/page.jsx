@@ -27,7 +27,7 @@ export default async function MePage() {
 
     const now = Date.now();
     const subRes = await db.execute({
-      sql: "SELECT plan_id, tier_name, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+      sql: "SELECT plan_id, tier_name, guild_id, last_switch_at, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
       args: [session.discordId, now],
     });
     if (subRes.rows.length > 0) {

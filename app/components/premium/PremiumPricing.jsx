@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Emoji from '../Emoji';
-import { PREMIUM_PLANS, FITUR_KOMPARASI, LANGKAH_AKTIVASI, labelHarga } from '../../lib/premiumPlan';
+import { PREMIUM_PLANS, FITUR_KOMPARASI, LANGKAH_AKTIVASI, CATATAN_BITRATE, labelHarga } from '../../lib/premiumPlan';
 
 const PILIHAN_DURASI = [
   { index: 0, bulan: 1, label: '1 Bulan' },
@@ -48,6 +48,11 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
     if (!modalBeli) return;
     setProsesBeli(true);
     setPesanError(null);
+
+    if (modalBeli.id === 'premium-ultimate' && !/^\d{17,20}$/.test(guildIdInput.trim())) {
+      setPesanError('Paket Ultimate aktif di 1 server pilihan. Masukkan ID Server Discord yang valid (17-20 digit).');
+      return;
+    }
 
     try {
       const res = await fetch('/api/payment/create', {
@@ -358,6 +363,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                 </tbody>
               </table>
             </div>
+            <p className="mt-4 text-[11px] leading-relaxed text-faint break-words">{CATATAN_BITRATE}</p>
           </div>
         )}
       </section>
@@ -512,21 +518,26 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                   </span>
                 </div>
 
-                {/* Input Guild ID jika paket server */}
-                {modalBeli.id !== 'premium' && (
+                {/* Target server: WAJIB untuk paket Ultimate (benefit 1 server pilihan) */}
+                {modalBeli.id === 'premium-ultimate' && (
                   <div className="mt-4">
                     <label className="block text-xs font-semibold text-muted mb-1.5">
-                      Target Server Discord ID (Opsional):
+                      ID Server Discord Tujuan (Wajib):
                     </label>
                     <input
                       value={guildIdInput}
                       onChange={(e) => setGuildIdInput(e.target.value)}
-                      placeholder="Contoh: 123456789012345678 (Bisa diisi nanti)"
+                      placeholder="Contoh: 123456789012345678"
                       className="w-full rounded-xl border border-linebright bg-bg px-3.5 py-2.5 text-xs text-ink outline-none focus:border-crimson font-mono"
                     />
                     <p className="mt-1 text-[11px] text-faint">
-                      Kosongkan bila ingin mengaktifkan ke akunmu atau hubungi admin setelah pembayaran.
+                      Aktifkan Discord Developer Mode (Pengaturan → Lanjutan), klik kanan nama server, lalu Copy Server ID. Benefit hanya aktif di server ini; ganti server bisa lewat profil dengan cooldown 7 hari.
                     </p>
+                  </div>
+                )}
+                {modalBeli.id !== 'premium-ultimate' && (
+                  <div className="mt-4 rounded-xl border border-line bg-surface p-3 text-[11px] text-muted">
+                    Paket individu: benefit <strong className="text-ink">ikut akunmu</strong> ke server mana pun kamu memutar lagu. Tidak perlu ID server.
                   </div>
                 )}
 

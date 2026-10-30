@@ -8,7 +8,7 @@ export const PREMIUM_PLANS = [
     btnLabel: 'Pilih Premium',
     badge: '/badges/noxa-premium.png',
     badgeAlt: 'Lencana NOXA Premium Gold',
-    tagline: 'Untuk pendengar aktif',
+    tagline: 'Benefit individu, ikut kamu di server mana pun',
     warna: {
       border: 'border-amber-500/40 hover:border-amber-500',
       badgeBg: 'bg-amber-500/15 border-amber-500/40 text-amber-400',
@@ -28,10 +28,10 @@ export const PREMIUM_PLANS = [
       'Antrean 250 lagu',
       'Volume booster 150%',
       '10 playlist pribadi',
+      'Co-listener 15 orang',
       'Badge Emas web & Discord',
-      'Tiket dukungan prioritas',
     ],
-    target: '1 Pengguna Discord',
+    target: '1 Pengguna',
   },
   {
     id: 'premium-plus',
@@ -40,7 +40,7 @@ export const PREMIUM_PLANS = [
     badge: '/badges/noxa-premium-plus.png',
     badgeAlt: 'Lencana NOXA Premium+ Platinum',
     populer: true,
-    tagline: 'Paling pas untuk server komunitas',
+    tagline: 'Benefit penuh versi individu - ikut kamu ke mana pun',
     warna: {
       border: 'border-slate-300/60 hover:border-slate-200',
       badgeBg: 'bg-slate-200/15 border-slate-300/50 text-slate-200',
@@ -57,14 +57,14 @@ export const PREMIUM_PLANS = [
     ],
     fiturRingkas: [
       'Semua fitur NOXA Premium',
+      'Volume 200% + audio up to 320k',
       'Radio 24/7 nonstop',
-      'Audio Ultra HD 320kbps',
       'Gabung 3 efek audio sekaligus',
-      'Seek instan tanpa buffering',
       'Antrean 500 lagu',
+      'Co-listener 25 orang',
       'Badge Platinum web & Discord',
     ],
-    target: '1 Server Discord Aktif',
+    target: '1 Pengguna - Benefit Penuh',
   },
   {
     id: 'premium-ultimate',
@@ -72,7 +72,7 @@ export const PREMIUM_PLANS = [
     btnLabel: 'Pilih Ultimate',
     badge: '/badges/noxa-premium-ultimate.png',
     badgeAlt: 'Lencana NOXA Premium Ultimate Ultraviolet',
-    tagline: 'Untuk multi-server owner & guild sultan',
+    tagline: 'Semua member di 1 server pilihan menikmati benefit penuh',
     warna: {
       border: 'border-purple-500/60 hover:border-purple-400',
       badgeBg: 'bg-purple-500/20 border-purple-500/50 text-purple-300',
@@ -88,15 +88,14 @@ export const PREMIUM_PLANS = [
       { bulan: 12, label: '1 Tahun', hemat: 'Hemat 31%', harga: 539000 },
     ],
     fiturRingkas: [
-      'Semua fitur Premium & Premium+',
-      '1 langganan untuk 3 server',
-      'Antrean tanpa batas',
-      'Prioritas CPU & bandwidth VPS',
-      'Volume 200% + Equalizer 15-Band',
-      'Playlist tanpa batas',
-      'Badge Ultraviolet + Role VIP',
+      'Semua benefit Premium+ versi server',
+      'Aktif untuk 1 server pilihan',
+      'Antrean tanpa batas untuk semua member',
+      'Volume 200% + audio up to 320k',
+      'Playlist & co-listener tanpa batas',
+      'Badge Ultraviolet untuk pembeli',
     ],
-    target: 'Hingga 3 Server Discord',
+    target: '1 Server Pilihan',
   },
 ];
 
@@ -107,7 +106,7 @@ export const FITUR_KOMPARASI = [
     items: [
       { nama: 'Bypass Vote-Skip Instan', gratis: false, premium: true, plus: true, ultimate: true },
       { nama: 'Batas Maksimal Antrean Lagu', gratis: '50 lagu', premium: '250 lagu', plus: '500 lagu', ultimate: 'Tanpa Batas (∞)' },
-      { nama: 'Batas Maksimal Volume Suara', gratis: '100%', premium: '150%', plus: '150%', ultimate: '200% (Overdrive)' },
+      { nama: 'Batas Maksimal Volume Suara', gratis: '100%', premium: '150%', plus: '200%', ultimate: '200% (1 server)' },
       { nama: 'Lompat Waktu Lagu (.seek instan)', gratis: false, premium: true, plus: true, ultimate: true },
       { nama: 'Autoplay Rekomendasi NOXA Smart', gratis: true, premium: true, plus: true, ultimate: true },
     ],
@@ -115,7 +114,8 @@ export const FITUR_KOMPARASI = [
   {
     kategori: 'Kualitas Suara & Efek DSP',
     items: [
-      { nama: 'Bitrate Audio Output', gratis: 'Standard 96k', premium: 'High 160k', plus: 'Ultra HD 320k', ultimate: 'Master Studio 320k+' },
+      { nama: 'Bitrate Audio Output', gratis: 'Maks server (96k)', premium: 'Maks server (96k)', plus: 'Up to 320k', ultimate: 'Up to 320k (1 server)' },
+      { nama: 'Riwayat Dengar Bareng Tersimpan', gratis: '5 orang', premium: '15 orang', plus: '25 orang', ultimate: 'Tanpa Batas (∞)' },
       { nama: 'Multi-Stack Efek Audio', gratis: '1 efek', premium: '1 efek', plus: 'Hingga 3 efek', ultimate: 'Bebas gabung semua' },
       { nama: 'Custom Audio Equalizer 15-Band', gratis: false, premium: false, plus: false, ultimate: true },
       { nama: 'Akses Efek Audio Beta', gratis: false, premium: true, plus: true, ultimate: true },
@@ -125,8 +125,7 @@ export const FITUR_KOMPARASI = [
     kategori: 'Stabilitas & Server Standby',
     items: [
       { nama: 'Mode Radio 24/7 (Non-Disconnect)', gratis: false, premium: false, plus: true, ultimate: true },
-      { nama: 'Jumlah Server Tercover', gratis: '1 server', premium: '1 pengguna', plus: '1 server', ultimate: '3 server pilihan' },
-      { nama: 'Prioritas Resource Peladen VPS', gratis: 'Standar', premium: 'Prioritas', plus: 'Tinggi', ultimate: 'Dedicated Jalur VIP' },
+      { nama: 'Cakupan Benefit', gratis: '1 server', premium: 'Pribadi - ikut kamu', plus: 'Pribadi - ikut kamu', ultimate: '1 server pilihan' },
     ],
   },
   {
@@ -144,7 +143,7 @@ export const LANGKAH_AKTIVASI = [
   {
     nomor: 1,
     judul: 'Masuk dengan Akun Discord',
-    desc: 'Klik paketmu, masuk dengan Discord. ID langsung tertaut.',
+    desc: 'Klik paketmu, masuk dengan Discord. ID langsung tertaut. Paket Ultimate: siapkan ID server pilihanmu.',
   },
   {
     nomor: 2,
@@ -154,9 +153,14 @@ export const LANGKAH_AKTIVASI = [
   {
     nomor: 3,
     judul: 'Aktivasi Otomatis Seketika',
-    desc: 'Lunas? Paket & badge langsung aktif otomatis.',
+    desc: 'Lunas? Paket & badge langsung aktif otomatis. Ganti server paket Ultimate bisa kapan saja lewat profil (cooldown 7 hari).',
   },
 ];
+
+// Catatan kejujuran bitrate (ditampilkan di halaman premium)
+export const CATATAN_BITRATE =
+  'Bitrate audio mengikuti batas maksimum Discord: server tanpa boost dibatasi 96k, Boost Lv1 128k, Lv2 256k, Lv3 384k. ' +
+  'NOXA Pass Premium+ dan Ultimate menaikkan channel ke 320k hanya jika server mengizinkan - di server tanpa boost, kualitas tetap mengikuti batas Discord.';
 
 export function labelHarga(nominal) {
   return `Rp ${Number(nominal).toLocaleString('id-ID')}`;

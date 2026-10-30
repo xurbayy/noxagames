@@ -112,6 +112,51 @@ export async function POST(request) {
   const expiresAt = now + durasiBulan * 30 * 24 * 60 * 60 * 1000;
 
   try {
+    // DEDUPE: tidak boleh ada 2 langganan aktif yang tumpang tindih.
+    // - Paket sama sudah aktif  -> perpanjang baris lama (bukan buat baru)
+    // - Paket lain sudah aktif  -> tolak (aturan perpanjang cerdas)
+    const adaRes = await db.execute({
+      sql: "SELECT id, plan_id, expires_at, guild_id, last_switch_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+      args: [cleanId, now],
+    });
+    const aktif = adaRes.rows[0];
+    if (aktif) {
+      if (aktif.plan_id !== plan.id) {
+        return json({ ok: false, error: `User ini sedang aktif ${aktif.plan_id}. Cabut dulu atau tunggu kedaluwarsa sebelum memberi paket berbeda.` }, 400);
+      }
+      const baseTime = Number(aktif.expires_at) > now ? Number(aktif.expires_at) : now;
+      const newExpires = baseTime + durasiBulan * 30 * 24 * 60 * 60 * 1000;
+      await db.execute({
+        sql: "UPDATE premium_subscriptions SET expires_at = ?, tier_name = ?, guild_id = COALESCE(?, guild_id) WHERE id = ?",
+        args: [newExpires, plan.nama, guildId ? String(guildId).trim() : null, Number(aktif.id)],
+      });
+
+      const txId = `MANUAL-${Date.now().toString(36).toUpperCase()}-${randomBytes(2).toString('hex').toUpperCase()}`;
+      await db.execute({
+        sql: `INSERT INTO transactions
+              (id, discord_id, username, guild_id, plan_id, duration_months, amount, status, qiospay_invoice_id, created_at, paid_at)
+              VALUES (?, ?, ?, ?, ?, ?, 0, 'paid', 'ADMIN_EXTEND', ?, ?)`,
+        args: [txId, cleanId, username, guildId ? String(guildId).trim() : null, plan.id, durasiBulan, now, now],
+      });
+
+      await antrekanProfilUlang(db, cleanId);
+      await db.execute({
+        sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
+        args: [
+          cleanId,
+          JSON.stringify({
+            action: 'activate_premium',
+            planId: plan.id,
+            guildId: guildId ? String(guildId).trim() : null,
+            expiresAt: newExpires,
+          }),
+          now,
+        ],
+      });
+
+      return json({ ok: true, id: Number(aktif.id), extended: true, expiresAt: newExpires, discordId: cleanId });
+    }
+
     // Masukkan ke premium_subscriptions
     const res = await db.execute({
       sql: `INSERT INTO premium_subscriptions (discord_id, guild_id, plan_id, tier_name, status, starts_at, expires_at, created_at)

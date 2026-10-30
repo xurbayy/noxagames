@@ -12,6 +12,37 @@ import { premiumEmojiName } from '../lib/premiumPlan';
 const POLL_MS = 5000;
 
 export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverIcon = null, serverPremiumTier = null }) {
+  const [gantiServerBuka, setGantiServerBuka] = useState(false);
+  const [gantiServerId, setGantiServerId] = useState('');
+  const [gantiServerPesan, setGantiServerPesan] = useState(null);
+  const [gantiServerBusy, setGantiServerBusy] = useState(false);
+
+  const paketServer = subscription?.plan_id === 'premium-ultimate' && Boolean(subscription?.guild_id);
+
+  async function submitGantiServer(e) {
+    e.preventDefault();
+    setGantiServerBusy(true);
+    setGantiServerPesan(null);
+    try {
+      const res = await fetch('/api/me/switch-server', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guildId: gantiServerId.trim() }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setGantiServerPesan({ ok: true, text: data.message });
+        setGantiServerBuka(false);
+        setTimeout(() => window.location.reload(), 1800);
+      } else {
+        setGantiServerPesan({ ok: false, text: data.error || 'Gagal mengganti server.' });
+      }
+    } catch {
+      setGantiServerPesan({ ok: false, text: 'Koneksi terputus.' });
+    } finally {
+      setGantiServerBusy(false);
+    }
+  }
   const [state, setState] = useState({
     loading: !initialProfile,
     profile: initialProfile || null,
@@ -192,13 +223,51 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               </p>
             </div>
           </div>
-          <Link
-            href="/premium"
-            className="btn-ghost !py-2 !px-4 text-xs font-semibold shrink-0"
-          >
-            Perpanjang Paket →
-          </Link>
+          <div className="flex flex-col gap-2 shrink-0">
+            <Link
+              href="/premium"
+              className="btn-ghost !py-2 !px-4 text-xs font-semibold"
+            >
+              Perpanjang Paket →
+            </Link>
+            {paketServer && (
+              <button
+                type="button"
+                onClick={() => { setGantiServerBuka((v) => !v); setGantiServerPesan(null); }}
+                className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-muted hover:text-ink hover:border-linebright cursor-pointer"
+              >
+                Ganti Server (cooldown 7 hari)
+              </button>
+            )}
+          </div>
         </div>
+      )}
+
+      {/* Form ganti server paket Ultimate */}
+      {paketServer && gantiServerBuka && (
+        <form onSubmit={submitGantiServer} className="mt-3 rounded-2xl border border-line bg-surface2 p-4 space-y-2.5">
+          <label className="block text-xs font-semibold text-muted">
+            ID Server Discord baru (17-20 digit). Aktifkan Developer Mode di Discord, klik kanan nama server, Copy Server ID.
+          </label>
+          <input
+            value={gantiServerId}
+            onChange={(e) => setGantiServerId(e.target.value)}
+            placeholder="Contoh: 123456789012345678"
+            inputMode="numeric"
+            className="w-full rounded-xl border border-linebright bg-bg px-3.5 py-2.5 text-xs text-ink outline-none focus:border-crimson font-mono"
+          />
+          {gantiServerPesan && (
+            <p className={`text-xs ${gantiServerPesan.ok ? 'text-ok' : 'text-crimson'}`}>{gantiServerPesan.text}</p>
+          )}
+          <div className="flex gap-2">
+            <button type="submit" disabled={gantiServerBusy} className="btn-primary !py-2 !px-4 text-xs disabled:opacity-50">
+              {gantiServerBusy ? 'Memproses...' : 'Ganti Server'}
+            </button>
+            <button type="button" onClick={() => setGantiServerBuka(false)} className="btn-ghost !py-2 !px-4 text-xs">
+              Batal
+            </button>
+          </div>
+        </form>
       )}
 
       {state.loading && <MemuatState />}
