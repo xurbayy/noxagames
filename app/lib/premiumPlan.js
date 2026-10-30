@@ -178,15 +178,18 @@ export function labelHarga(nominal) {
  * yang terkunci, ala inventory NEXO.
  */
 export const BENEFIT_INVENTORY = [
-  { nama: 'Bebas Vote-Skip', emoji: 'lewati', nilai: { free: null, premium: true, 'premium-plus': true, 'premium-ultimate': true } },
-  { nama: 'Batas Antrean Lagu', emoji: 'antrian', nilai: { free: '50 lagu', premium: '250 lagu', 'premium-plus': '500 lagu', 'premium-ultimate': 'Tanpa batas' } },
-  { nama: 'Volume Maksimal', emoji: 'suara', nilai: { free: '100%', premium: '150%', 'premium-plus': '200%', 'premium-ultimate': '200%' } },
-  { nama: 'Efek Audio Aktif Bersamaan', emoji: 'efek', nilai: { free: '1 efek', premium: '1 efek', 'premium-plus': '3 efek', 'premium-ultimate': 'Tanpa batas' } },
-  { nama: 'Playlist Kustom Pribadi', emoji: 'playlist', nilai: { free: '3 playlist', premium: '10 playlist', 'premium-plus': '25 playlist', 'premium-ultimate': 'Tanpa batas' } },
-  { nama: 'Riwayat Dengar Bareng', emoji: 'sukapenuh', nilai: { free: '5 orang', premium: '15 orang', 'premium-plus': '25 orang', 'premium-ultimate': 'Tanpa batas' } },
-  { nama: 'Riwayat Lagu di Profil', emoji: 'userprofile', nilai: { free: '10 lagu', premium: '25 lagu', 'premium-plus': '50 lagu', 'premium-ultimate': 'Tanpa batas' } },
-  { nama: 'Mode Radio 24/7 Nonstop', emoji: 'radio', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
-  { nama: 'Audio Up to 320k', emoji: 'musik', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
+  // cakupan 'keduanya' = benefit bot yang juga aktif server-wide lewat paket Ultimate.
+  // cakupan 'individu' = benefit web personal, HANYA lewat paket individu.
+  { nama: 'Bebas Vote-Skip', emoji: 'lewati', cakupan: 'keduanya', nilai: { free: null, premium: true, 'premium-plus': true, 'premium-ultimate': true } },
+  { nama: 'Batas Antrean Lagu', emoji: 'antrian', cakupan: 'keduanya', nilai: { free: '50 lagu', premium: '250 lagu', 'premium-plus': '500 lagu', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Volume Maksimal', emoji: 'suara', cakupan: 'keduanya', nilai: { free: '100%', premium: '150%', 'premium-plus': '200%', 'premium-ultimate': '200%' } },
+  { nama: 'Efek Audio Aktif Bersamaan', emoji: 'efek', cakupan: 'keduanya', nilai: { free: '1 efek', premium: '1 efek', 'premium-plus': '3 efek', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Playlist Kustom Pribadi', emoji: 'playlist', cakupan: 'keduanya', nilai: { free: '3 playlist', premium: '10 playlist', 'premium-plus': '25 playlist', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Mode Radio 24/7 Nonstop', emoji: 'radio', cakupan: 'keduanya', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
+  { nama: 'Audio Up to 320k', emoji: 'musik', cakupan: 'keduanya', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
+  { nama: 'Badge Profil Web & Discord', emoji: 'userprofile', cakupan: 'individu', nilai: { free: null, premium: 'Badge Emas', 'premium-plus': 'Badge Platinum', 'premium-ultimate': null } },
+  { nama: 'Riwayat Lagu di Profil', emoji: 'jam', cakupan: 'individu', nilai: { free: '10 lagu', premium: '25 lagu', 'premium-plus': '50 lagu', 'premium-ultimate': null } },
+  { nama: 'Riwayat Dengar Bareng di Profil', emoji: 'sukapenuh', cakupan: 'individu', nilai: { free: '5 orang', premium: '15 orang', 'premium-plus': '25 orang', 'premium-ultimate': null } },
 ];
 
 /** Nilai benefit untuk tier tertentu. */
