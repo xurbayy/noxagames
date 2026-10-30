@@ -10,7 +10,7 @@ import { durasi } from '../lib/format';
 
 const POLL_MS = 5000;
 
-export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null }) {
+export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverIcon = null }) {
   const [state, setState] = useState({
     loading: !initialProfile,
     profile: initialProfile || null,
@@ -263,7 +263,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         </div>
       )}
 
-      {p?.user?.exists && adaAktivitas(p) && <ProfilIsi p={p} />}
+      {p?.user?.exists && adaAktivitas(p) && <ProfilIsi p={p} serverIcon={serverIcon} />}
     </div>
   );
 }
@@ -275,7 +275,7 @@ function adaAktivitas(p) {
   return Boolean(p?.user?.exists) && (Number(p.user.totalPlays) > 0 || Number(p.user.totalDuration) > 0);
 }
 
-function ProfilIsi({ p }) {
+function ProfilIsi({ p, serverIcon }) {
   const u = p.user;
   const lagu = Array.isArray(p.topSongs) ? p.topSongs : [];
   const co = Array.isArray(p.coListeners) ? p.coListeners : [];
@@ -381,9 +381,19 @@ function ProfilIsi({ p }) {
           )}
           {p.topServer?.name && (
             <div className="mt-4 flex items-center gap-3 border-t border-line pt-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                <Emoji name="musik" size={18} />
-              </span>
+              {serverIcon ? (
+                <img
+                  src={serverIcon}
+                  alt=""
+                  className="h-11 w-11 shrink-0 rounded-full border border-line object-cover"
+                  loading="lazy"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
+                  <Emoji name="musik" size={18} />
+                </span>
+              )}
               <div className="min-w-0 flex-1">
                 <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{p.topServer.name}</div>
                 <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">Server tempat kamu paling lama mendengar, {durasi(p.topServer.duration)}</div>

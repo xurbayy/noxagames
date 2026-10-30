@@ -105,16 +105,24 @@ export function PanelEmbed({
               </div>
             ) : null}
             {title ? (
-              <a
-                href={titleUrl || '#'}
-                target={titleUrl ? '_blank' : undefined}
-                rel="noopener noreferrer"
-                onClick={(e) => { if (!titleUrl) e.preventDefault(); }}
-                className={`block font-semibold leading-snug text-[#00A8FC] hover:underline ${compact ? 'mb-1.5 text-[13.5px]' : 'mb-2 text-[15.5px]'}`}
-              >
-                {titleEmoji ? <Emoji name={titleEmoji} size={compact ? 15 : 18} className="mr-1.5" /> : null}
-                {title}
-              </a>
+              // Judul biru khas Discord. Hanya jadi link kalau ada URL sungguhan
+              // (URL '#' dari panel demo diperlakukan sebagai teks biasa).
+              titleUrl && titleUrl !== '#' ? (
+                <a
+                  href={titleUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`block font-semibold leading-snug text-[#00A8FC] hover:underline ${compact ? 'mb-1.5 text-[13.5px]' : 'mb-2 text-[15.5px]'}`}
+                >
+                  {titleEmoji ? <Emoji name={titleEmoji} size={compact ? 15 : 18} className="mr-1.5" /> : null}
+                  {title}
+                </a>
+              ) : (
+                <div className={`block font-semibold leading-snug text-[#00A8FC] ${compact ? 'mb-1.5 text-[13.5px]' : 'mb-2 text-[15.5px]'}`}>
+                  {titleEmoji ? <Emoji name={titleEmoji} size={compact ? 15 : 18} className="mr-1.5" /> : null}
+                  {title}
+                </div>
+              )
             ) : null}
             {description ? <div className={`leading-relaxed text-[#DBDEE1] ${compact ? 'text-[12px]' : 'text-[13.5px]'}`}>{description}</div> : null}
           </div>

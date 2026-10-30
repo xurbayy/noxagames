@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getSession, isAdminDiscordId } from '../lib/session';
 import { getDb, schemaReady } from '../lib/db';
+import { getSnapshot, topServers } from '../lib/snapshot';
 import MeClient from '../components/MeClient';
 import { pageMeta } from '../lib/site';
 
@@ -39,6 +40,16 @@ export default async function MePage() {
     }
   } catch {}
 
+  // Ikon server favorit dari snapshot bridge (profil user hanya bawa ID & nama).
+  let serverIcon = null;
+  if (initialProfile?.topServer?.id) {
+    try {
+      const snap = await getSnapshot();
+      const cocok = topServers(snap?.data).find((g) => String(g.id) === String(initialProfile.topServer.id));
+      if (cocok?.icon) serverIcon = cocok.icon;
+    } catch {}
+  }
+
   const isAdmin = Boolean(session && isAdminDiscordId(session.discordId));
 
   return (
@@ -47,6 +58,7 @@ export default async function MePage() {
       initialProfile={initialProfile}
       isAdmin={isAdmin}
       subscription={activeSubscription}
+      serverIcon={serverIcon}
     />
   );
 }
