@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Emoji from '../Emoji';
 import Thumb from '../Thumb';
 import TopListenerList from './TopListenerList';
+import { premiumEmojiName } from '../../lib/premiumPlan';
 import { durasi } from '../../lib/format';
 
 const RANK_EMOJI = ['number1', 'number2', 'number3'];
@@ -141,7 +142,10 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
                     </span>
                   )}
                   <div className="min-w-0 flex-1">
-                    <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{g.name}</div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{g.name}</span>
+                      {premiumEmojiName(g.premiumTier) && <Emoji name={premiumEmojiName(g.premiumTier)} size={16} />}
+                    </div>
                     <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{g.users} pendengar tercatat</div>
                   </div>
                   {g.inviteUrl && (

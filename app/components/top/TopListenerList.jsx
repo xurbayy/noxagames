@@ -9,6 +9,7 @@ import Emoji from '../Emoji';
 import Thumb from '../Thumb';
 import ShareCardButton from '../ShareCardButton';
 import { durasi } from '../../lib/format';
+import { premiumEmojiName } from '../../lib/premiumPlan';
 
 export default function TopListenerList({ items }) {
   const [buka, setBuka] = useState(null); // index item di modal
@@ -19,6 +20,7 @@ export default function TopListenerList({ items }) {
     durationLabel: durasi(u.duration),
     plays: u.plays,
     rank: i + 1,
+    premiumTier: u.premiumTier || null,
   });
 
   return (
@@ -35,7 +37,10 @@ export default function TopListenerList({ items }) {
             </span>
             <Thumb src={u.avatar} alt="" size="h-9 w-9 sm:h-10 sm:w-10" rounded="rounded-full" emoji="userprofile" emojiSize={16} />
             <div className="min-w-0 flex-1">
-              <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{u.username}</div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{u.username}</span>
+                {premiumEmojiName(u.premiumTier) && <Emoji name={premiumEmojiName(u.premiumTier)} size={16} />}
+              </div>
               <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{u.plays} lagu selesai</div>
             </div>
             <span onClick={(e) => e.stopPropagation()} className="shrink-0 hidden sm:inline">
@@ -65,7 +70,10 @@ export default function TopListenerList({ items }) {
             </div>
             <div className="mt-5 flex flex-col items-center text-center">
               <Thumb src={items[buka].avatar} alt="" size="h-24 w-24" rounded="rounded-full" emoji="userprofile" emojiSize={36} />
-              <h3 className="mt-3 font-display text-xl font-bold">{items[buka].username}</h3>
+              <h3 className="mt-3 font-display text-xl font-bold flex items-center gap-2">
+                {items[buka].username}
+                {premiumEmojiName(items[buka].premiumTier) && <Emoji name={premiumEmojiName(items[buka].premiumTier)} size={22} />}
+              </h3>
               <p className="mt-1 text-sm text-muted">Pendengar paling setia di NOXA Sound</p>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3">

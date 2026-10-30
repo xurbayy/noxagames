@@ -161,3 +161,11 @@ export const LANGKAH_AKTIVASI = [
 export function labelHarga(nominal) {
   return `Rp ${Number(nominal).toLocaleString('id-ID')}`;
 }
+
+/** Nama emoji lencana NOXA Pass (registry noxa-emojis) per plan_id, atau null. */
+export function premiumEmojiName(planId) {
+  if (planId === 'premium-ultimate') return 'noxapremiumultimate';
+  if (planId === 'premium-plus') return 'noxapremiumplus';
+  if (planId === 'premium') return 'noxapremium';
+  return null;
+}

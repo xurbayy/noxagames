@@ -92,6 +92,7 @@ export async function renderShareCard({
   plays = 0,
   rank = null,
   songs = [],
+  premiumTier = null,
 } = {}) {
   const canvas = document.createElement('canvas');
   canvas.width = W;
@@ -140,6 +141,19 @@ export async function renderShareCard({
   ctx.font = '600 20px "Segoe UI", system-ui, sans-serif';
   ctx.fillText('BOT HIBURAN AUDIO DISCORD', 138, 122);
   ctx.textAlign = 'center';
+
+  // Lencana NOXA Pass (kanan-atas kartu) untuk pemegang premium
+  const BADGE_SRC = {
+    premium: '/badges/noxa-premium.png',
+    'premium-plus': '/badges/noxa-premium-plus.png',
+    'premium-ultimate': '/badges/noxa-premium-ultimate.png',
+  };
+  if (BADGE_SRC[premiumTier]) {
+    try {
+      const badgeImg = await loadImg(BADGE_SRC[premiumTier]);
+      ctx.drawImage(badgeImg, W - 190, 42, 128, 128);
+    } catch { /* badge opsional */ }
+  }
 
   // Judul mode
   ctx.fillStyle = WARNA.muted;

@@ -42,11 +42,13 @@ export default async function MePage() {
 
   // Ikon server favorit dari snapshot bridge (profil user hanya bawa ID & nama).
   let serverIcon = null;
+  let serverPremiumTier = null;
   if (initialProfile?.topServer?.id) {
     try {
       const snap = await getSnapshot();
       const cocok = topServers(snap?.data).find((g) => String(g.id) === String(initialProfile.topServer.id));
       if (cocok?.icon) serverIcon = cocok.icon;
+      serverPremiumTier = cocok?.premiumTier || initialProfile.topServer.premiumTier || null;
     } catch {}
   }
 
@@ -59,6 +61,7 @@ export default async function MePage() {
       isAdmin={isAdmin}
       subscription={activeSubscription}
       serverIcon={serverIcon}
+      serverPremiumTier={serverPremiumTier}
     />
   );
 }

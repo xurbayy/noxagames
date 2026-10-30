@@ -7,10 +7,11 @@ import Link from 'next/link';
 import Emoji from './Emoji';
 import ShareCardButton from './ShareCardButton';
 import { durasi } from '../lib/format';
+import { premiumEmojiName } from '../lib/premiumPlan';
 
 const POLL_MS = 5000;
 
-export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverIcon = null }) {
+export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverIcon = null, serverPremiumTier = null }) {
   const [state, setState] = useState({
     loading: !initialProfile,
     profile: initialProfile || null,
@@ -136,6 +137,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 durationLabel: durasi(p.user.totalDuration),
                 plays: p.user.totalPlays,
                 songs: p.topSongs,
+                premiumTier: subscription?.plan_id || null,
               }}
               linkPath="/top"
               label="Bagikan"
@@ -395,7 +397,12 @@ function ProfilIsi({ p, serverIcon }) {
                 </span>
               )}
               <div className="min-w-0 flex-1">
-                <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{p.topServer.name}</div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{p.topServer.name}</span>
+                  {premiumEmojiName(serverPremiumTier || p.topServer.premiumTier) && (
+                    <Emoji name={premiumEmojiName(serverPremiumTier || p.topServer.premiumTier)} size={16} />
+                  )}
+                </div>
                 <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">Server tempat kamu paling lama mendengar, {durasi(p.topServer.duration)}</div>
               </div>
             </div>
