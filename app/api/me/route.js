@@ -1,6 +1,7 @@
 import { getSession } from '../../lib/session';
 import { json } from '../../lib/api-helpers';
 import { getDb, schemaReady } from '../../lib/db';
+import { ambilProfilTerbaru } from '../../lib/profile-request';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,17 +18,9 @@ export async function GET(req) {
 
     // 1. Cari profil yang SUDAH SELESAI diisi bot (status = 'done')
     // Jika ada, langsung kembalikan tanpa membuat user menunggu antrean baru!
-    const doneRes = await db.execute({
-      sql: "SELECT data, filled_at FROM data_requests WHERE discord_id = ? AND status = 'done' ORDER BY filled_at DESC LIMIT 1",
-      args: [session.discordId],
-    });
-
-    if (doneRes.rows.length > 0 && doneRes.rows[0].data) {
-      let profile = null;
-      try { profile = JSON.parse(doneRes.rows[0].data); } catch {}
-      if (profile) {
-        return json({ user, profile, fresh: true, pending: false });
-      }
+    const profile = await ambilProfilTerbaru(db, session.discordId);
+    if (profile) {
+      return json({ user, profile, fresh: true, pending: false });
     }
 
     // 2a. Minta ulang: pengguna menekan "Minta Ulang" saat antrean lama macet.

@@ -3,6 +3,7 @@ import { getAdminActor } from '../../../lib/session';
 import { json, ready } from '../../../lib/api-helpers';
 import { getDb } from '../../../lib/db';
 import { PREMIUM_PLANS } from '../../../lib/premiumPlan';
+import { antrekanProfilUlang } from '../../../lib/profile-request';
 
 export const dynamic = 'force-dynamic';
 
@@ -144,6 +145,9 @@ export async function POST(request) {
       ],
     });
 
+    // Profil dibangun ulang agar lencana premium tampil
+    await antrekanProfilUlang(db, cleanId);
+
     // Antrekan ke bot
     await db.execute({
       sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
@@ -216,6 +220,9 @@ export async function PUT(request) {
       args: [newExpiresAt, targetPlan, targetTier, targetGuild, Number(id)],
     });
 
+    // Profil dibangun ulang agar tier/riwayat terbaru tampil
+    await antrekanProfilUlang(db, String(sub.discord_id));
+
     // Antrekan sinkronisasi ke bot
     await db.execute({
       sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
@@ -268,6 +275,9 @@ export async function DELETE(request) {
       sql: 'DELETE FROM premium_subscriptions WHERE id = ?',
       args: [Number(id)],
     });
+
+    // Profil dibangun ulang agar lencana premium hilang dari web
+    await antrekanProfilUlang(db, String(sub.discord_id));
 
     // Beritahu bot untuk mencabut status premium
     await db.execute({

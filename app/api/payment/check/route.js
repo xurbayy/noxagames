@@ -1,6 +1,7 @@
 import { getSession } from '../../../lib/session';
 import { json, ready } from '../../../lib/api-helpers';
 import { getDb } from '../../../lib/db';
+import { antrekanProfilUlang } from '../../../lib/profile-request';
 
 export const dynamic = 'force-dynamic';
 
@@ -163,6 +164,9 @@ async function aktifkanLangganan(db, tx, now) {
       ],
     });
   }
+
+  // Profil dibangun ulang agar lencana premium & riwayat lagu sesuai tier tampil
+  await antrekanProfilUlang(db, String(tx.discord_id));
 
   // Kirimkan notifikasi aktivasi ke antrean bot agar bot tahu akun/guild sudah premium
   try {

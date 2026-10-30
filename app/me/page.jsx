@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { getSession, isAdminDiscordId } from '../lib/session';
 import { getDb, schemaReady } from '../lib/db';
 import { getSnapshot, topServers } from '../lib/snapshot';
+import { ambilProfilTerbaru } from '../lib/profile-request';
 import MeClient from '../components/MeClient';
 import { pageMeta } from '../lib/site';
 
@@ -22,13 +23,7 @@ export default async function MePage() {
   try {
     await schemaReady();
     const db = getDb();
-    const doneRes = await db.execute({
-      sql: "SELECT data FROM data_requests WHERE discord_id = ? AND status = 'done' ORDER BY filled_at DESC LIMIT 1",
-      args: [session.discordId],
-    });
-    if (doneRes.rows.length > 0 && doneRes.rows[0].data) {
-      initialProfile = JSON.parse(doneRes.rows[0].data);
-    }
+    initialProfile = await ambilProfilTerbaru(db, session.discordId);
 
     const now = Date.now();
     const subRes = await db.execute({

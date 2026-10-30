@@ -1,5 +1,6 @@
 import { json, ready } from '../../../lib/api-helpers';
 import { getDb } from '../../../lib/db';
+import { antrekanProfilUlang } from '../../../lib/profile-request';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,7 +72,8 @@ export async function POST(request) {
       ],
     });
 
-    // 3. Antrekan ke bot
+    // 3. Profil dibangun ulang + antrekan sinkronisasi ke bot
+    await antrekanProfilUlang(db, String(tx.discord_id));
     await db.execute({
       sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
       args: [

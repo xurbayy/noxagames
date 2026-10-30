@@ -1,5 +1,6 @@
 import { json, ready } from '../../../lib/api-helpers';
 import { getDb } from '../../../lib/db';
+import { antrekanProfilUlang } from '../../../lib/profile-request';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,6 +95,9 @@ export async function POST(request) {
         ],
       });
     }
+
+    // Profil dibangun ulang agar lencana premium tampil di web
+    await antrekanProfilUlang(db, String(tx.discord_id));
 
     // Antrekan sinkronisasi ke bot VPS
     await db.execute({
