@@ -158,11 +158,17 @@ export default async function Home() {
       {/* ================= PODCAST TEMA ================= */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
         <SectionHead emoji="podcast" title="Mau Dengar Apa Malam Ini?" sub="Ketik .podcast tanpa isi, daftar temanya muncul. Episode gaming dan vlog yang menyamar sudah disaring lebih dulu." />
-        <div className="flex flex-wrap justify-center gap-2.5">
+        <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-5">
           {podcastTema.map((tema) => (
-            <span key={tema.nama} className="flex items-center gap-2 rounded-full border border-line bg-surface2 px-4 py-2 text-[15px] text-muted">
-              <Emoji name={tema.emoji} size={18} /> {tema.nama}
-            </span>
+            <div
+              key={tema.nama}
+              className="card card-hover flex items-center gap-3 px-4 py-3.5"
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+                <Emoji name={tema.emoji} size={18} />
+              </span>
+              <span className="truncate text-sm font-semibold text-ink">{tema.nama}</span>
+            </div>
           ))}
         </div>
       </section>

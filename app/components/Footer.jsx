@@ -6,10 +6,18 @@ export default function Footer() {
     <footer className="border-t border-line bg-bg mt-16">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 md:grid-cols-4">
         <div>
-          <div className="font-display text-base font-bold">
-            NOXA <span className="neon-text">Sound</span>
-          </div>
-          <p className="mt-2 text-xs leading-relaxed text-muted">
+          <Link href="/" prefetch={false} className="inline-flex items-center gap-3">
+            <img
+              src="/logo.png"
+              alt="Logo NOXA Sound"
+              className="h-9 w-9 rounded-full"
+              draggable={false}
+            />
+            <span className="font-display text-base font-bold text-ink">
+              NOXA <span className="neon-text">Sound</span>
+            </span>
+          </Link>
+          <p className="mt-3 text-xs leading-relaxed text-muted">
             Bot hiburan audio Discord: musik, podcast, dan radio. Gratis untuk semua server.
           </p>
         </div>
