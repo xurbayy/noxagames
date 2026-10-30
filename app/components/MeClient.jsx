@@ -274,7 +274,11 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
               {BENEFIT_INVENTORY.map((b) => {
                 const nilai = nilaiBenefit(tier, b);
-                const terbuka = aktif && nilai !== null && nilai !== false;
+                // Paket SERVER (Ultimate): item cakupan 'individu' (badge web,
+                // riwayat personal) TIDAK ikut aktif - itu hak paket individu.
+                const butuhIndividu = b.cakupan === 'individu' && tier === 'premium-ultimate';
+                const nilaiButuhIndividu = butuhIndividu || nilai === null;
+                const terbuka = aktif && !butuhIndividu && nilai !== null && nilai !== false;
                 return (
                   <li
                     key={b.nama}
@@ -293,11 +297,20 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                       )}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className={`text-xs sm:text-sm font-semibold leading-snug break-words ${terbuka ? 'text-ink' : 'text-muted'}`}>{b.nama}</div>
+                      <div className={`text-xs sm:text-sm font-semibold leading-snug break-words ${terbuka ? 'text-ink' : 'text-muted'}`}>
+                        {b.nama}
+                        {b.cakupan === 'individu' && (
+                          <span className="ml-1.5 rounded border border-line bg-surface3 px-1.5 py-0 text-[9px] font-bold uppercase tracking-wider text-faint">Individu</span>
+                        )}
+                      </div>
                       <div className={`text-[11px] sm:text-xs mt-0.5 break-words ${terbuka ? 'text-neon font-bold' : 'text-faint'}`}>
                         {terbuka
-                          ? (nilai === true ? 'Aktif' : nilai)
-                          : (nilai === false ? 'Tidak tersedia di paketmu' : 'Terkunci')}
+                          ? (b.cakupan === 'keduanya' && tier === 'premium-ultimate' ? `${nilai === true ? 'Aktif' : nilai} - di server pilihanmu` : (nilai === true ? 'Aktif' : nilai))
+                          : butuhIndividu
+                          ? 'Butuh paket individu (Premium / Premium+)'
+                          : nilaiButuhIndividu
+                          ? 'Tidak tersedia di paketmu'
+                          : 'Terkunci'}
                       </div>
                     </div>
                     {terbuka ? (

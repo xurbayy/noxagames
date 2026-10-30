@@ -115,7 +115,7 @@ export const FITUR_KOMPARASI = [
     kategori: 'Kualitas Suara & Efek DSP',
     items: [
       { nama: 'Bitrate Audio Output', gratis: 'Maks server (96k)', premium: 'Maks server (96k)', plus: 'Up to 320k', ultimate: 'Up to 320k (1 server)' },
-      { nama: 'Riwayat Dengar Bareng Tersimpan', gratis: '5 orang', premium: '15 orang', plus: '25 orang', ultimate: 'Tanpa Batas (∞)' },
+      { nama: 'Riwayat Dengar Bareng (Bot)', gratis: '5 orang', premium: '15 orang', plus: '25 orang', ultimate: 'Tanpa Batas (1 server)' },
       { nama: 'Multi-Stack Efek Audio', gratis: '1 efek', premium: '1 efek', plus: 'Hingga 3 efek', ultimate: 'Bebas gabung semua' },
       { nama: 'Custom Audio Equalizer 15-Band', gratis: false, premium: false, plus: false, ultimate: true },
       { nama: 'Akses Efek Audio Beta', gratis: false, premium: true, plus: true, ultimate: true },
@@ -129,15 +129,20 @@ export const FITUR_KOMPARASI = [
     ],
   },
   {
-    kategori: 'Personalisasi & Identitas Web',
+    kategori: 'Personalisasi & Identitas Web (Paket Individu)',
     items: [
-      { nama: 'Lencana (Badge) Profil Web & Discord', gratis: false, premium: 'Gold Badge', plus: 'Platinum Badge', ultimate: 'Ultraviolet Cyber' },
-      { nama: 'Simpan Playlist Kustom Pribadi', gratis: '3 playlist', premium: '10 playlist', plus: '25 playlist', ultimate: 'Tanpa Batas (∞)' },
-      { nama: 'Riwayat Lagu di Profil', gratis: '10 teratas', premium: '25 teratas', plus: '50 teratas', ultimate: 'Tanpa Batas (∞)' },
+      { nama: 'Lencana (Badge) Profil Web & Discord', gratis: false, premium: 'Gold Badge', plus: 'Platinum Badge', ultimate: 'Via Paket Individu' },
+      { nama: 'Simpan Playlist Kustom Pribadi', gratis: '3 playlist', premium: '10 playlist', plus: '25 playlist', ultimate: 'Tanpa Batas (1 server)' },
+      { nama: 'Riwayat Lagu di Profil', gratis: '10 teratas', premium: '25 teratas', plus: '50 teratas', ultimate: 'Via Paket Individu' },
       { nama: 'Dukungan Tiket di Server Support', gratis: 'Komunitas', premium: 'Prioritas', plus: 'Prioritas Tinggi', ultimate: 'VIP 24/7 Direct' },
     ],
   },
 ];
+
+// Catatan cakupan web (ditampilkan di tabel komparasi)
+export const CATATAN_CAKUPAN =
+  'Benefit di kategori Personalisasi & Identitas Web adalah benefit personal pemilik akun, hanya tersedia lewat paket individu (Premium / Premium+). ' +
+  'NOXA Pass Ultimate bekerja di sisi bot untuk seluruh member server pilihan, dan pembeli tetap mendapat tag pemilik di web.';
 
 export const LANGKAH_AKTIVASI = [
   {

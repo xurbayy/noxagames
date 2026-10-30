@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Emoji from '../Emoji';
-import { PREMIUM_PLANS, FITUR_KOMPARASI, LANGKAH_AKTIVASI, CATATAN_BITRATE, labelHarga } from '../../lib/premiumPlan';
+import { PREMIUM_PLANS, FITUR_KOMPARASI, LANGKAH_AKTIVASI, CATATAN_BITRATE, CATATAN_CAKUPAN, labelHarga } from '../../lib/premiumPlan';
 
 const PILIHAN_DURASI = [
   { index: 0, bulan: 1, label: '1 Bulan' },
@@ -364,6 +364,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
               </table>
             </div>
             <p className="mt-4 text-[11px] leading-relaxed text-faint break-words">{CATATAN_BITRATE}</p>
+            <p className="mt-2 text-[11px] leading-relaxed text-faint break-words">{CATATAN_CAKUPAN}</p>
           </div>
         )}
       </section>
