@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Emoji from './Emoji';
 import ShareCardButton from './ShareCardButton';
 import { durasi } from '../lib/format';
-import { premiumEmojiName } from '../lib/premiumPlan';
+import { premiumEmojiName, BENEFIT_INVENTORY, nilaiBenefit } from '../lib/premiumPlan';
 
 const POLL_MS = 5000;
 
@@ -242,6 +242,84 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           </div>
         </div>
       )}
+
+      {/* ===== INVENTARIS NOXA PASS (ala NEXO): jelas mana aktif mana terkunci ===== */}
+      {(() => {
+        const tier = subscription?.plan_id || 'free';
+        const aktif = Boolean(subscription && Number(subscription.expires_at) > Date.now());
+        return (
+          <section className="card mt-6 p-4 sm:p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="flex items-center gap-2 font-display text-base font-bold text-ink">
+                <Emoji name="party" size={18} /> Inventaris NOXA Pass
+              </h2>
+              {aktif ? (
+                <span className={`noxa-badge ${
+                  tier === 'premium-ultimate' ? 'bg-[#240B3B] text-purple-200 border-purple-500'
+                  : tier === 'premium-plus' ? 'bg-[#1E232A] text-slate-100 border-slate-300'
+                  : 'bg-[#2D1B03] text-amber-300 border-amber-500'
+                }`}>
+                  {subscription.tier_name || 'Premium'}
+                </span>
+              ) : (
+                <span className="noxa-badge bg-surface3 text-faint border-line">Belum Aktif</span>
+              )}
+            </div>
+            <p className="mt-1.5 text-[11px] sm:text-xs text-faint">
+              {aktif
+                ? 'Semua item di bawah ini aktif secara real-time mengikuti paketmu.'
+                : 'Item terkunci akan terbuka otomatis saat kamu berlangganan NOXA Pass.'}
+            </p>
+
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+              {BENEFIT_INVENTORY.map((b) => {
+                const nilai = nilaiBenefit(tier, b);
+                const terbuka = aktif && nilai !== null && nilai !== false;
+                return (
+                  <li
+                    key={b.nama}
+                    className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 transition ${
+                      terbuka ? 'border-linebright bg-surface hover:border-crimson/50' : 'border-line bg-surface2/60 opacity-60'
+                    }`}
+                  >
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
+                      terbuka ? 'bg-[#2B0003] border-crimson' : 'bg-surface3 border-line'
+                    }`}>
+                      {terbuka ? <Emoji name={b.emoji} size={16} /> : (
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" className="text-faint" aria-hidden="true">
+                          <rect x="3" y="11" width="18" height="11" rx="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                      )}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className={`text-xs sm:text-sm font-semibold leading-snug break-words ${terbuka ? 'text-ink' : 'text-muted'}`}>{b.nama}</div>
+                      <div className={`text-[11px] sm:text-xs mt-0.5 break-words ${terbuka ? 'text-neon font-bold' : 'text-faint'}`}>
+                        {terbuka
+                          ? (nilai === true ? 'Aktif' : nilai)
+                          : (nilai === false ? 'Tidak tersedia di paketmu' : 'Terkunci')}
+                      </div>
+                    </div>
+                    {terbuka ? (
+                      <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#0F2415] border border-[#22C55E] text-[#86EFAC] text-xs font-bold">✓</span>
+                    ) : (
+                      <Link href="/premium" className="shrink-0 rounded-full border border-crimson bg-[#2B0003] px-2.5 py-0.5 text-[10px] font-bold text-neon hover:bg-[#3D0005]">
+                        Buka
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+
+            {!aktif && (
+              <Link href="/premium" className="btn-primary mt-4 w-full justify-center !py-2.5 text-xs font-bold">
+                Lihat Paket NOXA Pass →
+              </Link>
+            )}
+          </section>
+        );
+      })()}
 
       {/* Form ganti server paket Ultimate */}
       {paketServer && gantiServerBuka && (

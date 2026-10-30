@@ -166,6 +166,29 @@ export function labelHarga(nominal) {
   return `Rp ${Number(nominal).toLocaleString('id-ID')}`;
 }
 
+/**
+ * Inventaris benefit NOXA Pass - daftar lengkap benefit dengan nilai NYATA
+ * per tier (sama dengan enforcement bot di getPremiumLimit). Dipakai kartu
+ * "Inventaris NOXA Pass" di profil /me supaya jelas mana yang aktif mana
+ * yang terkunci, ala inventory NEXO.
+ */
+export const BENEFIT_INVENTORY = [
+  { nama: 'Bebas Vote-Skip', emoji: 'lewati', nilai: { free: null, premium: true, 'premium-plus': true, 'premium-ultimate': true } },
+  { nama: 'Batas Antrean Lagu', emoji: 'antrian', nilai: { free: '50 lagu', premium: '250 lagu', 'premium-plus': '500 lagu', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Volume Maksimal', emoji: 'suara', nilai: { free: '100%', premium: '150%', 'premium-plus': '200%', 'premium-ultimate': '200%' } },
+  { nama: 'Efek Audio Aktif Bersamaan', emoji: 'efek', nilai: { free: '1 efek', premium: '1 efek', 'premium-plus': '3 efek', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Playlist Kustom Pribadi', emoji: 'playlist', nilai: { free: '3 playlist', premium: '10 playlist', 'premium-plus': '25 playlist', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Riwayat Dengar Bareng', emoji: 'sukapenuh', nilai: { free: '5 orang', premium: '15 orang', 'premium-plus': '25 orang', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Riwayat Lagu di Profil', emoji: 'userprofile', nilai: { free: '10 lagu', premium: '25 lagu', 'premium-plus': '50 lagu', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Mode Radio 24/7 Nonstop', emoji: 'radio', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
+  { nama: 'Audio Up to 320k', emoji: 'musik', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
+];
+
+/** Nilai benefit untuk tier tertentu. */
+export function nilaiBenefit(tier, benefit) {
+  return benefit.nilai?.[tier] ?? null;
+}
+
 /** Nama emoji lencana NOXA Pass (registry noxa-emojis) per plan_id, atau null. */
 export function premiumEmojiName(planId) {
   if (planId === 'premium-ultimate') return 'noxapremiumultimate';
