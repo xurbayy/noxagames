@@ -19,8 +19,8 @@ export default async function Home() {
     <div>
       {/* ================= HERO ================= */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-4 pb-16 pt-14 md:pt-20">
-          <div className="max-w-2xl">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-24 md:grid-cols-2 md:pb-24 md:pt-32">
+          <div className="text-center lg:text-left">
             <div className="flex items-center gap-2">
               <span className={`h-2.5 w-2.5 rounded-full ${hidup ? 'bg-ok live-dot' : 'bg-warn'}`} />
               <span className="text-[13px] font-semibold tracking-wide text-muted">
@@ -42,7 +42,8 @@ export default async function Home() {
                 </>
               )}
             </h1>
-            <p className="mt-5 text-base md:text-lg leading-relaxed text-muted">
+            <div className="accent-bar mt-5 mx-auto lg:mx-0" aria-hidden="true" />
+            <p className="mt-6 text-base md:text-lg leading-relaxed text-muted">
               {session ? (
                 <>
                   Akun kamu sudah tertaut. Cek <strong className="text-ink">lagu paling sering</strong>,{' '}
@@ -57,7 +58,7 @@ export default async function Home() {
                 </>
               )}
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
               {session ? (
                 <>
                   <Link href="/me" className="btn-primary">Buka Profil</Link>
@@ -76,7 +77,7 @@ export default async function Home() {
                 </>
               )}
             </div>
-            <div className="mt-5 flex items-center gap-2 text-[13px] text-faint">
+            <div className="mt-5 flex items-center justify-center gap-2 text-[13px] text-faint lg:justify-start">
               <span className="rounded border border-linebright px-1.5 py-0.5 font-mono">.play</span>
               <span>mulai dari situ. sisanya tinggal klik tombol</span>
             </div>
@@ -85,11 +86,11 @@ export default async function Home() {
           {/* Bawah hero full width: sudah login = maskot; belum login = panel
               pemutar 1:1 versi compact, MELEBAR penuh selebar konten */}
           {session ? (
-            <div className="mt-14 flex justify-center">
+            <div className="flex w-full justify-center lg:justify-end">
               <MascotHero />
             </div>
           ) : (
-            <div className="mt-14 mx-auto w-full max-w-3xl">
+            <div className="w-full max-w-md mx-auto lg:mx-0">
               <PlayerShowcase singleMode="music" compact />
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
                 <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
@@ -102,7 +103,7 @@ export default async function Home() {
 
       {/* ================= STATISTIK LIVE ================= */}
       <section className="border-y border-line bg-surface/60">
-        <div className="mx-auto max-w-6xl px-4 py-8">
+        <div className="mx-auto max-w-6xl px-5 py-10">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <StatAngka label="Server Terpakai" angka={t.servers} emoji="musik" />
             <StatAngka label="Pendengar Tercatat" angka={t.listeners} emoji="userprofile" />
@@ -116,7 +117,7 @@ export default async function Home() {
       </section>
 
       {/* ================= FITUR ================= */}
-      <section className="mx-auto max-w-6xl px-4 py-16">
+      <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
         <SectionHead emoji="fitur" title="Bukan Sekadar Bot Musik." sub="Dari cari lagu sampai bersih-bersih chat, semua jalan sendiri di server kamu." />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <FiturCard emoji="musik" title="Musik dari 8 Platform" desc="YouTube, Spotify, Apple Music, TIDAL, dan teman-temannya. Ketik judulnya, bot nyariin 10 lagu teratas, kamu tinggal pilih." />
@@ -144,7 +145,7 @@ export default async function Home() {
 
       {/* ================= CARA PAKAI ================= */}
       <section className="border-y border-line bg-surface/60">
-        <div className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mx-auto max-w-6xl px-5 py-20 md:py-24">
           <SectionHead emoji="stayready" title="Cukup Ketik Titik." sub="Tanpa dashboard, tanpa belasan slash command. Satu prefix titik untuk semuanya." />
           <div className="grid gap-4 md:grid-cols-3">
             <LangkahCard n={1} judul="Invite bot" desc="Tekan Add to Discord, selesai. Tidak ada setup, tidak ada konfigurasi yang harus dibaca dulu." />
@@ -155,9 +156,9 @@ export default async function Home() {
       </section>
 
       {/* ================= PODCAST TEMA ================= */}
-      <section className="mx-auto max-w-6xl px-4 py-16">
+      <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
         <SectionHead emoji="podcast" title="Mau Dengar Apa Malam Ini?" sub="Ketik .podcast tanpa isi, daftar temanya muncul. Episode gaming dan vlog yang menyamar sudah disaring lebih dulu." />
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap justify-center gap-2.5">
           {podcastTema.map((tema) => (
             <span key={tema.nama} className="flex items-center gap-2 rounded-full border border-line bg-surface2 px-4 py-2 text-[15px] text-muted">
               <Emoji name={tema.emoji} size={18} /> {tema.nama}
@@ -168,7 +169,7 @@ export default async function Home() {
 
       {/* ================= FAQ ================= */}
       <section className="border-t border-line bg-surface/60">
-        <div className="mx-auto max-w-4xl px-4 py-16">
+        <div className="mx-auto max-w-4xl px-5 py-20 md:py-24">
           <SectionHead emoji="bantuan" title="Sering Ditanyakan" sub="" />
           <div className="space-y-2.5">
             {faqList.map((f) => (
@@ -187,8 +188,8 @@ export default async function Home() {
       </section>
 
       {/* ================= CTA AKHIR ================= */}
-      <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="card relative overflow-hidden px-6 py-12 text-center">
+      <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
+        <div className="card relative overflow-hidden px-6 py-14 text-center">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px hairline" />
           <Emoji name="musik" size={44} className="mx-auto" />
           <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">Percaya Sama Telinga Sendiri.</h2>
@@ -257,19 +258,18 @@ function StatAngka({ label, angka, emoji }) {
 
 function SectionHead({ emoji, title, sub }) {
   return (
-    <div className="mb-8">
-      <div className="flex items-center gap-2.5">
-        <Emoji name={emoji} size={26} />
-        <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
-      </div>
-      {sub ? <p className="mt-2.5 max-w-2xl text-[15px] md:text-base leading-relaxed text-muted">{sub}</p> : null}
+    <div className="mb-10 text-center">
+      <Emoji name={emoji} size={28} />
+      <h2 className="mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
+      <div className="accent-bar mx-auto mt-4" aria-hidden="true" />
+      {sub ? <p className="mx-auto mt-4 max-w-2xl text-[15px] md:text-base leading-relaxed text-muted">{sub}</p> : null}
     </div>
   );
 }
 
 function FiturCard({ emoji, title, desc }) {
   return (
-    <div className="card card-hover flex flex-col p-5">
+    <div className="card card-hover flex flex-col px-6 py-6">
       <div className="flex items-center gap-3">
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
           <Emoji name={emoji} size={24} />
