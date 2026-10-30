@@ -7,7 +7,7 @@ import { pageMeta, SUPPORT_INVITE } from '../lib/site';
 export const metadata = pageMeta({
   title: 'Ketentuan Layanan',
   description:
-    'Ketentuan Layanan NOXA Sound: aturan penggunaan bot Discord, perlindungan hak cipta (DMCA safe harbor), penafian hosting, dan batasan tanggung jawab.',
+    'Ketentuan Layanan NOXA Sound: aturan pemakaian bot dan web, hak cipta konten yang diputar, premium dan pembayaran QRIS, serta sanksi pelanggaran.',
   path: '/terms-of-service',
 });
 
