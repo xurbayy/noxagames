@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Emoji from '../components/Emoji';
+import BackButton from '../components/BackButton';
 import TopTabsView from '../components/top/TopTabsView';
 import { getSession } from '../lib/session';
 import { getSnapshot, botAlive, ageLabel, topSongs, topServers, topListeners } from '../lib/snapshot';
@@ -35,7 +36,7 @@ export default async function TopPage() {
             Peringkat dari seluruh aktivitas dengar di semua server Discord. Data dihitung dari durasi nyata yang didengarkan, bukan sekali request.
           </p>
         </div>
-        <Link href="/" className="btn-ghost hidden sm:inline-flex">Kembali</Link>
+        <BackButton href="/" className="hidden sm:inline-flex" />
       </div>
 
       {!adaData && <MenungguState hidup={hidup} />}

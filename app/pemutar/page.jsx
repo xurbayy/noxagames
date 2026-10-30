@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Emoji from '../components/Emoji';
+import BackButton from '../components/BackButton';
 import PlayerShowcase from '../components/panel/PlayerPanels';
 import { pageMeta } from '../lib/site';
 
@@ -24,7 +25,7 @@ export default function PemutarPage() {
             mencoba. Kalau mau mengontrol yang asli, lakukan dari Discord server kamu.
           </p>
         </div>
-        <Link href="/" className="btn-ghost hidden sm:inline-flex">Kembali</Link>
+        <BackButton href="/" className="hidden sm:inline-flex" />
       </div>
 
       <div className="mt-8">

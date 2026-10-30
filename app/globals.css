@@ -59,6 +59,45 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover { background: #5C0008; }
 
+/* ── SCROLL PROGRESS (garis merah atas ala NEXO) ── */
+#scroll-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  z-index: 9999;
+  background: linear-gradient(90deg, var(--color-crimson), var(--color-neon));
+  width: 0;
+  border-radius: 0 2px 2px 0;
+  transition: width 0.08s linear;
+}
+
+/* ── ANIMASI REVEAL SCROLL (ala NEXO) ── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── HERO ENTRANCE (ala NEXO) ── */
+.anim-in {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: animIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes animIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+.delay-1 { animation-delay: 0.08s; }
+.delay-2 { animation-delay: 0.18s; }
+.delay-3 { animation-delay: 0.28s; }
+.delay-4 { animation-delay: 0.38s; }
+
 @layer components {
   /* Kartu dasar: flat, border tipis, sudut lembut */
   .card {
@@ -209,5 +248,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .eq-bar, .live-dot, .mascot-anim, .mascot-shadow, .bubble-a, .bubble-b { animation: none; }
+  .fade-up { opacity: 1; transform: none; transition: none; }
+  .anim-in { opacity: 1; transform: none; animation: none; }
   html { scroll-behavior: auto; }
 }

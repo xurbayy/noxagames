@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Emoji from './components/Emoji';
 import PlayerShowcase from './components/panel/PlayerPanels';
+import Reveal from './components/Reveal';
 import { getSession } from './lib/session';
 import { getSnapshot, totals, botAlive, ageLabel, durasi } from './lib/snapshot';
 import { faqList } from './lib/faq-content';
@@ -19,15 +20,15 @@ export default async function Home() {
     <div>
       {/* ================= HERO ================= */}
       <section className="relative overflow-hidden">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-24 md:grid-cols-2 md:pb-24 md:pt-32">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-28 md:grid-cols-2 md:pb-24 md:pt-36">
           <div className="text-center lg:text-left">
-            <div className="flex items-center gap-2">
+            <div className="anim-in flex items-center justify-center gap-2 lg:justify-start">
               <span className={`h-2.5 w-2.5 rounded-full ${hidup ? 'bg-ok live-dot' : 'bg-warn'}`} />
               <span className="text-[13px] font-semibold tracking-wide text-muted">
                 {hidup ? 'Sedang Online' : 'Bot Sedang Offline'}
               </span>
             </div>
-            <h1 className="mt-4 font-display text-4xl font-bold leading-[1.12] tracking-tight sm:text-5xl">
+            <h1 className="anim-in delay-1 mt-4 font-display text-4xl font-bold leading-[1.12] tracking-tight sm:text-5xl">
               {session ? (
                 <>
                   Selamat Dengar Lagi.
@@ -42,8 +43,8 @@ export default async function Home() {
                 </>
               )}
             </h1>
-            <div className="accent-bar mt-5 mx-auto lg:mx-0" aria-hidden="true" />
-            <p className="mt-6 text-base md:text-lg leading-relaxed text-muted">
+            <div className="anim-in delay-1 accent-bar mt-5 mx-auto lg:mx-0" aria-hidden="true" />
+            <p className="anim-in delay-2 mt-6 text-base md:text-lg leading-relaxed text-muted">
               {session ? (
                 <>
                   Akun kamu sudah tertaut. Cek <strong className="text-ink">lagu paling sering</strong>,{' '}
@@ -58,11 +59,11 @@ export default async function Home() {
                 </>
               )}
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <div className="anim-in delay-3 mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
               {session ? (
                 <>
-                  <Link href="/me" className="btn-primary">Buka Profil</Link>
-                  <Link href="/top" className="btn-ghost">
+                  <Link href="/me" prefetch={false} className="btn-primary">Buka Profil</Link>
+                  <Link href="/top" prefetch={false} className="btn-ghost">
                     <Emoji name="number1" size={18} /> Cek Top Lagu
                   </Link>
                 </>
@@ -71,39 +72,38 @@ export default async function Home() {
                   <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">
                     Add to Discord
                   </a>
-                  <Link href="/pemutar" className="btn-ghost">
+                  <Link href="/pemutar" prefetch={false} className="btn-ghost">
                     <Emoji name="suara" size={18} /> Lihat Panel Pemutar
                   </Link>
                 </>
               )}
             </div>
-            <div className="mt-5 flex items-center justify-center gap-2 text-[13px] text-faint lg:justify-start">
+            <div className="anim-in delay-3 mt-5 flex items-center justify-center gap-2 text-[13px] text-faint lg:justify-start">
               <span className="rounded border border-linebright px-1.5 py-0.5 font-mono">.play</span>
               <span>mulai dari situ. sisanya tinggal klik tombol</span>
             </div>
           </div>
 
-          {/* Bawah hero full width: sudah login = maskot; belum login = panel
-              pemutar 1:1 versi compact, MELEBAR penuh selebar konten */}
-          {session ? (
-            <div className="flex w-full justify-center lg:justify-end">
+          {/* Kanan hero: sudah login = maskot melayang; belum login = panel pemutar compact */}
+          <div className="anim-in delay-2 flex w-full justify-center lg:justify-end">
+            {session ? (
               <MascotHero />
-            </div>
-          ) : (
-            <div className="w-full max-w-md mx-auto lg:mx-0">
-              <PlayerShowcase singleMode="music" compact />
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
-                <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
-                <Link href="/pemutar" className="font-semibold text-neon hover:underline">Lihat semua mode</Link>
+            ) : (
+              <div className="w-full max-w-md">
+                <PlayerShowcase singleMode="music" compact />
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[13px] text-faint">
+                  <span>Panel yang sama persis dengan di Discord. Tombolnya bisa dicoba di sini.</span>
+                  <Link href="/pemutar" prefetch={false} className="font-semibold text-neon hover:underline">Lihat semua mode</Link>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </section>
 
       {/* ================= STATISTIK LIVE ================= */}
       <section className="border-y border-line bg-bg">
-        <div className="mx-auto max-w-6xl px-5 py-10">
+        <Reveal className="mx-auto max-w-6xl px-5 py-10">
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <StatAngka label="Server Terpakai" angka={t.servers} emoji="musik" />
             <StatAngka label="Pendengar Tercatat" angka={t.listeners} emoji="userprofile" />
@@ -113,25 +113,28 @@ export default async function Home() {
           {snap && !hidup && (
             <div className="mt-4 text-xs text-faint">Data terakhir {ageLabel(snap.ageSec)} (bot sedang offline)</div>
           )}
-        </div>
+        </Reveal>
       </section>
 
       {/* ================= FITUR ================= */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
-        <SectionHead emoji="fitur" title="Bukan Sekadar Bot Musik." sub="Dari cari lagu sampai bersih-bersih chat, semua jalan sendiri di server kamu." />
+        <Reveal>
+          <SectionHead emoji="fitur" title="Bukan Sekadar Bot Musik." sub="Dari cari lagu sampai bersih-bersih chat, semua jalan sendiri di server kamu." />
+        </Reveal>
+
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <FiturCard emoji="musik" title="Musik dari 8 Platform" desc="YouTube, Spotify, Apple Music, TIDAL, dan teman-temannya. Ketik judulnya, bot nyariin 10 lagu teratas, kamu tinggal pilih." />
-          <FiturCard emoji="NOXASmart" title="NOXA Smart" desc="Otak di balik layar: menyaring cover palsu, mencocokkan lagu antar platform, dan memastikan like nempel ke lagu yang benar." />
-          <FiturCard emoji="radio" title="Radio 24 Jam" desc="Lagu populer nonstop, tidak ada yang diulang sampai pool-nya habis diputar. Jawaban buat server yang 24 jam ada orangnya." />
-          <FiturCard emoji="podcast" title="Podcast 15 Tema" desc="Horror, kriminal, bisnis, dan 12 tema lagi. Vlog dan gaming yang menyamar sudah disaring, yang tampil benar-benar obrolan." />
-          <FiturCard emoji="efek" title="Efek Audio DSP" desc="Bass boost tiga tingkat, nightcore, slowed, 8D, surround, karaoke. Pasang dan lepas dari panel tanpa putus-putus suara." />
-          <FiturCard emoji="livelirik" title="Lirik Live" desc="Karaoke real-time yang menyala per baris mengikuti lagu. Liriknya diverifikasi dulu, karena salah lirik itu memalukan." />
-          <FiturCard emoji="userprofile" title="Profil Pendengar" desc="Lagu paling sering kamu dengar, dengar bareng siapa, dan server favoritmu. Kartu analitiknya ada di Discord dan di sini." />
-          <FiturCard emoji="chat" title="Live Chat di Panel" desc="Semua yang ada di voice bisa kirim pesan lewat tombol Chat, langsung muncul di panel. Debat lagu berikutnya jadi rame." />
+          <Reveal delay={60}><FiturCard emoji="musik" title="Musik dari 8 Platform" desc="YouTube, Spotify, Apple Music, TIDAL, dan teman-temannya. Ketik judulnya, bot nyariin 10 lagu teratas, kamu tinggal pilih." /></Reveal>
+          <Reveal delay={120}><FiturCard emoji="NOXASmart" title="NOXA Smart" desc="Otak di balik layar: menyaring cover palsu, mencocokkan lagu antar platform, dan memastikan like nempel ke lagu yang benar." /></Reveal>
+          <Reveal delay={180}><FiturCard emoji="radio" title="Radio 24 Jam" desc="Lagu populer nonstop, tidak ada yang diulang sampai pool-nya habis diputar. Jawaban buat server yang 24 jam ada orangnya." /></Reveal>
+          <Reveal delay={240}><FiturCard emoji="podcast" title="Podcast 15 Tema" desc="Horror, kriminal, bisnis, dan 12 tema lagi. Vlog dan gaming yang menyamar sudah disaring, yang tampil benar-benar obrolan." /></Reveal>
+          <Reveal delay={60}><FiturCard emoji="efek" title="Efek Audio DSP" desc="Bass boost tiga tingkat, nightcore, slowed, 8D, surround, karaoke. Pasang dan lepas dari panel tanpa putus-putus suara." /></Reveal>
+          <Reveal delay={120}><FiturCard emoji="livelirik" title="Lirik Live" desc="Karaoke real-time yang menyala per baris mengikuti lagu. Liriknya diverifikasi dulu, karena salah lirik itu memalukan." /></Reveal>
+          <Reveal delay={180}><FiturCard emoji="userprofile" title="Profil Pendengar" desc="Lagu paling sering kamu dengar, dengar bareng siapa, dan server favoritmu. Kartu analitiknya ada di Discord dan di sini." /></Reveal>
+          <Reveal delay={240}><FiturCard emoji="chat" title="Live Chat di Panel" desc="Semua yang ada di voice bisa kirim pesan lewat tombol Chat, langsung muncul di panel. Debat lagu berikutnya jadi rame." /></Reveal>
         </div>
 
-        {/* Provider strip: grid rapi 4x2, bukan baris meliuk */}
-        <div className="mt-6 card p-4">
+        {/* Provider strip */}
+        <Reveal delay={300} className="mt-8 card p-4">
           <div className="mb-3 text-xs font-bold uppercase tracking-wider text-faint">Sumber Lagunya</div>
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
             {providers.map((p) => (
@@ -140,54 +143,64 @@ export default async function Home() {
               </span>
             ))}
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ================= CARA PAKAI ================= */}
       <section className="border-y border-line bg-bg">
         <div className="mx-auto max-w-6xl px-5 py-20 md:py-24">
-          <SectionHead emoji="stayready" title="Cukup Ketik Titik." sub="Tanpa dashboard, tanpa belasan slash command. Satu prefix titik untuk semuanya." />
+          <Reveal>
+            <SectionHead emoji="stayready" title="Cukup Ketik Titik." sub="Tanpa dashboard, tanpa belasan slash command. Satu prefix titik untuk semuanya." />
+          </Reveal>
           <div className="grid gap-4 md:grid-cols-3">
-            <LangkahCard n={1} judul="Invite bot" desc="Tekan Add to Discord, selesai. Tidak ada setup, tidak ada konfigurasi yang harus dibaca dulu." />
-            <LangkahCard n={2} judul="Ketik perintahnya" desc="Masuk voice channel, lalu ketik .play lathi. Mau podcast? .podcast horror. Admin yang mau nyalakan radio tinggal .radio on." />
-            <LangkahCard n={3} judul="Panelnya kerja" desc="Jeda, skip, volume, efek, like, semuanya jadi tombol di channel. Pesan lain dari bot otomatis terhapus 45 detik, panelnya saja yang tinggal." />
+            <Reveal delay={60}><LangkahCard n={1} judul="Invite bot" desc="Tekan Add to Discord, selesai. Tidak ada setup, tidak ada konfigurasi yang harus dibaca dulu." /></Reveal>
+            <Reveal delay={140}><LangkahCard n={2} judul="Ketik perintahnya" desc="Masuk voice channel, lalu ketik .play lathi. Mau podcast? .podcast horror. Admin yang mau nyalakan radio tinggal .radio on." /></Reveal>
+            <Reveal delay={220}><LangkahCard n={3} judul="Panelnya kerja" desc="Jeda, skip, volume, efek, like, semuanya jadi tombol di channel. Pesan lain dari bot otomatis terhapus 45 detik, panelnya saja yang tinggal." /></Reveal>
           </div>
         </div>
       </section>
 
       {/* ================= PODCAST TEMA ================= */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
-        <SectionHead emoji="podcast" title="Mau Dengar Apa Malam Ini?" sub="Ketik .podcast tanpa isi, daftar temanya muncul. Episode gaming dan vlog yang menyamar sudah disaring lebih dulu." />
-        <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-5">
-          {podcastTema.map((tema) => (
-            <div
-              key={tema.nama}
-              className="card card-hover flex items-center gap-3 px-4 py-3.5"
-            >
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
-                <Emoji name={tema.emoji} size={18} />
-              </span>
-              <span className="truncate text-sm font-semibold text-ink">{tema.nama}</span>
-            </div>
-          ))}
-        </div>
+        <Reveal>
+          <SectionHead emoji="podcast" title="Mau Dengar Apa Malam Ini?" sub="Ketik .podcast tanpa isi, daftar temanya muncul. Episode gaming dan vlog yang menyamar sudah disaring lebih dulu." />
+        </Reveal>
+        <Reveal delay={80}>
+          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-5">
+            {podcastTema.map((tema) => (
+              <div
+                key={tema.nama}
+                className="card card-hover flex items-center gap-3 px-4 py-3.5"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+                  <Emoji name={tema.emoji} size={18} />
+                </span>
+                <span className="truncate text-sm font-semibold text-ink">{tema.nama}</span>
+              </div>
+            ))}
+          </div>
+        </Reveal>
       </section>
 
       {/* ================= FAQ ================= */}
       <section className="border-t border-line bg-bg">
         <div className="mx-auto max-w-4xl px-5 py-20 md:py-24">
-          <SectionHead emoji="bantuan" title="Sering Ditanyakan" sub="" />
+          <Reveal>
+            <SectionHead emoji="bantuan" title="Sering Ditanyakan" sub="" />
+          </Reveal>
           <div className="space-y-2.5">
-            {faqList.map((f) => (
-              <details key={f.q} className="card group px-5 py-4 open:border-linebright">
-                <summary className="cursor-pointer list-none text-[15px] font-semibold text-ink marker:hidden">
-                  <span className="flex items-center justify-between gap-3">
-                    {f.q}
-                    <span className="text-lg text-faint transition-transform group-open:rotate-45">+</span>
-                  </span>
-                </summary>
-                <p className="mt-2.5 text-[15px] leading-relaxed text-muted">{f.a}</p>
-              </details>
+            {faqList.map((f, i) => (
+              <Reveal key={f.q} delay={(i % 4) * 60}>
+                <details className="card group px-5 py-4 open:border-linebright">
+                  <summary className="cursor-pointer list-none text-[15px] font-semibold text-ink marker:hidden">
+                    <span className="flex items-center justify-between gap-3">
+                      {f.q}
+                      <span className="text-lg text-faint transition-transform group-open:rotate-45">+</span>
+                    </span>
+                  </summary>
+                  <p className="mt-2.5 text-[15px] leading-relaxed text-muted">{f.a}</p>
+                </details>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -195,19 +208,21 @@ export default async function Home() {
 
       {/* ================= CTA AKHIR ================= */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">
-        <div className="card relative overflow-hidden px-6 py-14 text-center">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px hairline" />
-          <Emoji name="musik" size={44} className="mx-auto" />
-          <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">Percaya Sama Telinga Sendiri.</h2>
-          <p className="mx-auto mt-3 max-w-lg text-[15px] md:text-base leading-relaxed text-muted">
-            Invite botnya, mainkan satu lagu, lalu putuskan. Kalau ada yang bikin bingung,
-            server dukungan dibuka setiap hari.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">Add to Discord</a>
-            <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-ghost">Server Dukungan</a>
+        <Reveal>
+          <div className="card relative overflow-hidden px-6 py-14 text-center">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px hairline" />
+            <Emoji name="musik" size={44} className="mx-auto" />
+            <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">Percaya Sama Telinga Sendiri.</h2>
+            <p className="mx-auto mt-3 max-w-lg text-[15px] md:text-base leading-relaxed text-muted">
+              Invite botnya, mainkan satu lagu, lalu putuskan. Kalau ada yang bikin bingung,
+              server dukungan dibuka setiap hari.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">Add to Discord</a>
+              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-ghost">Server Dukungan</a>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
     </div>
   );
@@ -215,13 +230,9 @@ export default async function Home() {
 
 // ---------- Komponen kecil landing (server) ----------
 
-// Maskot hero: muncul HANYA saat sudah login (pola NEXO). Bob desktop,
-// wiggle mobile (lihat globals.css), bayangan oval menyusut, 2 bubble
-// melayang bergantian, glow merah di belakang.
 function MascotHero() {
   return (
     <div className="relative mx-auto flex w-full max-w-md select-none flex-col items-center px-4 py-6">
-      {/* Glow siluet */}
       <div className="absolute inset-0 -z-10 rounded-full bg-crimson/10 blur-3xl" aria-hidden="true" />
 
       <img
@@ -231,13 +242,11 @@ function MascotHero() {
         draggable={false}
       />
 
-      {/* Bayangan oval menyusut */}
       <div
         className="mascot-shadow -mt-6 h-4 w-48 rounded-full bg-black/70 blur-md"
         aria-hidden="true"
       />
 
-      {/* Bubble ucapan */}
       <div className="bubble-a absolute left-0 top-6 rounded-full border border-linebright bg-surface2 px-3.5 py-1.5 text-[13px] font-semibold text-ink shadow-lg">
         .play? Gas!
       </div>
@@ -275,7 +284,7 @@ function SectionHead({ emoji, title, sub }) {
 
 function FiturCard({ emoji, title, desc }) {
   return (
-    <div className="card card-hover flex flex-col px-6 py-6">
+    <div className="card card-hover flex flex-col p-6 h-full">
       <div className="flex items-center gap-3">
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
           <Emoji name={emoji} size={24} />
@@ -289,7 +298,7 @@ function FiturCard({ emoji, title, desc }) {
 
 function LangkahCard({ n, judul, desc }) {
   return (
-    <div className="card card-hover p-5">
+    <div className="card card-hover p-6 h-full">
       <div className="flex items-center gap-3">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-crimson font-display text-base font-bold text-white">
           {n}

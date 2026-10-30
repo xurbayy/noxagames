@@ -3,7 +3,7 @@ import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
-import FloatingRadio from './components/FloatingRadio';
+import ScrollProgress from './components/ScrollProgress';
 import { getSession } from './lib/session';
 import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, SITE_URL, absoluteUrl } from './lib/site';
 
@@ -57,6 +57,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="id" className={`${inter.variable} ${space.variable}`}>
       <body className="min-h-screen antialiased">
+        <ScrollProgress />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -65,7 +66,6 @@ export default async function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <CookieConsent />
-        <FloatingRadio />
       </body>
     </html>
   );

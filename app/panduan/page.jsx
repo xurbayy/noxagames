@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Emoji from '../components/Emoji';
+import BackButton from '../components/BackButton';
 import { panduanKategori } from '../lib/panduan-content';
 import { pageMeta } from '../lib/site';
 
@@ -23,7 +24,7 @@ export default function PanduanPage() {
             Satu-satunya slash command adalah <span className="cmd">/help</span> untuk membuka panduan langsung di Discord.
           </p>
         </div>
-        <Link href="/" className="btn-ghost hidden sm:inline-flex">Kembali</Link>
+        <BackButton href="/" className="hidden sm:inline-flex" />
       </div>
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">

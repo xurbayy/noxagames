@@ -5,6 +5,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Emoji from './Emoji';
+import BackButton from './BackButton';
 import { durasi } from '../lib/format';
 
 const POLL_MS = 5000;
@@ -89,7 +90,7 @@ export default function MeClient({ initialUser, initialProfile = null }) {
             <h1 className="font-display text-xl font-bold">{initialUser?.username}</h1>
           </div>
         </div>
-        <Link href="/" className="btn-ghost !px-3.5 !py-2 text-xs">Kembali</Link>
+        <BackButton href="/" className="!px-3.5 !py-2 text-xs" />
       </div>
 
       {state.loading && <MemuatState />}
