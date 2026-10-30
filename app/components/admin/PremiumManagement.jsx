@@ -341,7 +341,7 @@ export default function PremiumManagement() {
               </thead>
               <tbody className="divide-y divide-line/60">
                 {data.transactions.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-surface2/50 transition-colors">
+                  <tr key={tx.id} className="hover:bg-surface2 transition-colors">
                     <td className="py-2.5 px-3 font-mono text-faint">{tx.id}</td>
                     <td className="py-2.5 px-3 text-ink font-medium">{tx.username} <span className="text-faint font-mono text-[10px]">({tx.discordId})</span></td>
                     <td className="py-2.5 px-3 text-muted">{tx.planId} ({tx.durationMonths} bln)</td>

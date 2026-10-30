@@ -45,7 +45,7 @@ export default async function LoginPage({ searchParams }) {
       <div className="relative mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 pb-12 pt-28">
       <div className="card relative overflow-hidden px-6 py-10 text-center">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px hairline" />
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-crimson/12 border border-crimson/25">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2B0003] border border-crimson">
           <Emoji name="userprofile" size={28} />
         </span>
         <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
@@ -58,7 +58,7 @@ export default async function LoginPage({ searchParams }) {
         </p>
 
         {gagal && (
-          <div className="mt-5 rounded-xl border border-crimson/50 bg-crimson/10 px-4 py-3 text-left text-xs leading-relaxed text-ink">
+          <div className="mt-5 rounded-xl border border-crimson bg-[#2B0003] px-4 py-3 text-left text-xs leading-relaxed text-ink">
             {pesan}
           </div>
         )}

@@ -116,7 +116,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
     <div className="space-y-16 sm:space-y-24">
       {/* Selector Siklus Pembayaran */}
       <div className="flex flex-col items-center">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface2/90 p-1.5 shadow-[var(--shadow-soft)]">
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface2 p-1.5 shadow-[var(--shadow-soft)]">
           {PILIHAN_DURASI.map((d) => (
             <button
               key={d.bulan}
@@ -337,13 +337,13 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                 <tbody className="divide-y divide-line/60">
                   {FITUR_KOMPARASI.map((kat) => (
                     <React.Fragment key={kat.kategori}>
-                      <tr className="bg-surface3/40">
+                      <tr className="bg-surface3">
                         <td colSpan={5} className="py-2.5 px-3 font-display text-xs font-bold uppercase tracking-wider text-neon">
                           {kat.kategori}
                         </td>
                       </tr>
                       {kat.items.map((it) => (
-                        <tr key={it.nama} className="hover:bg-surface2/50 transition-colors">
+                        <tr key={it.nama} className="hover:bg-surface2 transition-colors">
                           <td className="py-2.5 px-3 text-muted">{it.nama}</td>
                           <td className="py-2.5 px-3 text-center">{renderNilai(it.gratis)}</td>
                           <td className="py-2.5 px-3 text-center font-medium text-amber-300">{renderNilai(it.premium)}</td>
@@ -461,7 +461,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                   {session.avatar ? (
                     <img src={session.avatar} alt="" className="h-10 w-10 rounded-full border border-line" />
                   ) : (
-                    <div className="h-10 w-10 rounded-full bg-crimson/20 flex items-center justify-center font-bold text-neon">
+                    <div className="h-10 w-10 rounded-full bg-[#2B0003] border border-crimson flex items-center justify-center font-bold text-neon">
                       {session.username?.slice(0, 1)}
                     </div>
                   )}

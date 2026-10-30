@@ -87,7 +87,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           {initialUser?.avatar ? (
             <img src={initialUser.avatar} alt="" className="h-11 w-11 sm:h-12 sm:w-12 rounded-full border border-linebright object-cover" referrerPolicy="no-referrer" />
           ) : (
-            <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-crimson/20 border border-crimson/40 font-display text-base sm:text-lg font-bold">
+            <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#2B0003] border border-crimson font-display text-base sm:text-lg font-bold">
               {String(initialUser?.username || 'U').slice(0, 1).toUpperCase()}
             </span>
           )}
@@ -401,7 +401,7 @@ function StatBox({ emoji, label, angka }) {
   return (
     <div className="card flex flex-col justify-between p-3.5 sm:p-4 min-h-[96px]">
       <div className="flex items-center gap-2">
-        <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-crimson/12 border border-crimson/25">
+        <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-[#2B0003] border border-crimson">
           <Emoji name={emoji} size={15} />
         </span>
         <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-faint leading-tight break-words">{label}</span>

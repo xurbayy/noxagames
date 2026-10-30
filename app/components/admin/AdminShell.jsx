@@ -411,7 +411,7 @@ function PlayerLookup() {
                       <button
                         type="button"
                         onClick={() => setKonfirmasiHapus(true)}
-                        className="rounded-full border border-crimson/60 px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-crimson/15"
+                        className="rounded-full border border-crimson bg-[#2B0003] px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-[#3D0005]"
                       >
                         Hapus Data Pemain
                       </button>
@@ -447,7 +447,7 @@ function PlayerLookup() {
                     <button
                       type="button"
                       onClick={() => setKonfirmasiHapus(true)}
-                      className="rounded-full border border-crimson/60 px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-crimson/15"
+                      className="rounded-full border border-crimson bg-[#2B0003] px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-[#3D0005]"
                     >
                       Hapus Sisa Data ID Ini
                     </button>
@@ -519,7 +519,7 @@ function TopList({ judul, emoji, items, render }) {
 function StatBox({ emoji, label, angka }) {
   return (
     <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 sm:p-4">
-      <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+      <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
         <Emoji name={emoji} size={18} />
       </span>
       <div className="min-w-0 flex-1">

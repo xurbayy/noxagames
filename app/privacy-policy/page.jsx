@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       </div>
 
       {/* Ringkasan Cepat */}
-      <div className="mt-8 rounded-2xl border border-line bg-surface2/60 p-5 shadow-[var(--shadow-hair)]">
+      <div className="mt-8 rounded-2xl border border-line bg-surface2 p-5 shadow-[var(--shadow-hair)]">
         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neon">
           <Emoji name="centang" size={14} /> Poin Penting Perlindungan Privasi
         </div>
@@ -45,7 +45,7 @@ export default function PrivacyPage() {
 
       <div className="mt-10 space-y-8">
         {privacySections.map((s) => (
-          <section key={s.title} className="rounded-xl border border-line/60 bg-surface2/30 p-5 sm:p-6">
+          <section key={s.title} className="rounded-xl border border-line/60 bg-surface3 p-5 sm:p-6">
             <h2 className="font-display text-base sm:text-lg font-bold text-ink">{s.title}</h2>
             <div className="mt-3 space-y-3">
               {s.paras.map((p, i) => (

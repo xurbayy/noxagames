@@ -48,7 +48,7 @@ export default async function Home() {
                 </>
               ) : (
                 <>
-                  Musik <strong className="text-ink">8 platform</strong>, podcast 15 tema, radio 24 jam. Cukup ketik <strong className="text-ink">.play</strong>. Gratis.
+                  Musik <strong className="text-ink">8 platform</strong>, podcast 15 tema, radio 24 jam. Cukup ketik <strong className="text-ink">.play</strong>.
                 </>
               )}
             </p>
@@ -166,7 +166,7 @@ export default async function Home() {
                 key={tema.nama}
                 className="card card-hover flex items-center gap-2.5 sm:gap-3 px-3 py-3 sm:px-4 sm:py-3.5"
               >
-                <span className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+                <span className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
                   <Emoji name={tema.emoji} size={16} />
                 </span>
                 <span className="text-xs sm:text-sm font-semibold text-ink leading-snug break-words">{tema.nama}</span>
@@ -300,7 +300,7 @@ function MascotHero() {
 function StatAngka({ label, angka, emoji }) {
   return (
     <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3.5 sm:p-4">
-      <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+      <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
         <Emoji name={emoji} size={20} />
       </span>
       <div className="min-w-0 flex-1">
@@ -327,7 +327,7 @@ function FiturCard({ emoji, title, desc }) {
   return (
     <div className="card card-hover flex flex-col p-4 sm:p-6 h-full">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-crimson/12 border border-crimson/25">
+        <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
           <Emoji name={emoji} size={22} />
         </span>
         <h3 className="font-display text-sm sm:text-base font-bold leading-snug break-words">{title}</h3>

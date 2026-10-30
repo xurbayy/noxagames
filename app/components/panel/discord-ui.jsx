@@ -47,7 +47,7 @@ export function DiscordButton({ emoji, label, style = 'secondary', disabled = fa
  */
 export function ActionRow({ children, compact = false }) {
   return (
-    <div className={`flex flex-wrap items-center gap-1 sm:gap-2 rounded-lg border border-[#26272B] bg-[#2B2D31]/80 ${compact ? 'px-1.5 py-1 sm:px-2 sm:py-1.5' : 'px-2 py-1.5 sm:px-2.5 sm:py-2'}`}>
+    <div className={`flex flex-wrap items-center gap-1 sm:gap-2 rounded-lg border border-[#26272B] bg-[#2B2D31] ${compact ? 'px-1.5 py-1 sm:px-2 sm:py-1.5' : 'px-2 py-1.5 sm:px-2.5 sm:py-2'}`}>
       {children}
     </div>
   );

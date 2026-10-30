@@ -60,7 +60,7 @@ export default function Navbar({ session, isAdmin = false }) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled ? 'border-b border-line bg-bg/90 py-2.5 backdrop-blur-xl' : 'bg-transparent py-4'
+        scrolled ? 'border-b border-line bg-bg py-2.5 backdrop-blur-xl' : 'bg-transparent py-4'
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-3.5 sm:px-5" aria-label="Navigasi utama">
@@ -142,7 +142,7 @@ export default function Navbar({ session, isAdmin = false }) {
             <Link
               href="/me"
               prefetch={false}
-              className="hidden items-center gap-2 rounded-full border border-line bg-surface2/60 py-1 pl-1 pr-3 transition hover:border-linebright hover:bg-surface3 md:flex"
+              className="hidden items-center gap-2 rounded-full border border-line bg-surface2 py-1 pl-1 pr-3 transition hover:border-linebright hover:bg-surface3 md:flex"
               title={`Profil ${session.username}`}
             >
               {session.avatar ? (
@@ -155,7 +155,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-crimson/20 text-xs font-bold text-neon">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2B0003] border border-crimson text-xs font-bold text-neon">
                   {String(session.username || '?').slice(0, 2).toUpperCase()}
                 </span>
               )}
@@ -192,7 +192,7 @@ export default function Navbar({ session, isAdmin = false }) {
 
       {/* Drawer mobile */}
       {open && (
-        <div className="border-t border-line bg-bg/95 backdrop-blur-xl md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div className="border-t border-line bg-bg backdrop-blur-xl md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
           <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-4 sm:px-5 py-4">
             {LINKS.map((l) => (
               <li key={l.href}>
@@ -288,7 +288,7 @@ export default function Navbar({ session, isAdmin = false }) {
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-crimson/20 text-xs font-bold text-neon">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2B0003] border border-crimson text-xs font-bold text-neon">
                         {String(session.username || '?').slice(0, 2).toUpperCase()}
                       </span>
                     )}
