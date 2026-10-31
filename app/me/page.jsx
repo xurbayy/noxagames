@@ -32,7 +32,9 @@ export default async function MePage() {
       sql: "SELECT plan_id, tier_name, guild_id, last_switch_at, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
       args: [session.discordId, now],
     });
-    activeSubscription = subRes.rows.find((r) => r.plan_id !== 'premium-ultimate') || null;
+    activeSubscription = subRes.rows.find((r) => r.plan_id !== 'premium-ultimate')
+      || subRes.rows.find((r) => r.plan_id === 'premium-ultimate')
+      || null;
     serverSubscription = subRes.rows.find((r) => r.plan_id === 'premium-ultimate') || null;
   } catch {}
 
