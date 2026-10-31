@@ -211,7 +211,9 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
           const adaIndividu = Boolean(activeSubscription && Number(activeSubscription.expires_at) > Date.now());
           const adaUltimate = Boolean(activeServer && Number(activeServer.expires_at) > Date.now());
           const isPlanAktif = plan.id === 'premium-ultimate' ? adaUltimate : (adaIndividu && activeSubscription.plan_id === plan.id);
-          const isTerkunci = plan.id === 'premium-ultimate' ? adaUltimate : (adaIndividu && !isPlanAktif);
+          // Kartu Ultimate TIDAK pernah terkunci: kalau sudah aktif artinya
+          // perpanjang; kalau belum, bisa dibeli (boleh ditumpuk dgn individu).
+          const isTerkunci = plan.id === 'premium-ultimate' ? false : (adaIndividu && !isPlanAktif);
 
           return (
             <div
