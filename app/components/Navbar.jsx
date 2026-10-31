@@ -70,7 +70,7 @@ export default function Navbar({ session, isAdmin = false }) {
             alt="Logo NOXA Sound"
             width={36}
             height={36}
-            className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-full border border-line/60 object-cover"
+            className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 rounded-full border border-line object-cover"
             draggable={false}
           />
           <span className="hidden font-display text-base font-bold tracking-tight text-ink sm:inline md:text-lg">

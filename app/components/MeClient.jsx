@@ -302,7 +302,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                   <li
                     key={b.nama}
                     className={`flex items-center gap-2.5 rounded-xl border px-3 py-2.5 transition ${
-                      terbuka ? 'border-linebright bg-surface hover:border-crimson/50' : 'border-line bg-surface2/60 opacity-60'
+                      terbuka ? 'border-linebright bg-surface hover:border-crimson' : 'border-line bg-surface2'
                     }`}
                   >
                     <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${

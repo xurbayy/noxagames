@@ -49,7 +49,7 @@ export default function TermsPage() {
 
       <div className="mt-10 space-y-8">
         {termsSections.map((s) => (
-          <section key={s.title} className="rounded-xl border border-line/60 bg-surface3 p-5 sm:p-6">
+          <section key={s.title} className="rounded-xl border border-line bg-surface3 p-5 sm:p-6">
             <h2 className="font-display text-base sm:text-lg font-bold text-ink">{s.title}</h2>
             <div className="mt-3 space-y-3">
               {s.paras.map((p, i) => (

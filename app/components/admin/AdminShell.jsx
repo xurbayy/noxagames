@@ -49,7 +49,7 @@ export default function AdminShell() {
 
       <div className="hairline my-6" />
 
-      {err && <div className="card border-crimson/50 p-4 text-sm text-ink">{err}</div>}
+      {err && <div className="card border-crimson p-4 text-sm text-ink">{err}</div>}
 
       {!data && !err && (
         <div className="card p-6 space-y-3">

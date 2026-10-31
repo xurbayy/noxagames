@@ -11,7 +11,7 @@ export default function Footer() {
   if (pathname === '/login') return null;
 
   return (
-    <footer className="mt-28 border-t border-line/60 bg-bg md:mt-36">
+    <footer className="mt-28 border-t border-line bg-bg md:mt-36">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-5 py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div className="sm:col-span-2 lg:col-span-1">
           <Link href="/" prefetch={false} className="group inline-flex items-center gap-3">

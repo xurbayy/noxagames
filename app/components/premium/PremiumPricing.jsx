@@ -161,7 +161,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
 
       {/* Banner Info Langganan Aktif (Perpanjang Cerdas + Stacking) */}
       {activeSubscription && Number(activeSubscription.expires_at) > Date.now() && (
-        <div className="card border-[#22C55E]/70 bg-[#0F2415] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full">
+        <div className="card border-[#22C55E] bg-[#0F2415] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full">
           <div className="flex items-center gap-3">
             <img
               src={activeSubscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
@@ -219,7 +219,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             <div
               key={plan.id}
               className={`card group relative flex flex-col justify-between p-6 sm:p-7 transition-all duration-300 ${plan.warna.border} ${
-                plan.populer ? `${plan.warna.glow} ring-1 ring-slate-300/30 md:-translate-y-2` : ''
+                plan.populer ? `${plan.warna.glow} ring-1 ring-slate-300 md:-translate-y-2` : ''
               } ${isTerkunci ? 'opacity-55 saturate-50' : ''}`}
             >
               {/* Badge Status Langganan (Perpanjang Cerdas) */}
@@ -266,7 +266,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                 </p>
 
                 {/* Harga */}
-                <div className="mt-5 border-y border-line/80 py-4">
+                <div className="mt-5 border-y border-linebright py-4">
                   <div className="flex items-baseline gap-2">
                     <span className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink">
                       {labelHarga(totalHarga)}
@@ -306,7 +306,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
               </div>
 
               {/* Tombol CTA Rapi & Selaras (dengan aturan perpanjang cerdas) */}
-              <div className="mt-8 pt-5 border-t border-line/60 shrink-0">
+              <div className="mt-8 pt-5 border-t border-line shrink-0">
                 {isTerkunci ? (
                   <div className="w-full h-12 rounded-xl flex flex-col items-center justify-center border border-line bg-surface text-center cursor-not-allowed select-none">
                     <span className="text-xs font-bold text-muted">Terkunci Selama Langganan Aktif</span>
@@ -556,7 +556,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                       {guildTerkunci ? 'Server Aktif (Dipertahankan):' : 'ID Server Discord Tujuan (Wajib):'}
                     </label>
                     {guildTerkunci ? (
-                      <div className="rounded-xl border border-[#22C55E]/60 bg-[#0F2415] p-3 flex items-center gap-3">
+                      <div className="rounded-xl border border-[#22C55E] bg-[#0F2415] p-3 flex items-center gap-3">
                         {activeServer?.icon ? (
                           <img
                             src={activeServer.icon}
@@ -615,7 +615,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                     <span>Metode Pembayaran</span>
                     <span className="font-semibold text-ink">QRIS Realtime (QiosPay)</span>
                   </div>
-                  <div className="border-t border-line/60 pt-2 flex justify-between text-sm font-bold text-ink">
+                  <div className="border-t border-line pt-2 flex justify-between text-sm font-bold text-ink">
                     <span>Total Pembayaran</span>
                     <span className="text-neon font-display text-lg">
                       {labelHarga(modalBeli.durasi[durasiPilihan]?.harga || modalBeli.hargaBulanan * currentDurasi.bulan)}
