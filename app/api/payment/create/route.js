@@ -109,9 +109,8 @@ export async function POST(request) {
       if (qiosRes.ok && (qiosData.id || qiosData.data?.id || qiosData.order_id)) {
         const inv = qiosData.data || qiosData;
         qiospayInvoiceId = String(inv.id || inv.order_id);
-        // Field asli QiosPay: qr_image_url (PNG), qris_content (string QRIS),
-        // pay_url (halaman bayar). total_amount = amount + kode unik identifikasi.
-        qrisUrl = inv.qr_image_url || inv.qris_url || inv.qr_url || null;
+        // Utamakan proxy lokal agar kebal dari blokir adblock & CSP
+        qrisUrl = qiospayInvoiceId ? `/api/payment/qr?id=${qiospayInvoiceId}` : (inv.qr_image_url || inv.qris_url || null);
         qrisString = inv.qris_content || inv.qris_string || null;
         invoiceUrl = inv.pay_url || inv.invoice_url || inv.payment_url || null;
         if (Number(inv.total_amount) > 0) {

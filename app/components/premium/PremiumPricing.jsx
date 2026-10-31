@@ -26,6 +26,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
   const [transaksiAktif, setTransaksiAktif] = useState(null); // { transactionId, qrisUrl, invoiceUrl, amount, expiresAt }
   const [statusBayar, setStatusBayar] = useState(null); // 'pending' | 'paid' | 'error'
   const [pesanError, setPesanError] = useState(null);
+  const [qrImgError, setQrImgError] = useState(false);
 
   const pollingTimerRef = useRef(null);
 
@@ -42,6 +43,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
     setTransaksiAktif(null);
     setStatusBayar(null);
     setPesanError(null);
+    setQrImgError(false);
     // Perpanjang Ultimate: server aktif otomatis dipertahankan (terkunci).
     // Ganti server hanya lewat profil (cooldown 7 hari).
     if (plan.id === 'premium-ultimate' && activeServer && Number(activeServer.expires_at) > Date.now()) {
@@ -683,9 +685,15 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                 </p>
 
                 {/* QR Code Frame */}
-                <div className="my-5 mx-auto w-64 h-64 rounded-2xl border-2 border-linebright bg-white p-3 flex flex-col items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-                  {transaksiAktif.qrisUrl ? (
-                    <img src={transaksiAktif.qrisUrl} alt="QRIS" className="w-full h-full object-contain" />
+                <div className="my-5 mx-auto w-64 h-64 rounded-2xl border-2 border-linebright bg-white p-3 flex flex-col items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.1)] relative overflow-hidden">
+                  {transaksiAktif.qrisUrl && !qrImgError ? (
+                    <img
+                      src={transaksiAktif.qrisUrl}
+                      alt="QRIS Pembayaran"
+                      loading="eager"
+                      onError={() => setQrImgError(true)}
+                      className="w-full h-full object-contain"
+                    />
                   ) : (
                     <div className="flex flex-col items-center justify-center p-4 text-black text-center">
                       <Emoji name="party" size={32} />
