@@ -31,7 +31,7 @@ export function canonicalOrigin(requestUrl) {
 
 export const BOT_INVITE =
   process.env.NEXT_PUBLIC_BOT_INVITE ||
-  'https://discord.com/oauth2/authorize?client_id=ISI_CLIENT_ID&scope=bot+applications.commands&permissions=277025508352';
+  'https://discord.com/oauth2/authorize?client_id=1481672108256792687&scope=bot+applications.commands&permissions=277062478913';
 
 export const SUPPORT_INVITE =
   process.env.NEXT_PUBLIC_SUPPORT_INVITE || 'https://discord.gg/53mJhsHeAk';
