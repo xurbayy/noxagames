@@ -47,7 +47,7 @@ export default async function MePage() {
       const cocokPaket = topServers(snap?.data).find((g) => String(g.id) === gid);
       serverPackage = {
         guildId: gid,
-        name: cocokPaket?.name || initialProfile?.topServer?.id === gid ? (cocokPaket?.name || null) : (cocokPaket?.name || null),
+        name: cocokPaket?.name || (initialProfile?.topServer?.id === gid ? initialProfile.topServer.name : null),
         icon: cocokPaket?.icon || null,
       };
     } catch {}
@@ -62,7 +62,9 @@ export default async function MePage() {
       const cocok = topServers(snap?.data).find((g) => String(g.id) === String(initialProfile.topServer.id));
       if (cocok?.icon) serverIcon = cocok.icon;
       serverPremiumTier = cocok?.premiumTier || initialProfile.topServer.premiumTier || null;
-      if (serverPackage) serverPackage.name = serverPackage.name || cocokPaket?.name || null;
+      if (serverPackage && !serverPackage.name && cocok?.name) {
+        serverPackage.name = cocok.name;
+      }
     } catch {}
   }
 

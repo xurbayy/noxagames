@@ -62,7 +62,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
               : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'
           }`}
         >
-          <Emoji name="party" size={15} /> Server Teraktif ({server.length})
+          <Emoji name="party" size={15} /> Top Server ({server.length})
         </button>
       </div>
 
@@ -110,60 +110,70 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
           </section>
         )}
 
-        {/* Seksi Server Teraktif */}
-        {showServers && server.length > 0 && (
-          <section id="server-teraktif">
+        {/* Seksi Top Server */}
+        {showServers && (
+          <section id="top-server">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <JudulSeksi emoji="party" judul="Server Teraktif" ket="Server dengan total dengar bareng terlama" />
+              <JudulSeksi emoji="party" judul="Top Server" ket="Server dengan total dengar bareng terlama" />
               <span className="text-xs text-faint">Maksimal 10 server teratas</span>
             </div>
 
-            <div className="card divide-y divide-line overflow-hidden">
-              {server.map((g, i) => (
-                <div key={g.id} className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3">
-                  <span className="w-6 sm:w-8 shrink-0 text-center">
-                    {RANK_EMOJI[i] ? (
-                      <Emoji name={RANK_EMOJI[i]} size={20} />
-                    ) : (
-                      <span className="text-xs sm:text-sm font-bold tabular-nums text-faint">{i + 1}</span>
-                    )}
-                  </span>
-                  {g.icon ? (
-                    <img
-                      src={g.icon}
-                      alt=""
-                      className="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-full border border-line object-cover"
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs sm:text-sm font-bold text-faint">
-                      {String(g.name || 'S').slice(0, 1).toUpperCase()}
+            {server.length > 0 ? (
+              <div className="card divide-y divide-line overflow-hidden">
+                {server.map((g, i) => (
+                  <div key={g.id} className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3">
+                    <span className="w-6 sm:w-8 shrink-0 text-center">
+                      {RANK_EMOJI[i] ? (
+                        <Emoji name={RANK_EMOJI[i]} size={20} />
+                      ) : (
+                        <span className="text-xs sm:text-sm font-bold tabular-nums text-faint">{i + 1}</span>
+                      )}
                     </span>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{g.name}</span>
-                      {premiumEmojiName(g.premiumTier) && <Emoji name={premiumEmojiName(g.premiumTier)} size={16} />}
+                    {g.icon ? (
+                      <img
+                        src={g.icon}
+                        alt=""
+                        className="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-full border border-line object-cover"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs sm:text-sm font-bold text-faint">
+                        {String(g.name || 'S').slice(0, 1).toUpperCase()}
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{g.name}</span>
+                        {premiumEmojiName(g.premiumTier) && <Emoji name={premiumEmojiName(g.premiumTier)} size={16} />}
+                      </div>
+                      <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{g.users} pendengar tercatat</div>
                     </div>
-                    <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{g.users} pendengar tercatat</div>
+                    {g.inviteUrl ? (
+                      <a
+                        href={g.inviteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-ghost shrink-0 !rounded-lg !px-2.5 !py-1.5 text-xs"
+                      >
+                        <Emoji name="callme" size={13} /> Kunjungi
+                      </a>
+                    ) : (
+                      <span className="text-[11px] text-faint shrink-0 px-2.5 py-1 rounded-md bg-surface3 border border-line">
+                        Privat
+                      </span>
+                    )}
+                    <span className="shrink-0 text-sm font-bold tabular-nums text-neon">{durasi(g.duration)}</span>
                   </div>
-                  {g.inviteUrl && (
-                    <a
-                      href={g.inviteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-ghost shrink-0 !rounded-lg !px-2.5 !py-1.5 text-xs"
-                    >
-                      <Emoji name="callme" size={13} /> Kunjungi
-                    </a>
-                  )}
-                  <span className="shrink-0 text-sm font-bold tabular-nums text-neon">{durasi(g.duration)}</span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="card p-8 text-center text-sm text-muted">
+                Belum ada data server yang tercatat. Putar lagu di server Discord kamu agar masuk peringkat.
+              </div>
+            )}
             <p className="mt-3 text-xs leading-relaxed text-faint">
-              Daftar server teratas yang membuka tautan undangan komunitas untuk dikunjungi.
+              Daftar server teratas berdasarkan total durasi mendengarkan NOXA Sound bersama komunitas.
             </p>
           </section>
         )}

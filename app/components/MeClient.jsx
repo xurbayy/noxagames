@@ -579,7 +579,7 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
         <section className="card p-5">
           <div className="flex items-center gap-2.5">
             <Emoji name="playlist" size={20} />
-            <h2 className="font-display text-base font-bold">Playlist & Server</h2>
+            <h2 className="font-display text-base font-bold">Playlist & Top Server</h2>
           </div>
           {p.topPlaylist ? (
             <div className="mt-4 flex items-center gap-3">
@@ -598,7 +598,8 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
           ) : (
             <p className="mt-4 text-sm text-muted">Belum ada playlist yang dipakai.</p>
           )}
-          {p.topServer?.name && (
+
+          {p.topServer?.name ? (
             <div className="mt-4 flex items-center gap-3 border-t border-line pt-4">
               {serverIcon ? (
                 <img
@@ -609,19 +610,24 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                  <Emoji name="musik" size={18} />
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
+                  {String(p.topServer.name || 'S').slice(0, 1).toUpperCase()}
                 </span>
               )}
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-faint">Top Server Favorit</div>
+                <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{p.topServer.name}</span>
                   {premiumEmojiName(serverPremiumTier || p.topServer.premiumTier) && (
                     <Emoji name={premiumEmojiName(serverPremiumTier || p.topServer.premiumTier)} size={16} />
                   )}
                 </div>
-                <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">Server tempat kamu paling lama mendengar, {durasi(p.topServer.duration)}</div>
+                <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">Tempat kamu paling lama mendengar, {durasi(p.topServer.duration)}</div>
               </div>
+            </div>
+          ) : (
+            <div className="mt-4 border-t border-line pt-4 text-sm text-muted">
+              Belum ada top server favorit tercatat.
             </div>
           )}
         </section>

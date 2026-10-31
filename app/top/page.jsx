@@ -18,10 +18,9 @@ export default async function TopPage() {
   const session = await getSession().catch(() => null);
   const snap = await getSnapshot();
   const lagu = topSongs(snap?.data).slice(0, 10);
-  // Hanya tampilkan server yang memiliki link invite (bisa dikunjungi).
-  // Server tanpa invite link (seperti Aurum Continental) tidak ditampilkan.
+  // Server teratas berdasarkan total durasi dengar
   const server = topServers(snap?.data)
-    .filter((g) => Boolean(g && g.inviteUrl))
+    .filter((g) => Boolean(g && (Number(g.duration) > 0 || Number(g.users) > 0)))
     .slice(0, 10);
   // Bot kadang masih menyertakan pendengar dengan 0 lagu selesai / 0 durasi
   // (baris statistik kosong). Entri seperti itu tidak layak masuk peringkat.
