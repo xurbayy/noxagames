@@ -194,12 +194,22 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         </div>
       </div>
 
-      {/* Banner Masa Aktif & Jatuh Tempo Langganan Premium */}
-      {subscription && (
+      {/* Banner Masa Aktif & Jatuh Tempo Langganan Premium - warna per tier */}
+      {subscription && (() => {
+        const sisaHari = Math.max(0, Math.ceil((Number(subscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)));
+        const isUltimate = subscription.plan_id === 'premium-ultimate';
+        const isPlus = subscription.plan_id === 'premium-plus';
+        // Warna solid per tier: Premium emas, Premium+ perak, Ultimate ungu
+        const warna = isUltimate
+          ? { bg: '#1A0B2E', border: 'border-purple-500', badge: 'bg-[#240B3B] text-purple-200 border-purple-500' }
+          : isPlus
+          ? { bg: '#161B22', border: 'border-[#CBD5E1]', badge: 'bg-[#1E232A] text-slate-100 border-[#CBD5E1]' }
+          : { bg: '#2D1B03', border: 'border-[#F0A63C]', badge: 'bg-[#2D1B03] text-[#F0A63C] border-[#F0A63C]' };
+        return (
         <div className={`mt-6 rounded-2xl border p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
-          Math.max(0, Math.ceil((Number(subscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24))) <= 5
+          sisaHari <= 5
             ? 'border-[#F59E0B] bg-[#2E1805]'
-            : 'border-[#2A2022] bg-[#120509] shadow-[var(--shadow-hair)]'
+            : `${warna.border} ${warna.bg} shadow-[var(--shadow-hair)]`
         }`}>
           <div className="flex items-center gap-3.5">
             <img
@@ -213,13 +223,11 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-display text-sm font-bold text-ink">{subscription.tier_name} Aktif</span>
                 <span className={`noxa-badge ${
-                  Math.max(0, Math.ceil((Number(subscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24))) <= 5
+                  sisaHari <= 5
                     ? 'bg-[#B45309] text-white border border-[#F59E0B]'
-                    : 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]'
+                    : warna.badge
                 }`}>
-                  {Math.max(0, Math.ceil((Number(subscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24))) > 0
-                    ? `${Math.max(0, Math.ceil((Number(subscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi`
-                    : 'Jatuh Tempo Hari Ini'}
+                  {sisaHari > 0 ? `${sisaHari} Hari Lagi` : 'Jatuh Tempo Hari Ini'}
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted">
@@ -268,7 +276,8 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             )}
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Banner kedua: NOXA Pass Ultimate (paket server) saat DITUMPUK dengan paket individu */}
       {tampilkanBannerUltimate && (
@@ -389,39 +398,6 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           </section>
         );
       })()}
-
-      {/* Banner kedua: NOXA Pass Ultimate (paket server) saat ditumpuk dengan individu */}
-      {tampilkanBannerUltimate && (
-        <div className="mt-4 rounded-2xl border border-purple-500 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[var(--shadow-hair)]">
-          <div className="flex items-center gap-3.5">
-            <img
-              src="/badges/noxa-premium-ultimate.png"
-              alt=""
-              width={42}
-              height={42}
-              className="h-10 w-10 shrink-0 object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
-            />
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-display text-sm font-bold text-ink">{serverSubscription.tier_name} (Server) Aktif</span>
-                <span className="noxa-badge bg-[#240B3B] text-purple-200 border border-purple-500">
-                  {Math.max(0, Math.ceil((Number(serverSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
-                </span>
-              </div>
-              <p className="mt-1 text-xs text-muted">
-                Jatuh tempo pada: <strong className="text-ink font-semibold">{new Date(Number(serverSubscription.expires_at)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
-                {serverPackage && <> · aktif di <strong className="text-ink font-semibold">{serverPackage.name || `Server ${serverPackage.guildId}`}</strong></>}
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/premium"
-            className="btn-ghost !py-2 !px-4 text-xs font-semibold shrink-0"
-          >
-            Perpanjang Paket →
-          </Link>
-        </div>
-      )}
 
       {/* Form ganti server paket Ultimate */}
       {paketServer && gantiServerBuka && (
