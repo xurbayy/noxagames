@@ -423,7 +423,7 @@ function PlayerLookup() {
                       <button
                         type="button"
                         onClick={() => setKonfirmasiHapus(true)}
-                        className="rounded-full border border-crimson bg-[#2B0003] px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-[#3D0005]"
+                        className="rounded-full border border-crimson px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-crimson hover:text-white"
                       >
                         Hapus Data Pemain
                       </button>
@@ -459,7 +459,7 @@ function PlayerLookup() {
                     <button
                       type="button"
                       onClick={() => setKonfirmasiHapus(true)}
-                      className="rounded-full border border-crimson bg-[#2B0003] px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-[#3D0005]"
+                      className="rounded-full border border-crimson px-3.5 py-1.5 text-xs font-bold text-neon transition hover:bg-crimson hover:text-white"
                     >
                       Hapus Sisa Data ID Ini
                     </button>
@@ -531,9 +531,7 @@ function TopList({ judul, emoji, items, render }) {
 function StatBox({ emoji, label, angka }) {
   return (
     <div className="stat-tile flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3 sm:p-4">
-      <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
-        <Emoji name={emoji} size={18} />
-      </span>
+      <Emoji name={emoji} size={22} className="shrink-0" />
       <div className="min-w-0 flex-1">
         <div className="font-display text-lg sm:text-xl font-bold leading-tight tabular-nums break-words">{angka}</div>
         <div className="text-[11px] sm:text-xs text-faint leading-tight mt-0.5 break-words">{label}</div>

@@ -123,7 +123,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           {initialUser?.avatar ? (
             <img src={initialUser.avatar} alt="" className="h-11 w-11 sm:h-12 sm:w-12 rounded-full border border-linebright object-cover" referrerPolicy="no-referrer" />
           ) : (
-            <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-[#2B0003] border border-crimson font-display text-base sm:text-lg font-bold">
+            <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-crimson font-display text-base sm:text-lg font-bold text-white">
               {String(initialUser?.username || 'U').slice(0, 1).toUpperCase()}
             </span>
           )}
@@ -133,10 +133,10 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               {subscription && (
                 <span className={`noxa-badge normal-case tracking-normal ${
                   subscription.plan_id === 'premium-ultimate'
-                    ? 'border-purple-500 bg-[#240B3B] text-purple-200'
+                    ? 'border-purple-400 bg-purple-600 text-white font-bold'
                     : subscription.plan_id === 'premium-plus'
-                    ? 'border-slate-300 bg-[#1E232A] text-slate-100'
-                    : 'border-amber-500 bg-[#2D1B03] text-amber-300'
+                    ? 'border-slate-300 bg-slate-200 text-black font-bold'
+                    : 'border-amber-400 bg-amber-400 text-black font-bold'
                 }`}>
                   <img
                     src={subscription.plan_id === 'premium-ultimate' ? '/badges/noxa-premium-ultimate.png' : subscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
@@ -157,9 +157,9 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <Link
               href="/admin"
               prefetch={false}
-              className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-[#2B0003] px-3.5 py-2 text-xs font-bold text-neon transition hover:bg-[#3D0005] hover:text-white shadow-[var(--shadow-hair)]"
+              className="btn-primary !px-3.5 !py-1.5 text-xs font-bold"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-neon animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
               Panel Admin
             </Link>
           )}
@@ -201,10 +201,10 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         const isPlus = subscription.plan_id === 'premium-plus';
         // Warna solid per tier: Premium emas, Premium+ perak, Ultimate ungu
         const warna = isUltimate
-          ? { bg: 'bg-[#1A0B2E]', border: 'border-purple-500', badge: 'bg-[#240B3B] text-purple-200 border-purple-500' }
+          ? { bg: 'bg-[#1A0B2E]', border: 'border-purple-500', badge: 'bg-purple-600 text-white border-purple-400' }
           : isPlus
-          ? { bg: 'bg-[#161B22]', border: 'border-[#CBD5E1]', badge: 'bg-[#1E232A] text-slate-100 border-[#CBD5E1]' }
-          : { bg: 'bg-[#2D1B03]', border: 'border-[#F0A63C]', badge: 'bg-[#2D1B03] text-[#F0A63C] border-[#F0A63C]' };
+          ? { bg: 'bg-[#161B22]', border: 'border-[#CBD5E1]', badge: 'bg-slate-300 text-black border-slate-400' }
+          : { bg: 'bg-[#2D1B03]', border: 'border-[#F0A63C]', badge: 'bg-amber-400 text-black border-[#F0A63C]' };
         return (
         <div className={`mt-6 rounded-2xl border p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
           sisaHari <= 5
@@ -332,10 +332,10 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 <Emoji name="party" size={18} /> Inventaris NOXA Pass
               </h2>
               {aktif ? (
-                <span className={`noxa-badge ${
-                  tier === 'premium-ultimate' ? 'bg-[#240B3B] text-purple-200 border-purple-500'
-                  : tier === 'premium-plus' ? 'bg-[#1E232A] text-slate-100 border-slate-300'
-                  : 'bg-[#2D1B03] text-amber-300 border-amber-500'
+                <span className={`noxa-badge font-bold ${
+                  tier === 'premium-ultimate' ? 'bg-purple-600 text-white border-purple-400'
+                  : tier === 'premium-plus' ? 'bg-slate-200 text-black border-white'
+                  : 'bg-amber-400 text-black border-amber-300'
                 }`}>
                   {subscription.tier_name || 'Premium'}
                 </span>
@@ -360,11 +360,9 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                       terbuka ? 'border-linebright bg-surface hover:border-crimson' : 'border-line bg-surface2'
                     }`}
                   >
-                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${
-                      terbuka ? 'bg-[#2B0003] border-crimson' : 'bg-surface3 border-line'
-                    }`}>
-                      {terbuka ? <Emoji name={b.emoji} size={16} /> : (
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" className="text-faint" aria-hidden="true">
+                    <span className="shrink-0 flex items-center justify-center w-5">
+                      {terbuka ? <Emoji name={b.emoji} size={20} /> : (
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" className="text-faint" aria-hidden="true">
                           <rect x="3" y="11" width="18" height="11" rx="2" />
                           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                         </svg>
@@ -372,19 +370,13 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className={`text-xs sm:text-sm font-semibold leading-snug break-words ${terbuka ? 'text-ink' : 'text-muted'}`}>{b.nama}</div>
-                      <div className={`text-[11px] sm:text-xs mt-0.5 break-words ${terbuka ? 'text-neon font-bold' : 'text-faint'}`}>
+                      <div className={`text-[11px] sm:text-xs mt-0.5 break-words font-bold ${terbuka ? 'text-[#22C55E]' : 'text-faint'}`}>
                         {terbuka
                           ? (tier === 'premium-ultimate' ? `${nilai === true ? 'Aktif' : nilai} - di server pilihanmu` : (nilai === true ? 'Aktif' : nilai))
                           : 'Terkunci'}
                       </div>
                     </div>
-                    {terbuka ? (
-                      <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-[#0F2415] border border-[#22C55E] text-[#86EFAC] text-xs font-bold">✓</span>
-                    ) : (
-                      <Link href="/premium" className="shrink-0 rounded-full border border-crimson bg-[#2B0003] px-2.5 py-0.5 text-[10px] font-bold text-neon hover:bg-[#3D0005]">
-                        Buka
-                      </Link>
-                    )}
+                    {terbuka && <span className="shrink-0 text-[#22C55E] font-bold text-sm">✓</span>}
                   </li>
                 );
               })}
@@ -643,9 +635,7 @@ function StatBox({ emoji, label, angka }) {
   return (
     <div className="stat-tile flex flex-col justify-between p-3.5 sm:p-4 min-h-[96px]">
       <div className="flex items-center gap-2">
-        <span className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-[#2B0003] border border-crimson">
-          <Emoji name={emoji} size={15} />
-        </span>
+        <Emoji name={emoji} size={18} className="shrink-0" />
         <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-faint leading-tight break-words">{label}</span>
       </div>
       <div className="mt-2.5 font-display text-[14px] sm:text-[15px] md:text-base font-bold leading-snug text-ink break-words">

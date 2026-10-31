@@ -167,9 +167,7 @@ export default async function Home() {
                 key={tema.nama}
                 className="card card-hover flex items-center gap-2.5 sm:gap-3 px-3 py-3 sm:px-4 sm:py-3.5"
               >
-                <span className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
-                  <Emoji name={tema.emoji} size={16} />
-                </span>
+                <Emoji name={tema.emoji} size={22} className="shrink-0" />
                 <span className="text-xs sm:text-sm font-semibold text-ink leading-snug break-words">{tema.nama}</span>
               </div>
             ))}
@@ -342,9 +340,7 @@ function MascotHero() {
 function StatAngka({ label, angka, emoji }) {
   return (
     <div className="card flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 p-3.5 sm:p-4">
-      <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
-        <Emoji name={emoji} size={20} />
-      </span>
+      <Emoji name={emoji} size={28} className="shrink-0" />
       <div className="min-w-0 flex-1">
         <div className="font-display text-xl sm:text-2xl font-bold leading-tight tabular-nums break-words">{angka ?? 0}</div>
         <div className="text-xs sm:text-sm text-faint leading-tight mt-0.5 break-words">{label}</div>
@@ -369,9 +365,7 @@ function FiturCard({ emoji, title, desc }) {
   return (
     <div className="card card-hover flex flex-col p-4 sm:p-6 h-full">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-[#2B0003] border border-crimson">
-          <Emoji name={emoji} size={22} />
-        </span>
+        <Emoji name={emoji} size={26} className="shrink-0" />
         <h3 className="font-display text-sm sm:text-base font-bold leading-snug break-words">{title}</h3>
       </div>
       <p className="mt-3 flex-1 text-sm md:text-[15px] leading-relaxed text-muted break-words">{desc}</p>

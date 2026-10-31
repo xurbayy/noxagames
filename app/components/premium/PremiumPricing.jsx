@@ -160,44 +160,59 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
       </div>
 
       {/* Banner Info Langganan Aktif (Perpanjang Cerdas + Stacking) */}
-      {activeSubscription && Number(activeSubscription.expires_at) > Date.now() && (
-        <div className="card border-[#22C55E] bg-[#0F2415] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full">
-          <div className="flex items-center gap-3">
-            <img
-              src={activeSubscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
-              alt=""
-              width={40}
-              height={40}
-              className="h-10 w-10 shrink-0 object-contain"
-            />
-            <div>
-              <div className="text-sm font-bold text-ink">{activeSubscription.tier_name} (Individu) sedang aktif</div>
-              <div className="text-xs text-muted">
-                Berlaku sampai {new Date(Number(activeSubscription.expires_at)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} · klik "Perpanjang Sekarang" pada kartu paketmu untuk menambah durasi.
+      {activeSubscription && Number(activeSubscription.expires_at) > Date.now() && (() => {
+        const isPlus = activeSubscription.plan_id === 'premium-plus';
+        const sisa = Math.max(0, Math.ceil((Number(activeSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)));
+        return (
+          <div className={`card p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full shadow-[var(--shadow-hair)] ${
+            isPlus
+              ? 'border-slate-300 bg-[#161B22]'
+              : 'border-[#F0A63C] bg-[#2D1B03]'
+          }`}>
+            <div className="flex items-center gap-3">
+              <img
+                src={isPlus ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
+                alt=""
+                width={40}
+                height={40}
+                className="h-10 w-10 shrink-0 object-contain"
+              />
+              <div>
+                <div className="text-sm font-bold text-ink">{activeSubscription.tier_name} (Individu) sedang aktif</div>
+                <div className="text-xs text-muted">
+                  Berlaku sampai {new Date(Number(activeSubscription.expires_at)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} · klik &quot;Perpanjang Sekarang&quot; pada kartu paketmu untuk menambah durasi.
+                </div>
               </div>
             </div>
+            <span className={`noxa-badge whitespace-nowrap ${
+              isPlus
+                ? 'bg-slate-200 text-black border border-white font-bold'
+                : 'bg-amber-400 text-black border border-amber-300 font-bold'
+            }`}>
+              {sisa} Hari Lagi
+            </span>
           </div>
-          <span className="noxa-badge bg-[#14532D] border border-[#22C55E] text-[#86EFAC] whitespace-nowrap">
-            {Math.max(0, Math.ceil((Number(activeSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
-          </span>
-        </div>
-      )}
-      {activeServer && Number(activeServer.expires_at) > Date.now() && (
-        <div className="card border-purple-500/70 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full">
-          <div className="flex items-center gap-3">
-            <img src="/badges/noxa-premium-ultimate.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
-            <div>
-              <div className="text-sm font-bold text-ink">{activeServer.tier_name} (Server) sedang aktif</div>
-              <div className="text-xs text-muted">
-                Benefit untuk 1 server pilihan (ID: {activeServer.guild_id || 'belum dipilih'}) · ganti server lewat profil, cooldown 7 hari.
+        );
+      })()}
+      {activeServer && Number(activeServer.expires_at) > Date.now() && (() => {
+        const sisa = Math.max(0, Math.ceil((Number(activeServer.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)));
+        return (
+          <div className="card border-purple-500 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full shadow-[var(--shadow-hair)]">
+            <div className="flex items-center gap-3">
+              <img src="/badges/noxa-premium-ultimate.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
+              <div>
+                <div className="text-sm font-bold text-ink">{activeServer.tier_name} (Server) sedang aktif</div>
+                <div className="text-xs text-muted">
+                  Benefit untuk 1 server pilihan (ID: {activeServer.guild_id || 'belum dipilih'}) · ganti server lewat profil, cooldown 7 hari.
+                </div>
               </div>
             </div>
+            <span className="noxa-badge bg-purple-600 text-white border border-purple-400 font-bold whitespace-nowrap">
+              {sisa} Hari Lagi
+            </span>
           </div>
-          <span className="noxa-badge bg-[#240B3B] border border-purple-500 text-purple-200 whitespace-nowrap">
-            {Math.max(0, Math.ceil((Number(activeServer.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
-          </span>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Grid 3 Kartu Tier Paket */}
       <div className="grid gap-8 md:grid-cols-3 items-stretch">
@@ -224,7 +239,13 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             >
               {/* Badge Status Langganan (Perpanjang Cerdas) */}
               {isPlanAktif && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-[#14532D] border border-[#22C55E] px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#86EFAC] shadow-[0_0_15px_rgba(34,197,94,0.35)] whitespace-nowrap">
+                <div className={`absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap shadow-md ${
+                  plan.id === 'premium-ultimate'
+                    ? 'bg-purple-600 text-white border border-purple-400'
+                    : plan.id === 'premium-plus'
+                    ? 'bg-slate-200 text-black border border-white'
+                    : 'bg-amber-400 text-black border border-amber-300'
+                }`}>
                   Langganan Aktifmu
                 </div>
               )}
@@ -413,7 +434,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
           {LANGKAH_AKTIVASI.map((l) => (
             <div key={l.nomor} className="card p-5 relative overflow-hidden flex flex-col justify-between">
               <div>
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2B0003] border border-crimson font-display text-sm font-bold text-neon">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-crimson font-display text-xs font-bold text-white">
                   {l.nomor}
                 </span>
                 <h3 className="mt-3 font-display text-base font-bold text-ink">{l.judul}</h3>
@@ -435,9 +456,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             >
               ✕
             </button>
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2B0003] border border-crimson">
-              <Emoji name="userprofile" size={28} />
-            </div>
+            <Emoji name="userprofile" size={44} className="mx-auto" />
             <h3 className="mt-4 font-display text-xl font-bold text-ink">Masuk dengan Discord Diperlukan</h3>
             <p className="mt-2 text-xs sm:text-sm leading-relaxed text-muted">
               Masuk agar ID Discord dan profilmu langsung terhubung dengan paket premium yang dibeli.
@@ -536,7 +555,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                   {session.avatar ? (
                     <img src={session.avatar} alt="" className="h-10 w-10 rounded-full border border-line" />
                   ) : (
-                    <div className="h-10 w-10 rounded-full bg-[#2B0003] border border-crimson flex items-center justify-center font-bold text-neon">
+                    <div className="h-10 w-10 rounded-full bg-crimson flex items-center justify-center font-bold text-white">
                       {session.username?.slice(0, 1)}
                     </div>
                   )}
@@ -624,7 +643,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                 </div>
 
                 {pesanError && (
-                  <div className="mt-4 rounded-xl border border-crimson bg-[#2B0003] p-3 text-xs text-ink">
+                  <div className="mt-4 rounded-xl border border-crimson bg-surface2 p-3 text-xs text-ink">
                     {pesanError}
                   </div>
                 )}

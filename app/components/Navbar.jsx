@@ -125,7 +125,7 @@ export default function Navbar({ session, isAdmin = false }) {
           <Link
             href="/premium"
             prefetch={false}
-            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-purple-500 bg-[#240B3B] px-2.5 py-1 text-xs font-semibold text-purple-200 shadow-[var(--shadow-hair)] transition hover:-translate-y-px hover:border-purple-400 hover:bg-[#341154] hover:text-white sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
+            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-purple-500 bg-transparent px-2.5 py-1 text-xs font-bold text-purple-300 shadow-sm transition hover:-translate-y-px hover:border-purple-400 hover:bg-[#1A0B2E] hover:text-white sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
               src="/badges/noxa-premium-ultimate.png"
@@ -155,7 +155,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2B0003] border border-crimson text-xs font-bold text-neon">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-crimson text-xs font-bold text-white">
                   {String(session.username || '?').slice(0, 2).toUpperCase()}
                 </span>
               )}
@@ -234,7 +234,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   />
                   NOXA Pass
                 </span>
-                <span className="rounded border border-purple-500 bg-[#240B3B] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-200">
+                <span className="rounded border border-purple-500 bg-transparent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-300">
                   Premium
                 </span>
               </Link>
@@ -288,7 +288,7 @@ export default function Navbar({ session, isAdmin = false }) {
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2B0003] border border-crimson text-xs font-bold text-neon">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-crimson text-xs font-bold text-white">
                         {String(session.username || '?').slice(0, 2).toUpperCase()}
                       </span>
                     )}

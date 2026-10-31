@@ -184,7 +184,7 @@ export default function PremiumManagement() {
         </div>
       )}
 
-      {error && <div className="card mb-4 border-crimson bg-[#2B0003] p-4 text-xs text-ink">{error}</div>}
+      {error && <div className="card mb-4 border-crimson p-4 text-xs text-ink">{error}</div>}
 
       {/* KPI Kartu Ringkas */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 mb-6">
@@ -242,7 +242,7 @@ export default function PremiumManagement() {
                         <span className="noxa-badge border border-line bg-surface3 text-muted">
                           {s.tierName}
                         </span>
-                        <span className={`noxa-badge ${s.status === 'active' ? 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]' : 'bg-[#2B0003] text-[#FF8A9B] border border-crimson'}`}>
+                        <span className={`noxa-badge ${s.status === 'active' ? 'bg-[#14532D] text-[#86EFAC] border border-[#22C55E]' : 'bg-surface3 text-faint border border-line'}`}>
                           {s.status === 'active' ? `${s.sisaHari} hari lagi` : 'Kedaluwarsa'}
                         </span>
                       </div>
@@ -306,7 +306,7 @@ export default function PremiumManagement() {
                         type="button"
                         onClick={() => setHapusId(s.id)}
                         disabled={busy}
-                        className="rounded-lg border border-crimson bg-[#2B0003] px-2 py-1 text-xs font-semibold text-neon hover:bg-[#3D0005] cursor-pointer ml-1"
+                        className="rounded-lg border border-crimson px-2 py-1 text-xs font-semibold text-neon hover:bg-crimson hover:text-white cursor-pointer ml-1"
                       >
                         Cabut
                       </button>
