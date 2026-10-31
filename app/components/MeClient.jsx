@@ -201,10 +201,10 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         const isPlus = subscription.plan_id === 'premium-plus';
         // Warna solid per tier: Premium emas, Premium+ perak, Ultimate ungu
         const warna = isUltimate
-          ? { bg: '#1A0B2E', border: 'border-purple-500', badge: 'bg-[#240B3B] text-purple-200 border-purple-500' }
+          ? { bg: 'bg-[#1A0B2E]', border: 'border-purple-500', badge: 'bg-[#240B3B] text-purple-200 border-purple-500' }
           : isPlus
-          ? { bg: '#161B22', border: 'border-[#CBD5E1]', badge: 'bg-[#1E232A] text-slate-100 border-[#CBD5E1]' }
-          : { bg: '#2D1B03', border: 'border-[#F0A63C]', badge: 'bg-[#2D1B03] text-[#F0A63C] border-[#F0A63C]' };
+          ? { bg: 'bg-[#161B22]', border: 'border-[#CBD5E1]', badge: 'bg-[#1E232A] text-slate-100 border-[#CBD5E1]' }
+          : { bg: 'bg-[#2D1B03]', border: 'border-[#F0A63C]', badge: 'bg-[#2D1B03] text-[#F0A63C] border-[#F0A63C]' };
         return (
         <div className={`mt-6 rounded-2xl border p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
           sisaHari <= 5
