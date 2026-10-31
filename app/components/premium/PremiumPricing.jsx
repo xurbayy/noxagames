@@ -565,7 +565,8 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                     <div className="font-semibold text-ink truncate">{session.username}</div>
                     <div className="text-faint font-mono">ID: {session.discordId}</div>
                   </div>
-                  <span className="rounded bg-[#14532D] border border-[#22C55E] text-[#86EFAC] text-[10px] font-bold px-2 py-0.5 uppercase tracking-wide">
+                  <span className="noxa-badge bg-[#16A34A] text-white border border-[#22C55E] font-bold text-[10px] shadow-xs shrink-0">
+                    <span className="h-1.5 w-1.5 rounded-full bg-white shrink-0" />
                     Tersambung
                   </span>
                 </div>
@@ -595,7 +596,8 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                           <div className="truncate text-sm font-bold text-ink">{activeServer?.name || `Server ${guildIdInput}`}</div>
                           <div className="text-[11px] text-faint font-mono">{guildIdInput}</div>
                         </div>
-                        <span className="shrink-0 rounded-full bg-[#14532D] border border-[#22C55E] px-2 py-0.5 text-[10px] font-bold text-[#86EFAC]">
+                        <span className="noxa-badge bg-[#16A34A] text-white border border-[#22C55E] font-bold text-[10px] shrink-0 shadow-xs">
+                          <span className="h-1.5 w-1.5 rounded-full bg-white shrink-0" />
                           Dipertahankan
                         </span>
                       </div>
@@ -674,8 +676,8 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             {/* View 2: Tampilan Bayar QRIS & Polling */}
             {transaksiAktif && statusBayar !== 'paid' && (
               <div className="text-center">
-                <div className="inline-flex items-center gap-1.5 rounded-full border border-[#22C55E] bg-[#0F2415] px-3 py-1 text-xs font-semibold text-[#86EFAC] mb-4">
-                  <span className="h-2 w-2 rounded-full bg-ok animate-pulse" />
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#22C55E] bg-[#16A34A] px-3.5 py-1 text-xs font-bold text-white mb-4 shadow-xs">
+                  <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
                   <span>Menunggu Pembayaran</span>
                 </div>
 
