@@ -553,18 +553,42 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                 {modalBeli.id === 'premium-ultimate' && (
                   <div className="mt-4">
                     <label className="block text-xs font-semibold text-muted mb-1.5">
-                      ID Server Discord Tujuan (Wajib):
+                      {guildTerkunci ? 'Server Aktif (Dipertahankan):' : 'ID Server Discord Tujuan (Wajib):'}
                     </label>
-                    <input
-                      value={guildIdInput}
-                      onChange={(e) => setGuildIdInput(e.target.value)}
-                      placeholder="Contoh: 123456789012345678"
-                      readOnly={guildTerkunci}
-                      className={`w-full rounded-xl border border-linebright bg-bg px-3.5 py-2.5 text-xs text-ink outline-none focus:border-crimson font-mono ${guildTerkunci ? 'opacity-70 cursor-not-allowed' : ''}`}
-                    />
+                    {guildTerkunci ? (
+                      <div className="rounded-xl border border-[#22C55E]/60 bg-[#0F2415] p-3 flex items-center gap-3">
+                        {activeServer?.icon ? (
+                          <img
+                            src={activeServer.icon}
+                            alt=""
+                            className="h-10 w-10 shrink-0 rounded-full border border-line object-cover"
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
+                            {String(activeServer?.name || 'S').slice(0, 1).toUpperCase()}
+                          </span>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-bold text-ink">{activeServer?.name || `Server ${guildIdInput}`}</div>
+                          <div className="text-[11px] text-faint font-mono">{guildIdInput}</div>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-[#14532D] border border-[#22C55E] px-2 py-0.5 text-[10px] font-bold text-[#86EFAC]">
+                          Dipertahankan
+                        </span>
+                      </div>
+                    ) : (
+                      <input
+                        value={guildIdInput}
+                        onChange={(e) => setGuildIdInput(e.target.value)}
+                        placeholder="Contoh: 123456789012345678"
+                        className="w-full rounded-xl border border-linebright bg-bg px-3.5 py-2.5 text-xs text-ink outline-none focus:border-crimson font-mono"
+                      />
+                    )}
                     <p className="mt-1 text-[11px] text-faint">
                       {guildTerkunci
-                        ? 'Perpanjangan mempertahankan server aktif ini. Ingin memindahkan server? Gunakan tombol Ganti Server di halaman profilmu (cooldown 7 hari).'
+                        ? 'Perpanjangan otomatis untuk server ini - tidak perlu isi ID lagi. Ingin memindahkan server? Gunakan tombol Ganti Server di halaman profilmu (cooldown 7 hari).'
                         : 'Aktifkan Discord Developer Mode (Pengaturan → Lanjutan), klik kanan nama server, lalu Copy Server ID. Benefit hanya aktif di server ini; ganti server bisa lewat profil dengan cooldown 7 hari.'}
                     </p>
                   </div>

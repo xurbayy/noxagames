@@ -4,6 +4,7 @@ import BackButton from '../components/BackButton';
 import PremiumPricing from '../components/premium/PremiumPricing';
 import { getSession } from '../lib/session';
 import { getDb, schemaReady } from '../lib/db';
+import { getSnapshot, topServers } from '../lib/snapshot';
 import { pageMeta, SUPPORT_INVITE } from '../lib/site';
 
 export const metadata = pageMeta({
@@ -30,6 +31,12 @@ export default async function PremiumPage() {
       // Stacking: individu (Premium/Premium+) dan Ultimate (server) berdiri sendiri
       activeSubscription = subRes.rows.find((r) => r.plan_id !== 'premium-ultimate') || null;
       activeServer = subRes.rows.find((r) => r.plan_id === 'premium-ultimate') || null;
+      // Perkaya paket server dengan logo & nama dari snapshot bridge
+      if (activeServer?.guild_id) {
+        const snap = await getSnapshot();
+        const cocok = topServers(snap?.data).find((g) => String(g.id) === String(activeServer.guild_id));
+        activeServer = { ...activeServer, name: cocok?.name || null, icon: cocok?.icon || null };
+      }
     } catch {}
   }
 
