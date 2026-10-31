@@ -54,6 +54,33 @@ export async function POST(request) {
       return json({ ok: true, message: 'Sudah diproses sebelumnya' });
     }
 
+    // VERIFIKASI KRUSIAL: jangan percaya payload mentah - konfirmasi status
+    // invoice langsung ke API QiosPay (server-to-server, pakai API key).
+    const apiKey = process.env.QIOSPAY_API_KEY;
+    if (apiKey) {
+      const apiBase = (process.env.QIOSPAY_API_BASE || 'https://my.qiospay.com/v1').replace(/\/+$/, '');
+      try {
+        const verRes = await fetch(`${apiBase}/invoices/${invoiceId}`, {
+          headers: { 'x-api-key': apiKey, Authorization: `Bearer ${apiKey}` },
+        });
+        if (verRes.ok) {
+          const verData = await verRes.json();
+          const inv = verData.data || verData;
+          const statusVerifikasi = String(inv.status || '').toLowerCase();
+          if (statusVerifikasi !== 'paid' && !inv.is_paid) {
+            console.warn(`[QIOSPAY-CALLBACK] QiosPay bilang status ${statusVerifikasi}, bukan paid - tolak aktivasi.`);
+            return json({ ok: false, error: `Status invoice di QiosPay: ${statusVerifikasi}` }, 400);
+          }
+        } else {
+          console.warn(`[QIOSPAY-CALLBACK] Verifikasi API gagal HTTP ${verRes.status} - tolak demi keamanan.`);
+          return json({ ok: false, error: 'Verifikasi invoice gagal' }, 502);
+        }
+      } catch (e) {
+        console.warn('[QIOSPAY-CALLBACK] Verifikasi API error:', e?.message || e);
+        return json({ ok: false, error: 'Verifikasi invoice gagal' }, 502);
+      }
+    }
+
     // Update status transaksi menjadi paid
     await db.execute({
       sql: "UPDATE transactions SET status = 'paid', paid_at = ? WHERE id = ?",

@@ -66,7 +66,7 @@ export async function POST(request) {
   }
 
   const durasiData = plan.durasi.find((d) => d.bulan === Number(durationMonths)) || plan.durasi[0];
-  const totalAmount = durasiData.harga || plan.hargaBulanan * durasiData.bulan;
+  let totalAmount = durasiData.harga || plan.hargaBulanan * durasiData.bulan;
 
   // Ultimate baru wajib punya server tujuan (17-20 digit)
   if (plan.id === 'premium-ultimate' && !/^\d{17,20}$/.test(String(guildId || ''))) {
@@ -109,9 +109,14 @@ export async function POST(request) {
       if (qiosRes.ok && (qiosData.id || qiosData.data?.id || qiosData.order_id)) {
         const inv = qiosData.data || qiosData;
         qiospayInvoiceId = String(inv.id || inv.order_id);
-        qrisUrl = inv.qris_url || inv.qr_url || inv.qr_image || null;
-        qrisString = inv.qris_string || inv.qr_string || null;
-        invoiceUrl = inv.invoice_url || inv.payment_url || inv.checkout_url || null;
+        // Field asli QiosPay: qr_image_url (PNG), qris_content (string QRIS),
+        // pay_url (halaman bayar). total_amount = amount + kode unik identifikasi.
+        qrisUrl = inv.qr_image_url || inv.qris_url || inv.qr_url || null;
+        qrisString = inv.qris_content || inv.qris_string || null;
+        invoiceUrl = inv.pay_url || inv.invoice_url || inv.payment_url || null;
+        if (Number(inv.total_amount) > 0) {
+          totalAmount = Number(inv.total_amount); // total yang HARUS dibayar (dgn kode unik)
+        }
       }
     } catch (e) {
       console.warn('[QIOSPAY] Gagal membuat invoice resmi, fallback mode standby:', e?.message || e);

@@ -55,7 +55,7 @@ export async function GET(request) {
         if (qiosRes.ok) {
           const qiosData = await qiosRes.json();
           const inv = qiosData.data || qiosData;
-          if (inv.status === 'paid' || inv.is_paid) {
+          if (String(inv.status || '').toLowerCase() === 'paid' || inv.is_paid) {
             const now = Date.now();
             await db.execute({
               sql: "UPDATE transactions SET status = 'paid', paid_at = ? WHERE id = ?",
