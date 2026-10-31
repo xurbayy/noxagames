@@ -65,8 +65,20 @@ export default async function LoginPage({ searchParams }) {
           loginUrl={`/api/auth/login?returnTo=${encodeURIComponent(adminMode ? '@admin' : returnTo)}`}
         />
 
-        <p className="mt-4 text-[11px] leading-relaxed text-faint">
-          Web hanya menerima ID publik, username, dan avatar Discord-mu.
+        <div className="mt-5 rounded-xl border border-line bg-surface p-3 text-[11px] leading-relaxed text-muted text-left">
+          <div className="font-semibold text-ink flex items-center gap-1.5">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="#22C55E">
+              <path d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.464 9.99a11.7 11.7 0 0 0 4.02 3.167.75.75 0 0 0 .75 0c1.378-.71 2.8-1.782 4.02-3.167 1.677-2.195 3.06-5.513 2.464-9.99a1.54 1.54 0 0 0-1.044-1.263c-.659-.214-1.778-.569-2.887-.87C9.843.266 8.69 0 8 0zm2.146 5.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L6.75 7.793l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+            </svg>
+            <span>Otentikasi Resmi Discord OAuth2</span>
+          </div>
+          <p className="mt-1 text-faint">
+            Login diproses langsung di server resmi <strong className="text-muted">discord.com</strong>. Web ini hanya menerima ID publik, username, dan avatar tanpa pernah meminta atau menyimpan password/token Discord Anda.
+          </p>
+        </div>
+
+        <p className="mt-3 text-[10px] leading-relaxed text-faint">
+          NOXA Sound adalah layanan independen dan tidak terafiliasi dengan Discord Inc.
         </p>
       </div>
       </div>
