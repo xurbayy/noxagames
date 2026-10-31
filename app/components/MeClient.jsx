@@ -11,13 +11,17 @@ import { premiumEmojiName, BENEFIT_INVENTORY, nilaiBenefit } from '../lib/premiu
 
 const POLL_MS = 5000;
 
-export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverIcon = null, serverPremiumTier = null, serverPackage = null }) {
+export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverSubscription = null, serverIcon = null, serverPremiumTier = null, serverPackage = null }) {
   const [gantiServerBuka, setGantiServerBuka] = useState(false);
   const [gantiServerId, setGantiServerId] = useState('');
   const [gantiServerPesan, setGantiServerPesan] = useState(null);
   const [gantiServerBusy, setGantiServerBusy] = useState(false);
 
+  // Banner ultimate standalone: tampil di block 1 HANYA bila tidak ada paket individu
+  // (kalau keduanya aktif, ultimate tampil di banner keduanya bawah).
   const paketServer = subscription?.plan_id === 'premium-ultimate' && Boolean(subscription?.guild_id);
+  const adaIndividuAktif = Boolean(subscription && subscription.plan_id !== 'premium-ultimate');
+  const tampilkanBannerUltimate = Boolean(serverSubscription && Number(serverSubscription.expires_at) > Date.now() && adaIndividuAktif);
 
   async function submitGantiServer(e) {
     e.preventDefault();
@@ -266,6 +270,48 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         </div>
       )}
 
+      {/* Banner kedua: NOXA Pass Ultimate (paket server) saat DITUMPUK dengan paket individu */}
+      {tampilkanBannerUltimate && (
+        <div className="mt-4 rounded-2xl border border-purple-500 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[var(--shadow-hair)]">
+          <div className="flex items-center gap-3.5">
+            <img
+              src="/badges/noxa-premium-ultimate.png"
+              alt=""
+              width={42}
+              height={42}
+              className="h-10 w-10 shrink-0 object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+            />
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-display text-sm font-bold text-ink">{serverSubscription.tier_name} (Server) Aktif</span>
+                <span className="noxa-badge bg-[#240B3B] text-purple-200 border border-purple-500">
+                  {Math.max(0, Math.ceil((Number(serverSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-muted">
+                Jatuh tempo pada: <strong className="text-ink font-semibold">{new Date(Number(serverSubscription.expires_at)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                {serverPackage && <> · aktif di <strong className="text-ink font-semibold">{serverPackage.name || `Server ${serverPackage.guildId}`}</strong></>}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 shrink-0">
+            <Link
+              href="/premium"
+              className="btn-ghost !py-2 !px-4 text-xs font-semibold"
+            >
+              Perpanjang Paket →
+            </Link>
+            <button
+              type="button"
+              onClick={() => { setGantiServerBuka((v) => !v); setGantiServerPesan(null); }}
+              className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-muted hover:text-ink hover:border-linebright cursor-pointer"
+            >
+              Ganti Server (cooldown 7 hari)
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ===== INVENTARIS NOXA PASS (ala NEXO): jelas mana aktif mana terkunci ===== */}
       {(() => {
         const tier = subscription?.plan_id || 'free';
@@ -343,6 +389,39 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           </section>
         );
       })()}
+
+      {/* Banner kedua: NOXA Pass Ultimate (paket server) saat ditumpuk dengan individu */}
+      {tampilkanBannerUltimate && (
+        <div className="mt-4 rounded-2xl border border-purple-500 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[var(--shadow-hair)]">
+          <div className="flex items-center gap-3.5">
+            <img
+              src="/badges/noxa-premium-ultimate.png"
+              alt=""
+              width={42}
+              height={42}
+              className="h-10 w-10 shrink-0 object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+            />
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-display text-sm font-bold text-ink">{serverSubscription.tier_name} (Server) Aktif</span>
+                <span className="noxa-badge bg-[#240B3B] text-purple-200 border border-purple-500">
+                  {Math.max(0, Math.ceil((Number(serverSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-muted">
+                Jatuh tempo pada: <strong className="text-ink font-semibold">{new Date(Number(serverSubscription.expires_at)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                {serverPackage && <> · aktif di <strong className="text-ink font-semibold">{serverPackage.name || `Server ${serverPackage.guildId}`}</strong></>}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/premium"
+            className="btn-ghost !py-2 !px-4 text-xs font-semibold shrink-0"
+          >
+            Perpanjang Paket →
+          </Link>
+        </div>
+      )}
 
       {/* Form ganti server paket Ultimate */}
       {paketServer && gantiServerBuka && (

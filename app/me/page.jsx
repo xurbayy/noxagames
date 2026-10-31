@@ -20,27 +20,28 @@ export default async function MePage() {
 
   let initialProfile = null;
   let activeSubscription = null;
+  let serverSubscription = null;
   try {
     await schemaReady();
     const db = getDb();
     initialProfile = await ambilProfilTerbaru(db, session.discordId);
 
     const now = Date.now();
+    // Stacking: individu (Premium/Premium+) dan Ultimate (server) berdiri sendiri
     const subRes = await db.execute({
-      sql: "SELECT plan_id, tier_name, guild_id, last_switch_at, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC LIMIT 1",
+      sql: "SELECT plan_id, tier_name, guild_id, last_switch_at, expires_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
       args: [session.discordId, now],
     });
-    if (subRes.rows.length > 0) {
-      activeSubscription = subRes.rows[0];
-    }
+    activeSubscription = subRes.rows.find((r) => r.plan_id !== 'premium-ultimate') || null;
+    serverSubscription = subRes.rows.find((r) => r.plan_id === 'premium-ultimate') || null;
   } catch {}
 
   // Info paket server aktif: logo & nama server tujuan dari snapshot bridge.
   let serverPackage = null;
-  if (activeSubscription?.guild_id) {
+  if (serverSubscription?.guild_id) {
     try {
       const snap = await getSnapshot();
-      const gid = String(activeSubscription.guild_id);
+      const gid = String(serverSubscription.guild_id);
       const cocokPaket = topServers(snap?.data).find((g) => String(g.id) === gid);
       serverPackage = {
         guildId: gid,
@@ -59,6 +60,7 @@ export default async function MePage() {
       const cocok = topServers(snap?.data).find((g) => String(g.id) === String(initialProfile.topServer.id));
       if (cocok?.icon) serverIcon = cocok.icon;
       serverPremiumTier = cocok?.premiumTier || initialProfile.topServer.premiumTier || null;
+      if (serverPackage) serverPackage.name = serverPackage.name || cocokPaket?.name || null;
     } catch {}
   }
 
@@ -70,6 +72,7 @@ export default async function MePage() {
       initialProfile={initialProfile}
       isAdmin={isAdmin}
       subscription={activeSubscription}
+      serverSubscription={serverSubscription}
       serverIcon={serverIcon}
       serverPremiumTier={serverPremiumTier}
       serverPackage={serverPackage}
