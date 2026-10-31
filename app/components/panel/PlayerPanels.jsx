@@ -281,10 +281,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
             <QueuePop tracks={DEMO_TRACKS} idx={idx} onJump={(i) => { setIdx(i); setPos(0); setOpenPop(null); }} />
           </PopButton>
           <PopButton {...popProps} id="lyrics" emoji="lirik" label="Lirik">
-            <InfoPop judul="Lirik">
-              Di Discord, tombol ini membuka pilihan <b>Live Lirik</b> real-time ala karaoke atau <b>Skrip Lirik</b> penuh,
-              diverifikasi NOXA Smart dari beberapa provider.
-            </InfoPop>
+            <LyricsPop song={song} />
           </PopButton>
           <PopButton {...popProps} id="chat" emoji="chat" label="Chat">
             <ChatPop chat={chat} onSend={(t) => { setChat((c) => [...c, { user: 'kamu', text: t }]); }} />
@@ -541,15 +538,145 @@ function MessageAndRows({ jam, botAvatar, compact = false, children }) {
 }
 
 function PopButton({ openPop, setOpenPop, popRef, id, emoji, label, style = 'secondary', disabled = false, title, children }) {
+  const isOpen = openPop === id;
+  const isRightAligned = ['lyrics', 'chat', 'effects', 'theme', 'help', 'lang'].includes(id);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setOpenPop(null);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isOpen, setOpenPop]);
+
   return (
     <div className="relative" ref={popRef}>
       <DiscordButton emoji={emoji} label={label} style={style} disabled={disabled} title={title}
-        onClick={() => setOpenPop(openPop === id ? null : id)} />
-      {openPop === id && (
-        <div className="absolute left-0 top-11 z-30 w-80 max-w-[85vw] max-h-[70vh] overflow-y-auto rounded-xl border border-[#26272B] bg-[#111214] p-3 shadow-[0_10px_30px_rgba(0,0,0,0.55)]">
-          {children}
+        onClick={() => setOpenPop(isOpen ? null : id)} />
+      {isOpen && (
+        <>
+          {/* Dismiss overlay outside on desktop */}
+          <div
+            className="hidden sm:block fixed inset-0 z-20 cursor-default"
+            onClick={() => setOpenPop(null)}
+            aria-hidden="true"
+          />
+          {/* Backdrop gelap di mobile */}
+          <div
+            className="block sm:hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-xs"
+            onClick={() => setOpenPop(null)}
+            aria-hidden="true"
+          />
+          {/* Wadah popup: di HP centered modal terjamin aman di viewport, di desktop dropdown di bawah tombol */}
+          <div
+            className={`rounded-xl border border-[#26272B] bg-[#111214] p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)]
+              fixed inset-x-3.5 top-1/2 -translate-y-1/2 z-50 max-w-sm mx-auto max-h-[82vh] overflow-y-auto
+              sm:absolute sm:inset-auto sm:top-11 sm:translate-y-0 sm:z-30 sm:w-80 sm:max-w-[85vw] sm:max-h-[72vh] sm:mx-0
+              ${isRightAligned ? 'sm:right-0 sm:left-auto' : 'sm:left-0 sm:right-auto'}
+            `}
+          >
+            {/* Header mobile dengan tombol tutup */}
+            <div className="flex sm:hidden items-center justify-between pb-2 mb-2.5 border-b border-[#26272B]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#F2F3F5] flex items-center gap-1.5">
+                {emoji && <Emoji name={emoji} size={15} />}
+                <span>{label}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setOpenPop(null)}
+                className="text-[#949BA4] hover:text-white px-2 py-0.5 text-xs font-bold rounded cursor-pointer bg-[#1E1F22] border border-[#2B2D31]"
+              >
+                ✕ Tutup
+              </button>
+            </div>
+            {children}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function LyricsPop({ song }) {
+  const [mode, setMode] = useState('live');
+  const title = song?.name || 'Senja di Kota Tua';
+  const uploader = song?.uploader || 'NOXA Sound';
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <PopTitle>NOXA Smart • Lirik</PopTitle>
+        <span className="text-[10px] text-[#949BA4] font-mono">Spotify • Musixmatch</span>
+      </div>
+
+      <div className="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-[#1E1F22] border border-[#2B2D31]">
+        <button
+          type="button"
+          onClick={() => setMode('live')}
+          className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded text-[11.5px] font-semibold transition cursor-pointer ${
+            mode === 'live' ? 'bg-[#4E5058] text-white shadow-xs' : 'text-[#949BA4] hover:text-white'
+          }`}
+        >
+          <Emoji name="livelirik" size={13} />
+          <span>Live Karaoke</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode('script')}
+          className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded text-[11.5px] font-semibold transition cursor-pointer ${
+            mode === 'script' ? 'bg-[#4E5058] text-white shadow-xs' : 'text-[#949BA4] hover:text-white'
+          }`}
+        >
+          <Emoji name="songlyrics" size={13} />
+          <span>Skrip Penuh</span>
+        </button>
+      </div>
+
+      <div className="rounded-md bg-[#1E1F22] px-2.5 py-1.5 border border-[#2B2D31] flex items-center justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="text-[12px] font-bold text-white truncate">{title}</div>
+          <div className="text-[10.5px] text-[#949BA4] truncate">{uploader}</div>
+        </div>
+        <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#248046] text-white">
+          Terverifikasi
+        </span>
+      </div>
+
+      {mode === 'live' ? (
+        <div className="rounded-lg bg-[#1E1F22] border border-[#2B2D31] p-3 text-[12px] leading-relaxed space-y-2 select-none">
+          <div className="text-[#80848E] text-[11px]">[00:18] Di antara deru kota yang terlelap...</div>
+          <div className="text-[#949BA4] text-[11.5px]">[00:26] Ku melangkah mencari arti senyumanmu...</div>
+          <div className="rounded bg-[#FF4B2B]/20 border border-[#FF4B2B]/50 px-2 py-1.5 text-white font-semibold flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full bg-[#FF4B2B] animate-pulse shrink-0" />
+            <span className="min-w-0 flex-1 text-[12px] break-words">▶ [00:38] Senja datang membawa semua bayanganmu</span>
+          </div>
+          <div className="text-[#949BA4] text-[11.5px]">[00:47] Menemani sepi malam yang sunyi...</div>
+          <div className="text-[#80848E] text-[11px]">[00:58] Dan ku tahu waktu kan menjawabnya...</div>
+        </div>
+      ) : (
+        <div className="rounded-lg bg-[#1E1F22] border border-[#2B2D31] p-3 text-[11.5px] leading-relaxed text-[#DBDEE1] max-h-48 overflow-y-auto space-y-2.5 font-sans">
+          <p>
+            Di antara deru kota yang terlelap<br />
+            Ku melangkah mencari arti senyumanmu<br />
+            Malam berlari mengejar bayang rindu
+          </p>
+          <p className="text-white font-medium border-l-2 border-[#FF4B2B] pl-2">
+            Senja datang membawa semua bayanganmu<br />
+            Menemani sepi malam yang sunyi<br />
+            Dan ku tahu waktu kan menjawabnya
+          </p>
+          <p>
+            Biarkan alunan nada menyatukan rasa<br />
+            Hingga fajar menyapa kembali dunia<br />
+            Kita kan tetap melangkah bersama
+          </p>
         </div>
       )}
+
+      <div className="text-[11px] leading-relaxed text-[#949BA4]">
+        Di Discord, klik tombol <b className="text-white">Lirik</b> di player untuk sinkronisasi otomatis karaoke atau skrip penuh.
+      </div>
     </div>
   );
 }
@@ -584,11 +711,11 @@ function VolumePop({ value, input, setInput, onSet }) {
         <input
           type="number" min={0} max={150} value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="w-24 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-2.5 py-1.5 text-sm text-white outline-none focus:border-[#5865F2]"
+          className="min-w-0 flex-1 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-2.5 py-1.5 text-sm text-white outline-none focus:border-[#5865F2]"
         />
         <button type="button"
           onClick={() => onSet(Math.max(0, Math.min(150, Math.floor(Number(input) || 0))))}
-          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer"
+          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer shrink-0"
         >
           Set
         </button>
@@ -610,10 +737,10 @@ function SeekPop({ input, setInput, onSubmit }) {
         <input
           value={input} onChange={(e) => setInput(e.target.value)}
           placeholder="cth: 1:15:00"
-          className="w-32 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-2.5 py-1.5 text-sm text-white outline-none focus:border-[#5865F2]"
+          className="min-w-0 flex-1 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-2.5 py-1.5 text-sm text-white outline-none focus:border-[#5865F2]"
         />
         <button type="button" onClick={() => onSubmit(input)}
-          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer"
+          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer shrink-0"
         >
           Lompat
         </button>
@@ -707,7 +834,7 @@ function ChatPop({ chat, onSend }) {
       <PopTitle>Live Chat Pemutar</PopTitle>
       <div className="mb-2 space-y-1">
         {chat.slice(-3).map((c, i) => (
-          <div key={i} className="text-[12px] italic text-[#B5BAC1]">{c.user}: {c.text}</div>
+          <div key={i} className="text-[12px] italic text-[#B5BAC1] break-words">{c.user}: {c.text}</div>
         ))}
       </div>
       <div className="flex gap-2">
@@ -718,7 +845,7 @@ function ChatPop({ chat, onSend }) {
         />
         <button type="button"
           onClick={() => { if (t.trim()) { onSend(t.trim()); setT(''); } }}
-          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer"
+          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer shrink-0"
         >
           Kirim
         </button>
