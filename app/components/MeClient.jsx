@@ -11,7 +11,7 @@ import { premiumEmojiName, BENEFIT_INVENTORY, nilaiBenefit } from '../lib/premiu
 
 const POLL_MS = 5000;
 
-export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverSubscription = null, serverIcon = null, serverPremiumTier = null, serverPackage = null }) {
+export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverSubscription = null, serverIcon = null, serverPremiumTier = null, serverPackage = null, expiredSubscription = null }) {
   const [gantiServerBuka, setGantiServerBuka] = useState(false);
   const [gantiServerId, setGantiServerId] = useState('');
   const [gantiServerPesan, setGantiServerPesan] = useState(null);
@@ -149,7 +149,15 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 </span>
               )}
             </div>
-            <h1 className="font-display text-lg sm:text-xl font-bold break-words">{initialUser?.username}</h1>
+            <h1 className="font-display text-lg sm:text-xl font-bold break-words flex items-center gap-2">
+              <span>{initialUser?.username}</span>
+              {subscription?.plan_id && (
+                <Emoji name={premiumEmojiName(subscription.plan_id)} size={20} />
+              )}
+              {serverSubscription && (
+                <Emoji name="NOXAPREMIUMULTIMATE" size={20} title="Pemilik Paket Server Ultimate" />
+              )}
+            </h1>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -193,6 +201,46 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           </a>
         </div>
       </div>
+
+      {/* Banner Langganan Berakhir / Bekas Langganan */}
+      {!subscription && !serverSubscription && expiredSubscription && (
+        <div className="card mt-6 border-l-4 border-l-amber-500 bg-[#1C1812] p-4 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold shrink-0">
+                !
+              </span>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-display text-sm font-bold text-ink">
+                    Paket {expiredSubscription.tier_name} Telah Berakhir
+                  </span>
+                  <span className="noxa-badge bg-amber-950 text-amber-300 border border-amber-600/40 text-[10px]">
+                    Kedaluwarsa
+                  </span>
+                </div>
+                <p className="mt-0.5 text-xs text-muted">
+                  Jatuh tempo pada {new Date(Number(expiredSubscription.expires_at)).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </p>
+              </div>
+            </div>
+            <Link
+              href="/premium"
+              className="inline-flex items-center justify-center rounded-full bg-crimson px-4 py-2 text-xs font-bold text-white hover:bg-neon transition shadow-sm shrink-0"
+            >
+              Aktifkan Kembali NOXA Pass →
+            </Link>
+          </div>
+          <div className="mt-3.5 border-t border-line/60 pt-3 text-xs leading-relaxed text-muted space-y-1">
+            <p>
+              <b className="text-ink">✓ Riwayat & Statistikmu Tetap Aman:</b> Semua lagu yang pernah kamu putar, teman dengar bareng, dan data profilmu tetap tersimpan utuh di database NOXA seumur hidup.
+            </p>
+            <p className="text-faint">
+              Limit pemutar (antrean 500, volume 200%, multi-efek DSP) dan lencana profil saat ini dijeda ke batas standar gratis sampai kamu mengaktifkannya kembali.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Banner Masa Aktif & Jatuh Tempo Langganan Premium - warna per tier */}
       {subscription && (() => {
@@ -499,6 +547,16 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
   const lagu = Array.isArray(p.topSongs) ? p.topSongs : [];
   const co = Array.isArray(p.coListeners) ? p.coListeners : [];
 
+  const [songPage, setSongPage] = useState(0);
+  const [coPage, setCoPage] = useState(0);
+  const PAGE_SIZE = 10;
+
+  const totalSongPages = Math.ceil(lagu.length / PAGE_SIZE) || 1;
+  const displayedSongs = lagu.slice(songPage * PAGE_SIZE, (songPage + 1) * PAGE_SIZE);
+
+  const totalCoPages = Math.ceil(co.length / PAGE_SIZE) || 1;
+  const displayedCo = co.slice(coPage * PAGE_SIZE, (coPage + 1) * PAGE_SIZE);
+
   return (
     <div className="mt-8 space-y-6">
       {/* Angka total: StatBox vertikal yang tidak memotong teks.
@@ -516,62 +574,140 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
 
       {/* Top lagu */}
       <section className="card p-5">
-        <div className="flex items-center gap-2.5">
-          <Emoji name="number1" size={20} />
-          <h2 className="font-display text-base font-bold">Lagu Paling Kamu Dengar</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <Emoji name="number1" size={20} />
+            <h2 className="font-display text-base font-bold">Lagu Paling Kamu Dengar</h2>
+          </div>
+          <span className="text-xs text-faint">Total {lagu.length} lagu</span>
         </div>
         {lagu.length === 0 ? (
           <p className="mt-3 text-sm text-muted">Belum ada lagu tercatat.</p>
         ) : (
-          <ul className="mt-4 space-y-3">
-            {lagu.map((s, i) => (
-              <li key={`${s.name}-${i}`} className="flex items-center gap-3">
-                {s.thumb ? (
-                  <img src={s.thumb} alt="" className="h-11 w-11 shrink-0 rounded-lg border border-line object-cover" loading="lazy" />
-                ) : (
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                    <Emoji name="musik" size={18} />
-                  </span>
-                )}
-                <div className="min-w-0 flex-1">
-                  <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{s.name}</div>
-                  <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{durasi(s.duration)} didengar, {s.count} kali</div>
-                </div>
-                <span className="text-xs font-bold tabular-nums text-faint shrink-0">#{i + 1}</span>
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul className="mt-4 space-y-3">
+              {displayedSongs.map((s, i) => {
+                const rank = songPage * PAGE_SIZE + i + 1;
+                return (
+                  <li key={`${s.name}-${rank}`} className="flex items-center gap-3">
+                    <span className="w-8 shrink-0 text-center">
+                      {rank === 1 ? (
+                        <Emoji name="number1" size={22} />
+                      ) : rank === 2 ? (
+                        <Emoji name="number2" size={22} />
+                      ) : rank === 3 ? (
+                        <Emoji name="number3" size={22} />
+                      ) : (
+                        <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-md bg-surface3 border border-line text-[11px] font-bold tabular-nums text-faint">
+                          #{rank}
+                        </span>
+                      )}
+                    </span>
+                    {s.thumb ? (
+                      <img src={s.thumb} alt="" className="h-11 w-11 shrink-0 rounded-lg border border-line object-cover" loading="lazy" />
+                    ) : (
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
+                        <Emoji name="musik" size={18} />
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{s.name}</div>
+                      <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{durasi(s.duration)} didengar, {s.count} kali</div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+
+            {totalSongPages > 1 && (
+              <div className="flex items-center justify-between border-t border-line pt-3.5 mt-4 text-xs">
+                <button
+                  type="button"
+                  disabled={songPage === 0}
+                  onClick={() => setSongPage((cur) => Math.max(0, cur - 1))}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-surface2 px-3 py-1.5 font-semibold text-muted hover:border-linebright hover:text-ink disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer transition"
+                >
+                  ◀ Sebelumnya
+                </button>
+                <span className="text-xs text-faint font-medium">
+                  Halaman <b className="text-ink">{songPage + 1}</b> / <b>{totalSongPages}</b> ({songPage * PAGE_SIZE + 1}–{Math.min((songPage + 1) * PAGE_SIZE, lagu.length)} dari {lagu.length})
+                </span>
+                <button
+                  type="button"
+                  disabled={songPage >= totalSongPages - 1}
+                  onClick={() => setSongPage((cur) => Math.min(totalSongPages - 1, cur + 1))}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-surface2 px-3 py-1.5 font-semibold text-muted hover:border-linebright hover:text-ink disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer transition"
+                >
+                  Berikutnya ▶
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Dengar bareng */}
         <section className="card p-5">
-          <div className="flex items-center gap-2.5">
-            <Emoji name="sukapenuh" size={20} />
-            <h2 className="font-display text-base font-bold">Paling Sering Dengar Bareng</h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <Emoji name="sukapenuh" size={20} />
+              <h2 className="font-display text-base font-bold">Paling Sering Dengar Bareng</h2>
+            </div>
+            <span className="text-xs text-faint">{co.length} teman</span>
           </div>
           {co.length === 0 ? (
             <p className="mt-3 text-sm text-muted">Belum ada yang sering dengar bareng kamu.</p>
           ) : (
-            <ul className="mt-4 space-y-3">
-              {co.map((c) => (
-                <li key={c.id} className="flex items-center gap-3">
-                  {c.avatar ? (
-                    <img src={c.avatar} alt="" className="h-9 w-9 shrink-0 rounded-full border border-line" loading="lazy" referrerPolicy="no-referrer" />
-                  ) : (
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs font-bold text-faint">
-                      {String(c.username || 'A').slice(0, 1).toUpperCase()}
-                    </span>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{c.username}</div>
-                    <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{c.count} sesi bareng</div>
-                  </div>
-                  <span className="text-xs font-bold tabular-nums text-neon shrink-0">{durasi(c.duration)}</span>
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className="mt-4 space-y-3">
+                {displayedCo.map((c) => (
+                  <li key={c.id} className="flex items-center gap-3">
+                    {c.avatar ? (
+                      <img src={c.avatar} alt="" className="h-9 w-9 shrink-0 rounded-full border border-line" loading="lazy" referrerPolicy="no-referrer" />
+                    ) : (
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs font-bold text-faint">
+                        {String(c.username || 'A').slice(0, 1).toUpperCase()}
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{c.username}</span>
+                        {c.premiumTier && premiumEmojiName(c.premiumTier) && (
+                          <Emoji name={premiumEmojiName(c.premiumTier)} size={15} />
+                        )}
+                      </div>
+                      <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{c.count} sesi bareng</div>
+                    </div>
+                    <span className="text-xs font-bold tabular-nums text-neon shrink-0">{durasi(c.duration)}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {totalCoPages > 1 && (
+                <div className="flex items-center justify-between border-t border-line pt-3 mt-4 text-xs">
+                  <button
+                    type="button"
+                    disabled={coPage === 0}
+                    onClick={() => setCoPage((cur) => Math.max(0, cur - 1))}
+                    className="inline-flex items-center gap-1 rounded-lg border border-line bg-surface2 px-2.5 py-1 text-[11px] font-semibold text-muted hover:border-linebright hover:text-ink disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer transition"
+                  >
+                    ◀ Sebelumnya
+                  </button>
+                  <span className="text-[11px] text-faint">
+                    {coPage + 1} / {totalCoPages} ({coPage * PAGE_SIZE + 1}–{Math.min((coPage + 1) * PAGE_SIZE, co.length)})
+                  </span>
+                  <button
+                    type="button"
+                    disabled={coPage >= totalCoPages - 1}
+                    onClick={() => setCoPage((cur) => Math.min(totalCoPages - 1, cur + 1))}
+                    className="inline-flex items-center gap-1 rounded-lg border border-line bg-surface2 px-2.5 py-1 text-[11px] font-semibold text-muted hover:border-linebright hover:text-ink disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer transition"
+                  >
+                    Berikutnya ▶
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </section>
 

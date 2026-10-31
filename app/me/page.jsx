@@ -36,6 +36,18 @@ export default async function MePage() {
       || subRes.rows.find((r) => r.plan_id === 'premium-ultimate')
       || null;
     serverSubscription = subRes.rows.find((r) => r.plan_id === 'premium-ultimate') || null;
+
+    // Cek juga langganan terakhir bila sudah kedaluwarsa (bekas langganan)
+    var expiredSubscription = null;
+    if (!activeSubscription && !serverSubscription) {
+      const expRes = await db.execute({
+        sql: "SELECT plan_id, tier_name, guild_id, expires_at FROM premium_subscriptions WHERE discord_id = ? ORDER BY expires_at DESC LIMIT 1",
+        args: [session.discordId],
+      });
+      if (expRes.rows.length > 0) {
+        expiredSubscription = expRes.rows[0];
+      }
+    }
   } catch {}
 
   // Info paket server aktif: logo & nama server tujuan dari snapshot bridge.
@@ -80,6 +92,7 @@ export default async function MePage() {
       serverIcon={serverIcon}
       serverPremiumTier={serverPremiumTier}
       serverPackage={serverPackage}
+      expiredSubscription={expiredSubscription}
     />
   );
 }
