@@ -11,11 +11,12 @@ import { premiumEmojiName, BENEFIT_INVENTORY, nilaiBenefit } from '../lib/premiu
 
 const POLL_MS = 5000;
 
-export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverSubscription = null, serverIcon = null, serverPremiumTier = null, serverPackage = null, expiredSubscription = null }) {
+export default function MeClient({ initialUser, initialProfile = null, isAdmin = false, subscription = null, serverSubscription = null, serverIcon = null, serverPremiumTier = null, serverPackage = null, expiredSubscription = null, profilBasi = false }) {
   const [gantiServerBuka, setGantiServerBuka] = useState(false);
   const [gantiServerId, setGantiServerId] = useState('');
   const [gantiServerPesan, setGantiServerPesan] = useState(null);
   const [gantiServerBusy, setGantiServerBusy] = useState(false);
+  const [menyegarkan, setMenyegarkan] = useState(Boolean(profilBasi));
 
   // Banner ultimate standalone: tampil di block 1 HANYA bila tidak ada paket individu
   // (kalau keduanya aktif, ultimate tampil di banner keduanya bawah).
@@ -68,10 +69,12 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         setState({
           loading: false,
           profile: data.profile,
-          pending: false,
-          pendingSince: null,
+          // Data lama tetap tampil sementara bot menyiapkan versi baru.
+          pending: Boolean(data.pending),
+          pendingSince: data.pendingSince || null,
           error: null,
         });
+        setMenyegarkan(Boolean(data.pending));
       } else {
         setState((s) => ({
           ...s,
@@ -91,6 +94,14 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
       load();
     }
   }, [initialProfile, load]);
+
+  // Profil basi (dari SSR) -> tarik versi terbaru sekali di latar belakang.
+  useEffect(() => {
+    if (profilBasi && initialProfile) {
+      const t = setTimeout(() => load(), 800);
+      return () => clearTimeout(t);
+    }
+  }, [profilBasi, initialProfile, load]);
 
   // Polling hanya aktif jika profil belum tersedia
   useEffect(() => {
@@ -162,6 +173,12 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               )}
             </div>
             <h1 className="font-display text-lg sm:text-xl font-bold break-words">{initialUser?.username}</h1>
+            {menyegarkan && (
+              <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] text-faint">
+                <span className="nx-spin inline-block h-3 w-3 rounded-full border-2 border-neon border-t-transparent animate-spin" />
+                Menyegarkan data dari bot...
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -724,11 +741,38 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
 
         {/* Playlist & server */}
         <section className="card p-5">
-          <div className="flex items-center gap-2.5">
-            <Emoji name="playlist" size={20} />
-            <h2 className="font-display text-base font-bold">Playlist & Top Server</h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <Emoji name="playlist" size={20} />
+              <h2 className="font-display text-base font-bold">Playlist Pribadi</h2>
+            </div>
+            {Array.isArray(p.playlists) && p.playlists.length > 0 && (
+              <span className="text-xs text-faint">{p.playlists.length} playlist</span>
+            )}
           </div>
-          {p.topPlaylist ? (
+
+          {/* Daftar playlist asli dari bot (bukan tebakan dari statistik) */}
+          {Array.isArray(p.playlists) && p.playlists.length > 0 ? (
+            <ul className="mt-4 space-y-2.5">
+              {p.playlists.map((pl) => (
+                <li key={pl.id} className="flex items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5">
+                  {pl.cover ? (
+                    <img src={pl.cover} alt="" className="h-9 w-9 shrink-0 rounded-lg border border-line object-cover" loading="lazy" referrerPolicy="no-referrer" />
+                  ) : (
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
+                      <Emoji name={pl.isDefault ? 'sukapenuh' : 'playlist'} size={16} />
+                    </span>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{pl.name}</div>
+                    <div className="text-[11px] text-faint mt-0.5">
+                      {pl.songCount} lagu{pl.playCount > 0 ? ` · diputar ${pl.playCount}x` : ''}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : p.topPlaylist ? (
             <div className="mt-4 flex items-center gap-3">
               {p.topPlaylist.thumb ? (
                 <img src={p.topPlaylist.thumb} alt="" className="h-11 w-11 shrink-0 rounded-lg border border-line object-cover" loading="lazy" />

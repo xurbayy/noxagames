@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { getSession, isAdminDiscordId } from '../lib/session';
 import { getDb, schemaReady } from '../lib/db';
 import { getSnapshot, topServers } from '../lib/snapshot';
-import { ambilProfilTerbaru } from '../lib/profile-request';
+import { ambilProfilDenganRefresh } from '../lib/profile-request';
 import MeClient from '../components/MeClient';
 import { pageMeta } from '../lib/site';
 
@@ -21,10 +21,13 @@ export default async function MePage() {
   let initialProfile = null;
   let activeSubscription = null;
   let serverSubscription = null;
+  let profilBasi = false;
   try {
     await schemaReady();
     const db = getDb();
-    initialProfile = await ambilProfilTerbaru(db, session.discordId);
+    const hasil = await ambilProfilDenganRefresh(db, session.discordId);
+    initialProfile = hasil.profile;
+    profilBasi = hasil.stale;
 
     const now = Date.now();
     // Stacking: individu (Premium/Premium+) dan Ultimate (server) berdiri sendiri
@@ -93,6 +96,7 @@ export default async function MePage() {
       serverPremiumTier={serverPremiumTier}
       serverPackage={serverPackage}
       expiredSubscription={expiredSubscription}
+      profilBasi={profilBasi}
     />
   );
 }

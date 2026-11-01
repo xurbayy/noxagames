@@ -1,7 +1,7 @@
 import { getSession } from '../../lib/session';
 import { json } from '../../lib/api-helpers';
 import { getDb, schemaReady } from '../../lib/db';
-import { ambilProfilTerbaru } from '../../lib/profile-request';
+import { ambilProfilDenganRefresh, antrekanProfilUlang } from '../../lib/profile-request';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,21 +16,35 @@ export async function GET(req) {
     await schemaReady();
     const db = getDb();
 
-    // 1. Cari profil yang SUDAH SELESAI diisi bot (status = 'done')
-    // Jika ada, langsung kembalikan tanpa membuat user menunggu antrean baru!
-    const profile = await ambilProfilTerbaru(db, session.discordId);
-    if (profile) {
-      return json({ user, profile, fresh: true, pending: false });
-    }
-
-    // 2a. Minta ulang: pengguna menekan "Minta Ulang" saat antrean lama macet.
+    // Paksa minta ulang: tombol "Minta Ulang" saat antrean macet atau user
+    // ingin data terbaru sekarang juga.
     if (refresh) {
       const now = Date.now();
-      await db.execute({
-        sql: "INSERT INTO data_requests (discord_id, status, created_at) VALUES (?, 'pending', ?)",
-        args: [session.discordId, now],
-      }).catch(() => {});
-      return json({ user, profile: null, fresh: false, pending: true, pendingSince: now, stale: false });
+      await antrekanProfilUlang(db, session.discordId);
+      const profile = await ambilProfilDenganRefresh(db, session.discordId);
+      return json({
+        user,
+        profile: profile.profile,
+        fresh: Boolean(profile.profile),
+        pending: true,
+        pendingSince: now,
+        stale: Boolean(profile.profile),
+      });
+    }
+
+    // Stale-while-revalidate: sajikan profil yang ada, dan kalau sudah basi
+    // antrekan refresh di belakang layar supaya data playlist/statistik
+    // menyusul tanpa membuat halaman kosong.
+    const hasil = await ambilProfilDenganRefresh(db, session.discordId);
+    if (hasil.profile) {
+      return json({
+        user,
+        profile: hasil.profile,
+        fresh: !hasil.stale,
+        pending: hasil.stale,
+        pendingSince: hasil.stale ? Date.now() : null,
+        stale: false,
+      });
     }
 
     // 2. Jika belum ada profil selesai, cek apakah ada antrean yang sedang diproses
@@ -56,10 +70,7 @@ export async function GET(req) {
 
     // 3. Jika belum pernah ada request sama sekali, otomatis buat antrean baru
     const now = Date.now();
-    await db.execute({
-      sql: "INSERT INTO data_requests (discord_id, status, created_at) VALUES (?, 'pending', ?)",
-      args: [session.discordId, now],
-    }).catch(() => {});
+    await antrekanProfilUlang(db, session.discordId);
 
     return json({ user, profile: null, fresh: false, pending: true, pendingSince: now, stale: false });
   } catch {
