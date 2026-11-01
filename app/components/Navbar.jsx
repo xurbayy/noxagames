@@ -130,7 +130,7 @@ export default function Navbar({ session, isAdmin = false }) {
           <Link
             href="/premium"
             prefetch={false}
-            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white bg-white px-2.5 py-1 text-xs font-bold text-black shadow-xs transition hover:-translate-y-px hover:bg-slate-100 sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
+            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-crimson bg-black px-2.5 py-1 text-xs font-bold text-neon shadow-xs transition hover:-translate-y-px hover:border-neon hover:bg-[#1A0508] sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
               src="/badges/noxa-premium-ultimate.png"
@@ -266,7 +266,7 @@ export default function Navbar({ session, isAdmin = false }) {
                 href="/premium"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between rounded-xl border border-white bg-white px-3 py-2.5 text-sm font-bold text-black shadow-xs hover:bg-slate-100 transition"
+                className="flex items-center justify-between rounded-xl border border-crimson bg-black px-3 py-2.5 text-sm font-bold text-neon shadow-xs hover:border-neon hover:bg-[#1A0508] transition"
               >
                 <span className="flex items-center gap-2">
                   <img
@@ -279,7 +279,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   />
                   NOXA Pass
                 </span>
-                <span className="rounded-full bg-purple-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                <span className="rounded-full bg-crimson px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                   Premium
                 </span>
               </Link>
