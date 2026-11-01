@@ -50,7 +50,7 @@ export default function TopListenerList({ items }) {
                 mode="rank"
                 data={dataKartu(u, i)}
                 linkPath="/top"
-                label="Bagikan"
+                label="Share"
                 className="!px-2.5 !py-1.5"
               />
             </span>
@@ -93,7 +93,7 @@ export default function TopListenerList({ items }) {
                 mode="rank"
                 data={dataKartu(items[buka], buka)}
                 linkPath="/top"
-                label="Bagikan"
+                label="Share"
                 className="w-full justify-center !py-3 text-sm"
               />
             </div>

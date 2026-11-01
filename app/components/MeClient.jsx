@@ -196,26 +196,25 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               Panel Admin
             </Link>
           )}
-          {adaAktivitas(p) && (
-            <ShareCardButton
-              mode="profil"
-              data={{
-                username: initialUser?.username,
-                avatar: initialUser?.avatar,
-                durationLabel: durasi(p.user.totalDuration),
-                plays: p.user.totalPlays,
-                songs: (Array.isArray(p.topSongs) ? p.topSongs : []).map((s) => ({
-                  ...s,
-                  durationLabel: durasi(s.duration),
-                })),
-                premiumTier: badgeTier,
-                serverName: p.topServer?.name || null,
-                serverDuration: p.topServer?.duration ? durasi(p.topServer.duration) : null,
-              }}
-              linkPath="/top"
-              label="Bagikan"
-            />
-          )}
+          <ShareCardButton
+            mode="profil"
+            data={{
+              username: initialUser?.username,
+              avatar: initialUser?.avatar,
+              durationLabel: durasi(p?.user?.totalDuration || 0),
+              plays: p?.user?.totalPlays || 0,
+              songs: (Array.isArray(p?.topSongs) ? p.topSongs : []).map((s) => ({
+                ...s,
+                durationLabel: durasi(s.duration),
+              })),
+              premiumTier: badgeTier,
+              serverName: p?.topServer?.name || null,
+              serverDuration: p?.topServer?.duration ? durasi(p.topServer.duration) : null,
+            }}
+            linkPath="/top"
+            label="Share"
+            title="Bagikan kartu profil NOXA Sound"
+          />
           {/* Profil tidak punya tombol kembali: diganti Logout seperti halaman
               akun lain, karena tujuan keluar dari profil adalah keluar sesi. */}
           <a

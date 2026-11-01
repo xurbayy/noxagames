@@ -10,7 +10,7 @@ export default function ShareCardButton({
   mode = 'profil',
   data = {},
   variant = 'label',
-  label = 'Bagikan',
+  label = 'Share',
   linkPath = '/',
   title = 'NOXA Sound',
   className = '',
