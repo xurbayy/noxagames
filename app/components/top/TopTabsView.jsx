@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Emoji from '../Emoji';
 import Thumb from '../Thumb';
+import SafeImg from '../SafeImg';
 import TopListenerList from './TopListenerList';
 import { premiumEmojiName } from '../../lib/premiumPlan';
 import { durasi } from '../../lib/format';
@@ -129,19 +130,16 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
                         <span className="text-xs sm:text-sm font-bold tabular-nums text-faint">{i + 1}</span>
                       )}
                     </span>
-                    {g.icon ? (
-                      <img
-                        src={g.icon}
-                        alt=""
-                        className="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-full border border-line object-cover"
-                        loading="lazy"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs sm:text-sm font-bold text-faint">
-                        {String(g.name || 'S').slice(0, 1).toUpperCase()}
-                      </span>
-                    )}
+                    <SafeImg
+                      src={g.icon}
+                      alt=""
+                      className="h-9 w-9 sm:h-10 sm:w-10 shrink-0 rounded-full border border-line object-cover"
+                      fallback={
+                        <span className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs sm:text-sm font-bold text-faint">
+                          {String(g.name || 'S').slice(0, 1).toUpperCase()}
+                        </span>
+                      }
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{g.name}</span>

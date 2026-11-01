@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Emoji from './Emoji';
+import SafeImg from './SafeImg';
 import ShareCardButton from './ShareCardButton';
 import { durasi } from '../lib/format';
 import { premiumEmojiName, BENEFIT_INVENTORY, nilaiBenefit } from '../lib/premiumPlan';
@@ -149,13 +150,16 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
       {/* Header tanpa tombol refresh */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          {initialUser?.avatar ? (
-            <img src={initialUser.avatar} alt="" className="h-11 w-11 sm:h-12 sm:w-12 rounded-full border border-linebright object-cover" referrerPolicy="no-referrer" />
-          ) : (
-            <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-crimson font-display text-base sm:text-lg font-bold text-white">
-              {String(initialUser?.username || 'U').slice(0, 1).toUpperCase()}
-            </span>
-          )}
+          <SafeImg
+            src={initialUser?.avatar}
+            alt=""
+            className="h-11 w-11 sm:h-12 sm:w-12 rounded-full border border-linebright object-cover"
+            fallback={
+              <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-crimson font-display text-base sm:text-lg font-bold text-white">
+                {String(initialUser?.username || 'U').slice(0, 1).toUpperCase()}
+              </span>
+            }
+          />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-faint">Profil Pendengar</span>
@@ -312,19 +316,16 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           <div className="flex flex-col gap-2 shrink-0">
             {paketServer && (
               <div className="flex items-center gap-2.5 rounded-xl border border-line bg-surface p-2 pr-4">
-                {serverPackage?.icon ? (
-                  <img
-                    src={serverPackage.icon}
-                    alt=""
-                    className="h-9 w-9 shrink-0 rounded-full border border-line object-cover"
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
-                    {String(serverPackage?.name || 'S').slice(0, 1).toUpperCase()}
-                  </span>
-                )}
+                <SafeImg
+                  src={serverPackage?.icon}
+                  alt=""
+                  className="h-9 w-9 shrink-0 rounded-full border border-line object-cover"
+                  fallback={
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
+                      {String(serverPackage?.name || 'S').slice(0, 1).toUpperCase()}
+                    </span>
+                  }
+                />
                 <div className="min-w-0">
                   <div className="text-[10px] font-semibold uppercase tracking-wider text-faint">Aktif di server</div>
                   <div className="truncate text-xs sm:text-sm font-bold text-ink">
@@ -631,13 +632,16 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
                         </span>
                       )}
                     </span>
-                    {s.thumb ? (
-                      <img src={s.thumb} alt="" className="h-11 w-11 shrink-0 rounded-lg border border-line object-cover" loading="lazy" />
-                    ) : (
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                        <Emoji name="musik" size={18} />
-                      </span>
-                    )}
+                    <SafeImg
+                      src={s.thumb}
+                      alt=""
+                      className="h-11 w-11 shrink-0 rounded-lg border border-line object-cover"
+                      fallback={
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
+                          <Emoji name="musik" size={18} />
+                        </span>
+                      }
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{s.name}</div>
                       <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{durasi(s.duration)} didengar, {s.count} kali</div>
@@ -691,13 +695,16 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
               <ul className="mt-4 space-y-3">
                 {displayedCo.map((c) => (
                   <li key={c.id} className="flex items-center gap-3">
-                    {c.avatar ? (
-                      <img src={c.avatar} alt="" className="h-9 w-9 shrink-0 rounded-full border border-line" loading="lazy" referrerPolicy="no-referrer" />
-                    ) : (
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs font-bold text-faint">
-                        {String(c.username || 'A').slice(0, 1).toUpperCase()}
-                      </span>
-                    )}
+                    <SafeImg
+                      src={c.avatar}
+                      alt=""
+                      className="h-9 w-9 shrink-0 rounded-full border border-line object-cover"
+                      fallback={
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-xs font-bold text-faint">
+                          {String(c.username || 'A').slice(0, 1).toUpperCase()}
+                        </span>
+                      }
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs sm:text-sm font-semibold leading-snug break-words">{c.username}</span>
@@ -756,13 +763,17 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
             <ul className="mt-4 space-y-2.5">
               {p.playlists.map((pl) => (
                 <li key={pl.id} className="flex items-center gap-3 rounded-xl border border-line bg-surface px-3 py-2.5">
-                  {pl.cover ? (
-                    <img src={pl.cover} alt="" className="h-9 w-9 shrink-0 rounded-lg border border-line object-cover" loading="lazy" referrerPolicy="no-referrer" />
-                  ) : (
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                      <Emoji name={pl.isDefault ? 'sukapenuh' : 'playlist'} size={16} />
-                    </span>
-                  )}
+                  <SafeImg
+                    src={pl.cover}
+                    alt=""
+                    fallbackSrc={pl.fallbackCover}
+                    className="h-9 w-9 shrink-0 rounded-lg border border-line object-cover"
+                    fallback={
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
+                        <Emoji name={pl.isDefault ? 'sukapenuh' : 'playlist'} size={16} />
+                      </span>
+                    }
+                  />
                   <div className="min-w-0 flex-1">
                     <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{pl.name}</div>
                     <div className="text-[11px] text-faint mt-0.5">
@@ -774,13 +785,16 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
             </ul>
           ) : p.topPlaylist ? (
             <div className="mt-4 flex items-center gap-3">
-              {p.topPlaylist.thumb ? (
-                <img src={p.topPlaylist.thumb} alt="" className="h-11 w-11 shrink-0 rounded-lg border border-line object-cover" loading="lazy" />
-              ) : (
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
-                  <Emoji name="playlist" size={18} />
-                </span>
-              )}
+              <SafeImg
+                src={p.topPlaylist.thumb}
+                alt=""
+                className="h-11 w-11 shrink-0 rounded-lg border border-line object-cover"
+                fallback={
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface3">
+                    <Emoji name="playlist" size={18} />
+                  </span>
+                }
+              />
               <div className="min-w-0 flex-1">
                 <div className="text-xs sm:text-sm font-semibold leading-snug break-words">{p.topPlaylist.name}</div>
                 <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">Playlist teratas, diputar {p.topPlaylist.count} kali</div>
@@ -792,19 +806,16 @@ function ProfilIsi({ p, serverIcon, serverPremiumTier }) {
 
           {p.topServer?.name ? (
             <div className="mt-4 flex items-center gap-3 border-t border-line pt-4">
-              {serverIcon ? (
-                <img
-                  src={serverIcon}
-                  alt=""
-                  className="h-11 w-11 shrink-0 rounded-full border border-line object-cover"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
-                  {String(p.topServer.name || 'S').slice(0, 1).toUpperCase()}
-                </span>
-              )}
+              <SafeImg
+                src={serverIcon}
+                alt=""
+                className="h-11 w-11 shrink-0 rounded-full border border-line object-cover"
+                fallback={
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line bg-surface3 text-sm font-bold text-faint">
+                    {String(p.topServer.name || 'S').slice(0, 1).toUpperCase()}
+                  </span>
+                }
+              />
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] font-semibold uppercase tracking-wider text-faint">Top Server Favorit</div>
                 <div className="flex items-center gap-1.5 mt-0.5">
