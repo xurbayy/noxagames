@@ -18,9 +18,10 @@ export default async function TopPage() {
   const session = await getSession().catch(() => null);
   const snap = await getSnapshot();
   const lagu = topSongs(snap?.data).slice(0, 10);
-  // Server teratas berdasarkan total durasi dengar
+  // Hanya tampilkan server yang memiliki link invite (bisa dikunjungi).
+  // Server privat / tanpa invite tidak ditampilkan.
   const server = topServers(snap?.data)
-    .filter((g) => Boolean(g && (Number(g.duration) > 0 || Number(g.users) > 0)))
+    .filter((g) => Boolean(g && g.inviteUrl && (Number(g.duration) > 0 || Number(g.users) > 0)))
     .slice(0, 10);
   // Bot kadang masih menyertakan pendengar dengan 0 lagu selesai / 0 durasi
   // (baris statistik kosong). Entri seperti itu tidak layak masuk peringkat.

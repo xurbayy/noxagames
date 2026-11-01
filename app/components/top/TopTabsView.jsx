@@ -147,7 +147,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
                       </div>
                       <div className="text-[11px] sm:text-xs text-faint break-words mt-0.5">{g.users} pendengar tercatat</div>
                     </div>
-                    {g.inviteUrl ? (
+                    {g.inviteUrl && (
                       <a
                         href={g.inviteUrl}
                         target="_blank"
@@ -156,10 +156,6 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
                       >
                         <Emoji name="callme" size={13} /> Kunjungi
                       </a>
-                    ) : (
-                      <span className="text-[11px] text-faint shrink-0 px-2.5 py-1 rounded-md bg-surface3 border border-line">
-                        Privat
-                      </span>
                     )}
                     <span className="shrink-0 text-sm font-bold tabular-nums text-neon">{durasi(g.duration)}</span>
                   </div>
@@ -171,7 +167,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
               </div>
             )}
             <p className="mt-3 text-xs leading-relaxed text-faint">
-              Daftar server teratas berdasarkan total durasi mendengarkan NOXA Sound bersama komunitas.
+              Daftar server teratas yang membuka tautan undangan komunitas untuk dikunjungi.
             </p>
           </section>
         )}
