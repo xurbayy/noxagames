@@ -148,7 +148,8 @@ export default function Navbar({ session, isAdmin = false }) {
           </Link>
 
           {/* Mobile: tombol login tepat di samping NOXA Pass (sebelum hamburger).
-              Hanya tampil saat belum login. Di layar sangat sempit (<= 379px)
+              Hanya tampil saat belum login. Warna merah NOXA solid (bg-crimson),
+              sama seperti tombol Login utama di desktop. Di layar sangat sempit (<= 379px)
               teks disembunyikan supaya navbar tidak pernah meluber. */}
           {!session && (
             <Link
@@ -156,7 +157,7 @@ export default function Navbar({ session, isAdmin = false }) {
               prefetch={false}
               aria-label="Login dengan Discord"
               title="Login dengan Discord"
-              className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-full border border-line bg-surface2 px-2.5 text-xs font-bold text-ink transition hover:border-linebright hover:bg-surface3 active:scale-95 min-[380px]:px-3 md:hidden"
+              className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-full bg-crimson px-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-neon active:scale-95 min-[380px]:px-3 md:hidden"
             >
               <DiscordIcon size={15} />
               <span className="hidden min-[380px]:inline">Login</span>
