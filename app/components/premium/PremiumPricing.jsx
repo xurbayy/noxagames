@@ -163,10 +163,10 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
         const isPlus = activeSubscription.plan_id === 'premium-plus';
         const sisa = Math.max(0, Math.ceil((Number(activeSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)));
         return (
-          <div className={`card p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full shadow-[var(--shadow-hair)] ${
+          <div className={`p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full shadow-sm ${
             isPlus
-              ? 'border-slate-300 bg-[#161B22]'
-              : 'border-[#F0A63C] bg-[#2D1B03]'
+              ? 'border-2 border-[#CBD5E1] bg-[#161B22]'
+              : 'border-2 border-[#F59E0B] bg-[#1C1204]'
           }`}>
             <div className="flex items-center gap-3">
               <img
@@ -196,7 +196,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
       {activeServer && Number(activeServer.expires_at) > Date.now() && (() => {
         const sisa = Math.max(0, Math.ceil((Number(activeServer.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)));
         return (
-          <div className="card border-purple-500 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 max-w-3xl mx-auto w-full shadow-[var(--shadow-hair)]">
+          <div className="border-2 border-purple-500 bg-[#1C0D2E] p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full shadow-sm">
             <div className="flex items-center gap-3">
               <img src="/badges/noxa-premium-ultimate.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
               <div>

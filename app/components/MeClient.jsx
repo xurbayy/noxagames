@@ -190,9 +190,9 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <Link
               href="/admin"
               prefetch={false}
-              className="btn-primary !px-3.5 !py-1.5 text-xs font-bold"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white bg-white px-3.5 py-1.5 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-crimson animate-pulse" />
               Panel Admin
             </Link>
           )}
@@ -279,15 +279,15 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         const isPlus = subscription.plan_id === 'premium-plus';
         // Warna solid per tier: Premium emas, Premium+ perak, Ultimate ungu
         const warna = isUltimate
-          ? { bg: 'bg-[#1A0B2E]', border: 'border-purple-500', badge: 'bg-purple-600 text-white border-purple-400' }
+          ? { bg: 'bg-[#1C0D2E]', border: 'border-2 border-purple-500', badge: 'bg-purple-600 text-white border border-purple-400 font-bold' }
           : isPlus
-          ? { bg: 'bg-[#161B22]', border: 'border-[#CBD5E1]', badge: 'bg-slate-300 text-black border-slate-400' }
-          : { bg: 'bg-[#2D1B03]', border: 'border-[#F0A63C]', badge: 'bg-amber-400 text-black border-[#F0A63C]' };
+          ? { bg: 'bg-[#161B22]', border: 'border-2 border-[#CBD5E1]', badge: 'bg-slate-300 text-black border border-slate-400 font-bold' }
+          : { bg: 'bg-[#1C1204]', border: 'border-2 border-[#F59E0B]', badge: 'bg-amber-400 text-black border border-[#F59E0B] font-bold' };
         return (
-        <div className={`mt-6 rounded-2xl border p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+        <div className={`mt-6 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm ${
           sisaHari <= 5
-            ? 'border-[#F59E0B] bg-[#2E1805]'
-            : `${warna.border} ${warna.bg} shadow-[var(--shadow-hair)]`
+            ? 'border-2 border-[#F59E0B] bg-[#2E1805]'
+            : `${warna.border} ${warna.bg}`
         }`}>
           <div className="flex items-center gap-3.5">
             <img
@@ -336,7 +336,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             )}
             <Link
               href="/premium"
-              className="btn-ghost !py-2 !px-4 text-xs font-semibold"
+              className="inline-flex items-center justify-center rounded-full border border-white bg-white px-4 py-2 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
             >
               Perpanjang Paket →
             </Link>
@@ -344,7 +344,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               <button
                 type="button"
                 onClick={() => { setGantiServerBuka((v) => !v); setGantiServerPesan(null); }}
-                className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-muted hover:text-ink hover:border-linebright cursor-pointer"
+                className="rounded-full border border-line bg-surface3 px-4 py-2 text-xs font-bold text-ink hover:border-linebright cursor-pointer"
               >
                 Ganti Server (cooldown 7 hari)
               </button>
@@ -356,7 +356,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
 
       {/* Banner kedua: NOXA Pass Ultimate (paket server) saat DITUMPUK dengan paket individu */}
       {tampilkanBannerUltimate && (
-        <div className="mt-4 rounded-2xl border border-purple-500 bg-[#1A0B2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[var(--shadow-hair)]">
+        <div className="mt-4 rounded-2xl border-2 border-purple-500 bg-[#1C0D2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3.5">
             <img
               src="/badges/noxa-premium-ultimate.png"
@@ -368,7 +368,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-display text-sm font-bold text-ink">{serverSubscription.tier_name} (Server) Aktif</span>
-                <span className="noxa-badge bg-[#240B3B] text-purple-200 border border-purple-500">
+                <span className="noxa-badge bg-purple-600 text-white border border-purple-400 font-bold">
                   {Math.max(0, Math.ceil((Number(serverSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)))} Hari Lagi
                 </span>
               </div>
@@ -381,14 +381,14 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           <div className="flex flex-col gap-2 shrink-0">
             <Link
               href="/premium"
-              className="btn-ghost !py-2 !px-4 text-xs font-semibold"
+              className="inline-flex items-center justify-center rounded-full border border-white bg-white px-4 py-2 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
             >
               Perpanjang Paket →
             </Link>
             <button
               type="button"
               onClick={() => { setGantiServerBuka((v) => !v); setGantiServerPesan(null); }}
-              className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-muted hover:text-ink hover:border-linebright cursor-pointer"
+              className="rounded-full border border-line bg-surface3 px-4 py-2 text-xs font-bold text-ink hover:border-linebright cursor-pointer"
             >
               Ganti Server (cooldown 7 hari)
             </button>

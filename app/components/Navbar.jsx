@@ -116,13 +116,9 @@ export default function Navbar({ session, isAdmin = false }) {
               <Link
                 href="/admin"
                 prefetch={false}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold transition-all ${
-                  aktif('/admin')
-                    ? 'border-crimson bg-[#3B0004] text-white shadow-[0_0_12px_rgba(255,42,109,0.35)]'
-                    : 'border-crimson bg-[#220002] text-neon hover:border-neon hover:bg-[#3B0004] hover:text-white'
-                }`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white bg-white px-3.5 py-1 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-neon animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-crimson animate-pulse" />
                 Admin
               </Link>
             </li>
@@ -134,14 +130,14 @@ export default function Navbar({ session, isAdmin = false }) {
           <Link
             href="/premium"
             prefetch={false}
-            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-purple-500 bg-transparent px-2.5 py-1 text-xs font-bold text-purple-300 shadow-sm transition hover:-translate-y-px hover:border-purple-400 hover:bg-[#1A0B2E] hover:text-white sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
+            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white bg-white px-2.5 py-1 text-xs font-bold text-black shadow-xs transition hover:-translate-y-px hover:bg-slate-100 sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
               src="/badges/noxa-premium-ultimate.png"
               alt=""
               width={18}
               height={18}
-              className="h-4 w-4 sm:h-4.5 sm:w-4.5 object-contain filter drop-shadow-[0_0_6px_rgba(168,85,247,0.6)]"
+              className="h-4 w-4 sm:h-4.5 sm:w-4.5 object-contain"
               draggable={false}
             />
             <span className="whitespace-nowrap">NOXA Pass</span>
@@ -270,7 +266,7 @@ export default function Navbar({ session, isAdmin = false }) {
                 href="/premium"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-semibold text-purple-300 hover:bg-surface2"
+                className="flex items-center justify-between rounded-xl border border-white bg-white px-3 py-2.5 text-sm font-bold text-black shadow-xs hover:bg-slate-100 transition"
               >
                 <span className="flex items-center gap-2">
                   <img
@@ -278,12 +274,12 @@ export default function Navbar({ session, isAdmin = false }) {
                     alt=""
                     width={18}
                     height={18}
-                    className="h-4.5 w-4.5 object-contain filter drop-shadow-[0_0_6px_rgba(168,85,247,0.5)]"
+                    className="h-4.5 w-4.5 object-contain"
                     draggable={false}
                   />
                   NOXA Pass
                 </span>
-                <span className="rounded border border-purple-500 bg-transparent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-300">
+                <span className="rounded-full bg-purple-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                   Premium
                 </span>
               </Link>
@@ -294,13 +290,13 @@ export default function Navbar({ session, isAdmin = false }) {
                   href="/admin"
                   prefetch={false}
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-semibold text-neon hover:bg-surface2"
+                  className="flex items-center justify-between rounded-xl border border-white bg-white px-3 py-2.5 text-sm font-bold text-black shadow-xs hover:bg-slate-100 transition"
                 >
                   <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-neon animate-pulse" />
+                    <span className="h-2 w-2 rounded-full bg-crimson animate-pulse" />
                     Panel Admin
                   </span>
-                  <span className="rounded border border-crimson bg-[#3B0004] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neon">
+                  <span className="rounded-full bg-crimson px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                     Owner
                   </span>
                 </Link>

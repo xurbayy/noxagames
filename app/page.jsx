@@ -58,7 +58,7 @@ export default async function Home() {
                 <>
                   <Link href="/me" prefetch={false} className="btn-primary">Buka Profil</Link>
                   <Link href="/top" prefetch={false} className="btn-ghost">
-                    <Emoji name="number1" size={18} /> Cek Top NOXA
+                    Cek Top NOXA
                   </Link>
                 </>
               ) : (

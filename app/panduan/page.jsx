@@ -15,10 +15,7 @@ export default function PanduanPage() {
     <div className="mx-auto max-w-5xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)]">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <Emoji name="panduan" size={26} />
-            <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Panduan Perintah</h1>
-          </div>
+          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Panduan Perintah</h1>
         </div>
         <BackButton href="/" className="hidden sm:inline-flex" />
       </div>

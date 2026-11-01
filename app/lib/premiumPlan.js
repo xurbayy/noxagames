@@ -10,8 +10,8 @@ export const PREMIUM_PLANS = [
     badgeAlt: 'Lencana NOXA Premium Gold',
     tagline: 'Benefit individu, ikut kamu di server mana pun',
     warna: {
-      border: 'border-amber-500/40 hover:border-amber-500',
-      badgeBg: 'bg-amber-500/15 border-amber-500/40 text-amber-400',
+      border: 'border-amber-500 hover:border-amber-400',
+      badgeBg: 'bg-amber-400 text-black border border-amber-300 font-bold',
       aksenText: 'text-amber-400',
       btn: 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold shadow-[0_4px_16px_rgba(245,158,11,0.25)] hover:shadow-[0_6px_24px_rgba(245,158,11,0.45)]',
       glow: 'shadow-[0_0_24px_rgba(245,158,11,0.15)]',
@@ -42,8 +42,8 @@ export const PREMIUM_PLANS = [
     populer: true,
     tagline: 'Benefit penuh versi individu - ikut kamu ke mana pun',
     warna: {
-      border: 'border-slate-300/60 hover:border-slate-200',
-      badgeBg: 'bg-slate-200/15 border-slate-300/50 text-slate-200',
+      border: 'border-slate-300 hover:border-white',
+      badgeBg: 'bg-slate-200 text-black border border-white font-bold',
       aksenText: 'text-slate-100',
       btn: 'bg-gradient-to-r from-slate-100 to-slate-300 hover:from-white hover:to-slate-200 text-black font-bold shadow-[0_4px_18px_rgba(255,255,255,0.25)] hover:shadow-[0_6px_28px_rgba(255,255,255,0.5)]',
       glow: 'shadow-[0_0_35px_rgba(226,232,240,0.22)]',
@@ -74,8 +74,8 @@ export const PREMIUM_PLANS = [
     badgeAlt: 'Lencana NOXA Premium Ultimate Ultraviolet',
     tagline: 'Semua member di 1 server pilihan menikmati benefit penuh',
     warna: {
-      border: 'border-purple-500/60 hover:border-purple-400',
-      badgeBg: 'bg-purple-500/20 border-purple-500/50 text-purple-300',
+      border: 'border-purple-500 hover:border-purple-400',
+      badgeBg: 'bg-purple-600 text-white border border-purple-400 font-bold',
       aksenText: 'text-purple-300',
       btn: 'bg-gradient-to-r from-purple-500 via-purple-600 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold shadow-[0_4px_20px_rgba(168,85,247,0.35)] hover:shadow-[0_6px_30px_rgba(168,85,247,0.6)]',
       glow: 'shadow-[0_0_40px_rgba(168,85,247,0.3)]',
