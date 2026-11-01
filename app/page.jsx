@@ -67,7 +67,7 @@ export default async function Home() {
                     Tambahkan ke Discord
                   </a>
                   <Link href="/pemutar" prefetch={false} className="btn-ghost">
-                    <Emoji name="suara" size={18} /> Lihat Panel Pemutar
+                    Lihat Panel Pemutar
                   </Link>
                 </>
               )}

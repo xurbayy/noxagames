@@ -15,10 +15,7 @@ export default function PemutarPage() {
     <div className="mx-auto max-w-3xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)]">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <Emoji name="suara" size={26} />
-            <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Tampilan Pemutar</h1>
-          </div>
+          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">Tampilan Pemutar</h1>
         </div>
         <BackButton href="/" className="hidden sm:inline-flex" />
       </div>
