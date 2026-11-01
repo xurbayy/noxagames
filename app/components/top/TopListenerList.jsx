@@ -21,6 +21,8 @@ export default function TopListenerList({ items }) {
     plays: u.plays,
     rank: i + 1,
     premiumTier: u.premiumTier || null,
+    serverName: u.topServer?.name || null,
+    serverDuration: u.topServer?.duration ? durasi(u.topServer.duration) : null,
   });
 
   return (

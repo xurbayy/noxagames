@@ -183,8 +183,13 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 avatar: initialUser?.avatar,
                 durationLabel: durasi(p.user.totalDuration),
                 plays: p.user.totalPlays,
-                songs: p.topSongs,
+                songs: (Array.isArray(p.topSongs) ? p.topSongs : []).map((s) => ({
+                  ...s,
+                  durationLabel: durasi(s.duration),
+                })),
                 premiumTier: badgeTier,
+                serverName: p.topServer?.name || null,
+                serverDuration: p.topServer?.duration ? durasi(p.topServer.duration) : null,
               }}
               linkPath="/top"
               label="Bagikan"

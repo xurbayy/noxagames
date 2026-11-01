@@ -156,9 +156,6 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             </button>
           ))}
         </div>
-        <p className="mt-3 text-xs text-faint text-center">
-          Payment Gateway QRIS resmi otomatis via QiosPay (GoPay, OVO, DANA, ShopeePay, BCA, Mandiri).
-        </p>
       </div>
 
       {/* Banner Info Langganan Aktif (Perpanjang Cerdas + Stacking) */}
