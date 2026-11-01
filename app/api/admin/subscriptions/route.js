@@ -298,20 +298,34 @@ export async function PUT(request) {
 }
 
 // DELETE /api/admin/subscriptions
-// Hapus atau cabut paket premium (Delete)
+// Hapus atau cabut paket premium, atau hapus riwayat transaksi (Delete)
 export async function DELETE(request) {
   const admin = await getAdminActor();
   if (!admin) return json({ ok: false, error: 'Bukan admin' }, 403);
 
   let body;
   try { body = await request.json(); } catch {}
-  const { id } = body || {};
-
-  if (!id) return json({ ok: false, error: 'ID langganan wajib diisi.' }, 400);
+  const { id, txId } = body || {};
 
   await ready();
   const db = getDb();
   const now = Date.now();
+
+  // Hapus riwayat transaksi jika txId diberikan
+  if (txId) {
+    try {
+      await db.execute({
+        sql: 'DELETE FROM transactions WHERE id = ?',
+        args: [String(txId)],
+      });
+      return json({ ok: true, txId });
+    } catch (err) {
+      console.error('[ADMIN-TX-DELETE] Error:', err);
+      return json({ ok: false, error: 'Gagal menghapus riwayat transaksi.' }, 500);
+    }
+  }
+
+  if (!id) return json({ ok: false, error: 'ID langganan wajib diisi.' }, 400);
 
   try {
     const subRes = await db.execute({

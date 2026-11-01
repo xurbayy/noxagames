@@ -157,6 +157,34 @@ export default function PremiumManagement() {
     }
   }
 
+  // Hapus riwayat transaksi tunggal
+  async function hapusTransaksi(txId) {
+    if (!confirm(`Hapus transaksi ${txId} dari riwayat?`)) return;
+    setBusy(true);
+    setPesan(null);
+    try {
+      const res = await fetch('/api/admin/subscriptions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ txId }),
+      });
+      const json = await res.json();
+      if (res.ok && json.ok) {
+        setPesan(`Riwayat transaksi ${txId} berhasil dihapus.`);
+        setData((d) => ({
+          ...d,
+          transactions: (d.transactions || []).filter((t) => t.id !== txId),
+        }));
+      } else {
+        setPesan(json.error || 'Gagal menghapus transaksi.');
+      }
+    } catch {
+      setPesan('Koneksi terputus.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const subs = data.subscriptions || [];
   const totalAktif = subs.filter((s) => s.status === 'active').length;
   const totalOmzet = (data.transactions || []).reduce((acc, t) => acc + (t.status === 'paid' ? Number(t.amount) : 0), 0);
@@ -337,6 +365,7 @@ export default function PremiumManagement() {
                   <th className="py-2.5 px-3">Nominal</th>
                   <th className="py-2.5 px-3">Status</th>
                   <th className="py-2.5 px-3">Waktu</th>
+                  <th className="py-2.5 px-3 text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line/60">
@@ -352,6 +381,17 @@ export default function PremiumManagement() {
                       </span>
                     </td>
                     <td className="py-2.5 px-3 text-faint">{new Date(tx.createdAt).toLocaleString('id-ID')}</td>
+                    <td className="py-2.5 px-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() => hapusTransaksi(tx.id)}
+                        disabled={busy}
+                        className="rounded-md border border-line bg-surface3 px-2 py-0.5 text-[11px] font-bold text-crimson hover:bg-[#3B0004] hover:text-white transition cursor-pointer"
+                        title="Hapus riwayat transaksi ini"
+                      >
+                        Hapus
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
