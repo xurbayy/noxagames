@@ -92,7 +92,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
                   <div className="hidden w-28 sm:w-32 shrink-0 md:block">
                     <div className="h-1.5 overflow-hidden rounded-full bg-surface3">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-crimson to-neon"
+                        className="h-full rounded-full bg-crimson"
                         style={{ width: `${barPercent(s.duration, lagu[0]?.duration)}%` }}
                       />
                     </div>

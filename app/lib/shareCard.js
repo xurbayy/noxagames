@@ -313,12 +313,8 @@ export async function renderShareCard({
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, 1150);
 
-  // Bar aksen atas: merah -> amber
-  const barGrad = ctx.createLinearGradient(0, 0, W, 0);
-  barGrad.addColorStop(0, WARNA.crimson);
-  barGrad.addColorStop(0.6, WARNA.neon);
-  barGrad.addColorStop(1, WARNA.amber);
-  ctx.fillStyle = barGrad;
+  // Bar aksen atas: solid merah NOXA
+  ctx.fillStyle = WARNA.neon;
   ctx.fillRect(0, 0, W, 12);
 
   // Bracket sudut dekoratif

@@ -14,7 +14,7 @@ export default function Thumb({ src, alt = '', size = 'h-10 w-10', rounded = 'ro
 
   if (!src || rusak) {
     return (
-      <span className={`${size} ${rounded} flex shrink-0 items-center justify-center border border-line bg-gradient-to-br from-maroon via-darkcrimson to-surface2`}>
+      <span className={`${size} ${rounded} flex shrink-0 items-center justify-center border border-line bg-surface3`}>
         <Emoji name={emoji} size={emojiSize} />
       </span>
     );

@@ -214,7 +214,7 @@ function Statistik({ data }) {
                     </div>
                     <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface3">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-crimson to-amber transition-all duration-500"
+                        className="h-full rounded-full bg-crimson transition-all duration-500"
                         style={{ width: `${Math.max(4, pct)}%` }}
                       />
                     </div>
@@ -254,7 +254,7 @@ function Statistik({ data }) {
                     </div>
                     <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface3">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-neon to-crimson transition-all duration-500"
+                        className="h-full rounded-full bg-crimson transition-all duration-500"
                         style={{ width: `${Math.max(4, pct)}%` }}
                       />
                     </div>

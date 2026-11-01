@@ -143,7 +143,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
               onClick={() => setDurasiPilihan(d.index)}
               className={`relative cursor-pointer rounded-full px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 durasiPilihan === d.index
-                  ? 'bg-gradient-to-r from-crimson to-neon text-white shadow-[0_0_16px_rgba(255,42,109,0.45)]'
+                  ? 'bg-crimson text-white shadow-xs'
                   : 'text-muted hover:text-ink hover:bg-surface3'
               }`}
             >
@@ -256,7 +256,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
 
               {/* Badge Populer */}
               {plan.populer && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 shimmer rounded-full bg-gradient-to-r from-slate-200 to-slate-400 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-slate-200 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-black shadow-xs">
                   Paling Banyak Dipilih
                 </div>
               )}

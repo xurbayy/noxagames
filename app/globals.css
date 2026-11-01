@@ -123,7 +123,7 @@ textarea:focus-visible {
   left: 0;
   height: 3px;
   z-index: 9999;
-  background: linear-gradient(90deg, var(--color-crimson), var(--color-amber));
+  background: #FF4B2B;
   width: 0;
   border-radius: 0 2px 2px 0;
   transition: width 0.08s linear;
@@ -266,24 +266,23 @@ textarea:focus-visible {
   .badge-danger { background-color: var(--color-crimson); color: #fff; }
   .badge-neutral { background-color: var(--color-surface3); color: var(--color-muted); border: 1px solid var(--color-line); }
 
-  /* Teks display: gradasi hangat merah -> amber, tanpa bayangan.
-     Ini yang membedakan NOXA dari nuansa merah-tunggal ala Netflix. */
+  /* Teks display: warna merah NOXA solid, tanpa gradasi */
   .neon-text {
-    color: var(--color-neon);
+    color: #FF4B2B;
   }
 
   /* Garis merah tipis dekoratif */
   .hairline {
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(177, 18, 38, 0.55), transparent);
+    background: #3B0004;
   }
 
-  /* Accent underline ala NEXO: bar di bawah judul seksi */
+  /* Accent underline ala NEXO: bar solid merah NOXA di bawah judul seksi */
   .accent-bar {
     width: 180px;
     height: 7px;
     border-radius: 9999px;
-    background: linear-gradient(90deg, var(--color-crimson), var(--color-amber));
+    background: #FF4B2B;
   }
 }
 
