@@ -111,6 +111,24 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
   }, [state.profile, state.error, load]);
 
   const p = state.profile;
+  // Satu badge saja di header: paket tertinggi yang sedang aktif.
+  // Ultimate (server) menang atas Premium+/Premium individu supaya logo
+  // tidak dobel saat keduanya ditumpuk.
+  const adaUltimateAktif = Boolean(serverSubscription && Number(serverSubscription.expires_at) > Date.now());
+  const badgeTier = adaUltimateAktif ? 'premium-ultimate' : (subscription?.plan_id || null);
+  const badgeNama = adaUltimateAktif
+    ? (serverSubscription.tier_name || 'NOXA Premium Ultimate')
+    : (subscription?.tier_name || 'NOXA Premium');
+  const badgeWarna = badgeTier === 'premium-ultimate'
+    ? 'border-purple-400 bg-purple-600 text-white font-bold'
+    : badgeTier === 'premium-plus'
+    ? 'border-slate-300 bg-slate-200 text-black font-bold'
+    : 'border-amber-400 bg-amber-400 text-black font-bold';
+  const badgeGambar = badgeTier === 'premium-ultimate'
+    ? '/badges/noxa-premium-ultimate.png'
+    : badgeTier === 'premium-plus'
+    ? '/badges/noxa-premium-plus.png'
+    : '/badges/noxa-premium.png';
   // Permintaan yang menggantung lebih dari 90 detik berarti bot tidak memproses
   // antrean (offline/mati) - jangan biarkan halaman berputar selamanya.
   const basi = Boolean(state.pending && state.pendingSince && Date.now() - state.pendingSince > 90 * 1000);
@@ -130,34 +148,20 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-faint">Profil Pendengar</span>
-              {subscription && (
-                <span className={`noxa-badge normal-case tracking-normal ${
-                  subscription.plan_id === 'premium-ultimate'
-                    ? 'border-purple-400 bg-purple-600 text-white font-bold'
-                    : subscription.plan_id === 'premium-plus'
-                    ? 'border-slate-300 bg-slate-200 text-black font-bold'
-                    : 'border-amber-400 bg-amber-400 text-black font-bold'
-                }`}>
+              {badgeTier && (
+                <span className={`noxa-badge normal-case tracking-normal ${badgeWarna}`}>
                   <img
-                    src={subscription.plan_id === 'premium-ultimate' ? '/badges/noxa-premium-ultimate.png' : subscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
+                    src={badgeGambar}
                     alt=""
                     width={14}
                     height={14}
                     className="h-3.5 w-3.5 object-contain"
                   />
-                  <span>{subscription.tier_name || 'Premium'}</span>
+                  <span>{badgeNama}</span>
                 </span>
               )}
             </div>
-            <h1 className="font-display text-lg sm:text-xl font-bold break-words flex items-center gap-2">
-              <span>{initialUser?.username}</span>
-              {subscription?.plan_id && (
-                <Emoji name={premiumEmojiName(subscription.plan_id)} size={20} />
-              )}
-              {serverSubscription && (
-                <Emoji name="NOXAPREMIUMULTIMATE" size={20} title="Pemilik Paket Server Ultimate" />
-              )}
-            </h1>
+            <h1 className="font-display text-lg sm:text-xl font-bold break-words">{initialUser?.username}</h1>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -180,7 +184,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 durationLabel: durasi(p.user.totalDuration),
                 plays: p.user.totalPlays,
                 songs: p.topSongs,
-                premiumTier: subscription?.plan_id || null,
+                premiumTier: badgeTier,
               }}
               linkPath="/top"
               label="Bagikan"
@@ -371,8 +375,14 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
 
       {/* ===== INVENTARIS NOXA PASS (ala NEXO): jelas mana aktif mana terkunci ===== */}
       {(() => {
-        const tier = subscription?.plan_id || 'free';
-        const aktif = Boolean(subscription && Number(subscription.expires_at) > Date.now());
+        // Tier efektif: Ultimate (server) mengalahkan paket individu supaya
+        // inventaris tidak pernah kosong saat user hanya punya paket server.
+        const tier = badgeTier || 'free';
+        const aktif = Boolean(badgeTier && (
+          (adaUltimateAktif && Number(serverSubscription.expires_at) > Date.now())
+          || (subscription && Number(subscription.expires_at) > Date.now())
+        ));
+        const namaTier = badgeNama;
         return (
           <section className="card mt-6 p-4 sm:p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -380,12 +390,8 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 <Emoji name="party" size={18} /> Inventaris NOXA Pass
               </h2>
               {aktif ? (
-                <span className={`noxa-badge font-bold ${
-                  tier === 'premium-ultimate' ? 'bg-purple-600 text-white border-purple-400'
-                  : tier === 'premium-plus' ? 'bg-slate-200 text-black border-white'
-                  : 'bg-amber-400 text-black border-amber-300'
-                }`}>
-                  {subscription.tier_name || 'Premium'}
+                <span className={`noxa-badge font-bold ${badgeWarna}`}>
+                  {namaTier}
                 </span>
               ) : (
                 <span className="noxa-badge bg-surface3 text-faint border-line">Belum Aktif</span>

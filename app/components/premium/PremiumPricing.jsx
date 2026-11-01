@@ -555,20 +555,22 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                 {/* Info Akun Discord Pemesan */}
                 <div className="rounded-xl border border-line bg-surface p-3.5 flex items-center gap-3">
                   {session.avatar ? (
-                    <img src={session.avatar} alt="" className="h-10 w-10 rounded-full border border-line" />
+                    <img src={session.avatar} alt="" className="h-10 w-10 shrink-0 rounded-full border border-line object-cover" />
                   ) : (
-                    <div className="h-10 w-10 rounded-full bg-crimson flex items-center justify-center font-bold text-white">
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-crimson flex items-center justify-center font-bold text-white">
                       {session.username?.slice(0, 1)}
                     </div>
                   )}
-                  <div className="min-w-0 flex-1 text-xs">
-                    <div className="font-semibold text-ink truncate">{session.username}</div>
-                    <div className="text-faint font-mono">ID: {session.discordId}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-xs font-semibold text-ink">{session.username}</div>
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="text-[11px] text-faint font-mono">ID: {session.discordId}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[#22C55E] bg-[#16A34A] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white shrink-0">
+                        <span className="h-1 w-1 rounded-full bg-white shrink-0" />
+                        Tersambung
+                      </span>
+                    </div>
                   </div>
-                  <span className="noxa-badge bg-[#16A34A] text-white border border-[#22C55E] font-bold text-[10px] shadow-xs shrink-0">
-                    <span className="h-1.5 w-1.5 rounded-full bg-white shrink-0" />
-                    Tersambung
-                  </span>
                 </div>
 
                 {/* Target server: WAJIB untuk paket Ultimate (benefit 1 server pilihan) */}
