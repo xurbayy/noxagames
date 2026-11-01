@@ -46,7 +46,7 @@ export default async function PremiumPage() {
       <section className="relative overflow-hidden pb-12 sm:pb-16 text-center px-4 sm:px-5">
         <div className="bg-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
         <div className="relative mx-auto max-w-4xl">
-          <div className="anim-in inline-flex items-center gap-2 rounded-full border border-crimson bg-black px-3.5 py-1.5 text-xs font-bold tracking-wide text-neon shadow-xs">
+          <div className="anim-in inline-flex items-center gap-2 rounded-full border border-crimson bg-black px-3.5 py-1.5 text-xs font-bold tracking-wide text-white shadow-xs">
             <img
               src="/badges/noxa-premium-ultimate.png"
               alt=""
