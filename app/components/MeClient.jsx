@@ -18,6 +18,21 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
   const [gantiServerPesan, setGantiServerPesan] = useState(null);
   const [gantiServerBusy, setGantiServerBusy] = useState(false);
   const [menyegarkan, setMenyegarkan] = useState(Boolean(profilBasi));
+  // Identitas (username & avatar) bisa diperbarui dari bot: data profil membawa
+  // avatar Discord terbaru, jadi foto profil yang baru diganti langsung tampil
+  // tanpa perlu logout-login ulang.
+  const [userInfo, setUserInfo] = useState(initialUser || {});
+  // Kartu tawaran NOXA Pass bisa ditutup - tidak dipaksa terus-terusan tampil.
+  const [promoPassTersembunyi, setPromoPassTersembunyi] = useState(false);
+
+  useEffect(() => {
+    try { if (localStorage.getItem('noxa_pass_promo_hidden') === '1') setPromoPassTersembunyi(true); } catch {}
+  }, []);
+
+  const tutupPromoPass = useCallback(() => {
+    try { localStorage.setItem('noxa_pass_promo_hidden', '1'); } catch {}
+    setPromoPassTersembunyi(true);
+  }, []);
 
   // Banner ultimate standalone: tampil di block 1 HANYA bila tidak ada paket individu
   // (kalau keduanya aktif, ultimate tampil di banner keduanya bawah).
@@ -66,6 +81,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         return;
       }
       const data = await res.json();
+      if (data.user) setUserInfo((u) => ({ ...u, ...data.user }));
       if (data.profile) {
         setState({
           loading: false,
@@ -151,12 +167,12 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <SafeImg
-            src={initialUser?.avatar}
+            src={userInfo?.avatar}
             alt=""
             className="h-11 w-11 sm:h-12 sm:w-12 rounded-full border border-linebright object-cover"
             fallback={
               <span className="flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-crimson font-display text-base sm:text-lg font-bold text-white">
-                {String(initialUser?.username || 'U').slice(0, 1).toUpperCase()}
+                {String(userInfo?.username || 'U').slice(0, 1).toUpperCase()}
               </span>
             }
           />
@@ -176,7 +192,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 </span>
               )}
             </div>
-            <h1 className="font-display text-lg sm:text-xl font-bold break-words">{initialUser?.username}</h1>
+            <h1 className="font-display text-lg sm:text-xl font-bold break-words">{userInfo?.username}</h1>
             {menyegarkan && (
               <div className="mt-1 inline-flex items-center gap-1.5 text-[11px] text-faint">
                 <span className="nx-spin inline-block h-3 w-3 rounded-full border-2 border-neon border-t-transparent animate-spin" />
@@ -190,26 +206,31 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <Link
               href="/admin"
               prefetch={false}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white bg-white px-3.5 py-1.5 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
+              className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#930E1F]"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-crimson animate-pulse" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
               Panel Admin
             </Link>
           )}
           <ShareCardButton
             mode="profil"
             data={{
-              username: initialUser?.username,
-              avatar: initialUser?.avatar,
+              username: userInfo?.username,
+              avatar: userInfo?.avatar,
               durationLabel: durasi(p?.user?.totalDuration || 0),
               plays: p?.user?.totalPlays || 0,
-              songs: (Array.isArray(p?.topSongs) ? p.topSongs : []).map((s) => ({
-                ...s,
-                durationLabel: durasi(s.duration),
-              })),
+              // Kalau halaman ini menganggap belum ada aktivitas (total 0),
+              // kartu share juga tidak boleh menampilkan daftar lagu/server -
+              // dulu kartu tetap menampilkannya sehingga terlihat "ada data".
+              songs: adaAktivitas(p)
+                ? (Array.isArray(p?.topSongs) ? p.topSongs : []).map((s) => ({
+                    ...s,
+                    durationLabel: durasi(s.duration),
+                  }))
+                : [],
               premiumTier: badgeTier,
-              serverName: p?.topServer?.name || null,
-              serverDuration: p?.topServer?.duration ? durasi(p.topServer.duration) : null,
+              serverName: adaAktivitas(p) ? (p?.topServer?.name || null) : null,
+              serverDuration: adaAktivitas(p) && p?.topServer?.duration ? durasi(p.topServer.duration) : null,
             }}
             linkPath="/top"
             label="Share"
@@ -233,7 +254,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
 
       {/* Banner Langganan Berakhir / Bekas Langganan */}
       {!subscription && !serverSubscription && expiredSubscription && (
-        <div className="card mt-6 border-l-4 border-l-amber-500 bg-[#1C1812] p-4 sm:p-5">
+        <div className="card mt-6 border-l-4 border-l-amber-500 p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-sm font-bold shrink-0">
@@ -265,7 +286,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               <b className="text-ink">✓ Riwayat & Statistikmu Tetap Aman:</b> Semua lagu yang pernah kamu putar, teman dengar bareng, dan data profilmu tetap tersimpan utuh di database NOXA seumur hidup.
             </p>
             <p className="text-faint">
-              Limit pemutar (antrean 500, volume 200%, multi-efek DSP) dan lencana profil saat ini dijeda ke batas standar gratis sampai kamu mengaktifkannya kembali.
+              Limit pemutar (volume 200%, multi-efek DSP, skip instan) dan lencana profil saat ini dijeda ke batas standar gratis sampai kamu mengaktifkannya kembali.
             </p>
           </div>
         </div>
@@ -277,24 +298,26 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         const isUltimate = subscription.plan_id === 'premium-ultimate';
         const isPlus = subscription.plan_id === 'premium-plus';
         // Warna solid per tier: Premium emas, Premium+ perak, Ultimate ungu
+        // Satu gaya panel solid untuk semua tier (sama seperti kartu NOXA Pass):
+        // latar kartu penuh + garis aksen kiri. Sebelumnya tiap tier memakai
+        // latar gelap berwarna sendiri sehingga terlihat seperti lapisan
+        // transparan di atas latar halaman.
         const warna = isUltimate
-          ? { bg: 'bg-[#1C0D2E]', border: 'border-2 border-purple-500', badge: 'bg-purple-600 text-white border border-purple-400 font-bold' }
+          ? { strip: 'bg-purple-500', badge: 'bg-purple-600 text-white border border-purple-400 font-bold' }
           : isPlus
-          ? { bg: 'bg-[#161B22]', border: 'border-2 border-[#CBD5E1]', badge: 'bg-slate-300 text-black border border-slate-400 font-bold' }
-          : { bg: 'bg-[#1C1204]', border: 'border-2 border-[#F59E0B]', badge: 'bg-amber-400 text-black border border-[#F59E0B] font-bold' };
+          ? { strip: 'bg-slate-300', badge: 'bg-slate-300 text-black border border-slate-400 font-bold' }
+          : { strip: 'bg-amber-400', badge: 'bg-amber-400 text-black border border-amber-500 font-bold' };
+        const stripAktif = sisaHari <= 5 ? 'bg-[#F59E0B]' : warna.strip;
         return (
-        <div className={`mt-6 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm ${
-          sisaHari <= 5
-            ? 'border-2 border-[#F59E0B] bg-[#2E1805]'
-            : `${warna.border} ${warna.bg}`
-        }`}>
-          <div className="flex items-center gap-3.5">
+        <div className="card relative mt-6 overflow-hidden p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <span className={`absolute inset-y-0 left-0 w-1.5 ${stripAktif}`} aria-hidden="true" />
+          <div className="flex items-center gap-3.5 pl-1.5">
             <img
               src={subscription.plan_id === 'premium-ultimate' ? '/badges/noxa-premium-ultimate.png' : subscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
               alt=""
               width={42}
               height={42}
-              className="h-10 w-10 shrink-0 object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+              className="h-10 w-10 shrink-0 object-contain"
             />
             <div>
               <div className="flex flex-wrap items-center gap-2">
@@ -312,7 +335,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-2 shrink-0">
+          <div className="flex flex-col gap-2 shrink-0 pl-1.5">
             {paketServer && (
               <div className="flex items-center gap-2.5 rounded-xl border border-line bg-surface p-2 pr-4">
                 <SafeImg
@@ -335,7 +358,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             )}
             <Link
               href="/premium"
-              className="inline-flex items-center justify-center rounded-full border border-white bg-white px-4 py-2 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
+              className="inline-flex items-center justify-center rounded-full border border-crimson bg-crimson px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#930E1F]"
             >
               Perpanjang Paket →
             </Link>
@@ -355,14 +378,15 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
 
       {/* Banner kedua: NOXA Pass Ultimate (paket server) saat DITUMPUK dengan paket individu */}
       {tampilkanBannerUltimate && (
-        <div className="mt-4 rounded-2xl border-2 border-purple-500 bg-[#1C0D2E] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
-          <div className="flex items-center gap-3.5">
+        <div className="card relative mt-4 overflow-hidden p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <span className="absolute inset-y-0 left-0 w-1.5 bg-purple-500" aria-hidden="true" />
+          <div className="flex items-center gap-3.5 pl-1.5">
             <img
               src="/badges/noxa-premium-ultimate.png"
               alt=""
               width={42}
               height={42}
-              className="h-10 w-10 shrink-0 object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+              className="h-10 w-10 shrink-0 object-contain"
             />
             <div>
               <div className="flex flex-wrap items-center gap-2">
@@ -380,7 +404,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           <div className="flex flex-col gap-2 shrink-0">
             <Link
               href="/premium"
-              className="inline-flex items-center justify-center rounded-full border border-white bg-white px-4 py-2 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
+              className="inline-flex items-center justify-center rounded-full border border-crimson bg-crimson px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#930E1F]"
             >
               Perpanjang Paket →
             </Link>
@@ -395,7 +419,11 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
         </div>
       )}
 
-      {/* ===== INVENTARIS NOXA PASS (ala NEXO): jelas mana aktif mana terkunci ===== */}
+      {/* ===== NOXA PASS =====
+          Belum berlangganan: SATU kartu ringkas (judul, benefit, harga, satu
+          tombol) yang bisa ditutup. Dulu blok ini menampilkan grid item
+          "Terkunci" plus tombol beli, jadi terasa menekan. Inventaris penuh
+          hanya muncul untuk yang sudah berlangganan. */}
       {(() => {
         // Tier efektif: Ultimate (server) mengalahkan paket individu supaya
         // inventaris tidak pernah kosong saat user hanya punya paket server.
@@ -405,24 +433,65 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           || (subscription && Number(subscription.expires_at) > Date.now())
         ));
         const namaTier = badgeNama;
+
+        if (!aktif) {
+          if (promoPassTersembunyi) return null;
+          return (
+            <section className="card relative mt-6 overflow-hidden border-linebright">
+              <span className="absolute inset-y-0 left-0 w-1.5 bg-crimson" aria-hidden="true" />
+              <button
+                type="button"
+                onClick={tutupPromoPass}
+                aria-label="Sembunyikan tawaran NOXA Pass"
+                className="absolute right-2.5 top-2.5 z-10 flex h-7 w-7 items-center justify-center rounded-full text-faint transition hover:bg-surface3 hover:text-ink cursor-pointer"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+              </button>
+
+              <div className="pl-1.5">
+                <div className="flex flex-col gap-4 px-4 py-4 pr-10 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-5 sm:pr-12">
+                  <div className="flex items-start gap-3.5">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/badges/noxa-premium.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" draggable={false} />
+                    <div className="min-w-0">
+                      <p className="font-display text-base leading-snug text-ink sm:text-lg">Buka semua fitur dengan NOXA Pass.</p>
+                      <p className="mt-1 text-sm leading-relaxed text-muted">
+                        Skip instan tanpa voting, radio 24/7, volume 200%, efek audio bertumpuk, serta playlist & riwayat profil lebih besar.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 border-t border-line pt-3.5 min-[400px]:flex-row min-[400px]:items-center min-[400px]:justify-between sm:border-0 sm:pt-0">
+                    <div className="shrink-0 min-[400px]:text-right">
+                      <p className="font-display text-xl font-bold text-ink sm:text-2xl">Rp 15.000</p>
+                      <p className="text-[11px] text-faint">per bulan</p>
+                    </div>
+                    <Link
+                      href="/premium"
+                      prefetch={false}
+                      className="btn-primary w-full justify-center whitespace-nowrap min-[400px]:w-auto"
+                    >
+                      NOXA Pass
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </section>
+          );
+        }
+
         return (
           <section className="card mt-6 p-4 sm:p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="flex items-center gap-2 font-display text-base font-bold text-ink">
                 <Emoji name="party" size={18} /> Inventaris NOXA Pass
               </h2>
-              {aktif ? (
-                <span className={`noxa-badge font-bold ${badgeWarna}`}>
-                  {namaTier}
-                </span>
-              ) : (
-                <span className="noxa-badge bg-surface3 text-faint border-line">Belum Aktif</span>
-              )}
+              <span className={`noxa-badge font-bold ${badgeWarna}`}>
+                {namaTier}
+              </span>
             </div>
             <p className="mt-1.5 text-[11px] sm:text-xs text-faint">
-              {aktif
-                ? 'Semua item di bawah ini aktif secara real-time mengikuti paketmu.'
-                : 'Item terkunci akan terbuka otomatis saat kamu berlangganan NOXA Pass.'}
+              Semua item di bawah ini aktif secara real-time mengikuti paketmu.
             </p>
 
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -446,23 +515,18 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className={`text-xs sm:text-sm font-semibold leading-snug break-words ${terbuka ? 'text-ink' : 'text-muted'}`}>{b.nama}</div>
-                      <div className={`text-[11px] sm:text-xs mt-0.5 break-words font-bold ${terbuka ? 'text-[#22C55E]' : 'text-faint'}`}>
+                      <div className={`text-[11px] sm:text-xs mt-0.5 break-words font-bold ${terbuka ? 'text-neon' : 'text-faint'}`}>
                         {terbuka
                           ? (tier === 'premium-ultimate' ? `${nilai === true ? 'Aktif' : nilai} - di server pilihanmu` : (nilai === true ? 'Aktif' : nilai))
                           : 'Terkunci'}
                       </div>
                     </div>
-                    {terbuka && <span className="shrink-0 text-[#22C55E] font-bold text-sm">✓</span>}
+                    {terbuka && <span className="shrink-0 text-neon font-bold text-sm">✓</span>}
                   </li>
                 );
               })}
             </ul>
 
-            {!aktif && (
-              <Link href="/premium" className="btn-primary mt-4 w-full justify-center !py-2.5 text-xs font-bold">
-                Lihat Paket NOXA Pass →
-              </Link>
-            )}
           </section>
         );
       })()}
