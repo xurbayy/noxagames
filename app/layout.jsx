@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
+import ConsentNotif from './components/ConsentNotif';
 import ScrollProgress from './components/ScrollProgress';
 import PwaPrompt from './components/PwaPrompt';
 import { getSession, isAdminDiscordId } from './lib/session';
@@ -32,6 +33,11 @@ export const metadata = {
   },
   twitter: { card: 'summary_large_image', title: `${SITE_NAME} | ${SITE_TAGLINE}`, description: SITE_DESCRIPTION },
   robots: { index: true, follow: true },
+  // Google Search Console: isi NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION dengan kode
+  // dari GSC (metode "HTML tag") lalu redeploy - tag meta terpasang otomatis.
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
   icons: {
     // Satu set ikon dari logo resmi NOXA (pola NEXO): tab browser, Google,
     // dan preview link Discord/WhatsApp semuanya dapat ukuran yang pas.
@@ -83,6 +89,7 @@ export default async function RootLayout({ children }) {
         <main className="flex-1">{children}</main>
         <Footer />
         <CookieConsent />
+        <ConsentNotif />
         <PwaPrompt />
       </body>
     </html>

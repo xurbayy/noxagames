@@ -7,7 +7,7 @@ import { getSnapshot, totals, botAlive, ageLabel, durasi } from './lib/snapshot'
 import { faqList } from './lib/faq-content';
 import { podcastTema, providers } from './lib/panduan-content';
 import { PREMIUM_PLANS, labelHarga } from './lib/premiumPlan';
-import { BOT_INVITE, SUPPORT_INVITE } from './lib/site';
+import { BOT_INVITE, SUPPORT_INVITE, SITE_URL, SITE_NAME, SITE_DESCRIPTION } from './lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,15 +17,49 @@ export default async function Home() {
   const t = totals(snap?.data);
   const hidup = botAlive(snap);
 
+  // JSON-LD FAQPage: membuat pertanyaan di landing bisa tampil sebagai rich
+  // result di Google (accordion "People also ask"). Sumbernya faqList yang
+  // SAMA dengan yang dirender, jadi tidak mungkin beda isi.
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqList.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+
+  // JSON-LD WebSite + Organization: memberi Google nama situs, URL kanonik,
+  // dan deskripsi resmi untuk knowledge panel.
+  const siteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: SITE_URL,
+    description: SITE_DESCRIPTION,
+    inLanguage: 'id-ID',
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+      />
       {/* ================= HERO ================= */}
       <section className="relative overflow-hidden">
         {/* Pola hexagon padat + blur: terasa berpola tanpa garis yang bersaing
             dengan teks (versi garis sebelumnya dihapus atas permintaan). */}
         <div className="bg-hex absolute inset-0" aria-hidden="true" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-8 sm:gap-12 px-4 sm:px-5 pb-14 pt-24 sm:pb-16 sm:pt-28 md:grid-cols-2 md:pb-24 md:pt-36">
-          <div className="text-center lg:text-left">
+          {/* min-w-0: tanpa ini isi panel pemutar di kolom kanan memaksa kolom
+              kiri lebih lebar dari layar, jadi teks hero terpotong di HP kecil. */}
+          <div className="min-w-0 text-center lg:text-left">
             <h1 className="anim-in delay-1 font-display text-3xl font-bold leading-[1.15] tracking-tight sm:text-4xl md:text-5xl break-words">
               {session ? (
                 <>
@@ -75,11 +109,11 @@ export default async function Home() {
           </div>
 
           {/* Kanan hero: sudah login = maskot melayang; belum login = panel pemutar compact */}
-          <div className="anim-in delay-2 flex w-full justify-center lg:justify-end">
+          <div className="anim-in delay-2 flex w-full min-w-0 justify-center lg:justify-end">
             {session ? (
               <MascotHero />
             ) : (
-              <div className="w-full max-w-md">
+              <div className="w-full min-w-0 max-w-md">
                 <PlayerShowcase singleMode="music" compact />
                 <div className="mt-3 flex justify-end text-[13px] text-faint">
                   <Link href="/pemutar" prefetch={false} className="font-semibold text-neon hover:underline">Lihat semua mode</Link>

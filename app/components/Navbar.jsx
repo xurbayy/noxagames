@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Emoji from './Emoji';
+import NotifikasiUser from './NotifikasiUser';
+import FeedbackButton from './FeedbackButton';
 
 const LINKS = [
   { href: '/pemutar', label: 'Pemutar' },
@@ -116,9 +118,9 @@ export default function Navbar({ session, isAdmin = false }) {
               <Link
                 href="/admin"
                 prefetch={false}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white bg-white px-3.5 py-1 text-xs font-bold text-black shadow-xs transition hover:bg-slate-100"
+                className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#930E1F]"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-crimson animate-pulse" />
+                <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                 Admin
               </Link>
             </li>
@@ -127,6 +129,13 @@ export default function Navbar({ session, isAdmin = false }) {
 
         {/* Cluster kanan */}
         <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
+          {/* Lonceng + feedback: desktop saja. Di HP keduanya ada di drawer
+              supaya navbar tidak meluber (NOXA Pass + Login + hamburger sudah
+              memenuhi lebar layar kecil). */}
+          <span className="hidden items-center gap-1.5 md:flex">
+            <NotifikasiUser />
+            <FeedbackButton sudahLogin={Boolean(session)} />
+          </span>
           <Link
             href="/premium"
             prefetch={false}
@@ -290,10 +299,10 @@ export default function Navbar({ session, isAdmin = false }) {
                   href="/admin"
                   prefetch={false}
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-between rounded-xl border border-white bg-white px-3 py-2.5 text-sm font-bold text-black shadow-xs hover:bg-slate-100 transition"
+                  className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#930E1F] transition"
                 >
                   <span className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-crimson animate-pulse" />
+                    <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
                     Panel Admin
                   </span>
                   <span className="rounded-full bg-crimson px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
@@ -302,6 +311,12 @@ export default function Navbar({ session, isAdmin = false }) {
                 </Link>
               </li>
             )}
+            {/* Notifikasi & feedback untuk HP (di desktop sudah ada di cluster kanan) */}
+            <li className="mt-2 flex items-center gap-2 border-t border-line pt-3 md:hidden">
+              <NotifikasiUser />
+              <FeedbackButton sudahLogin={Boolean(session)} />
+              <span className="text-xs text-faint">Notifikasi & feedback</span>
+            </li>
             {LEGAL.map((l) => (
               <li key={l.href}>
                 <Link

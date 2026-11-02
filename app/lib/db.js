@@ -122,6 +122,53 @@ async function ensureSchema() {
       duration_sec  INTEGER NOT NULL DEFAULT 0
     );
     CREATE INDEX IF NOT EXISTS idx_sh_day ON stat_history(day);
+
+    -- Inbox notifikasi USER (lonceng di navbar). Baris dengan discord_id NULL
+    -- = broadcast ke semua user. Status baca per user disimpan di tabel
+    -- web_notif_read supaya broadcast tidak perlu disalin per user.
+    CREATE TABLE IF NOT EXISTS web_notifications (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      discord_id  TEXT,
+      tipe        TEXT DEFAULT 'info',
+      judul       TEXT NOT NULL,
+      isi         TEXT,
+      url         TEXT,
+      created_at  INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_wn_user ON web_notifications(discord_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_wn_created ON web_notifications(created_at);
+
+    -- Status baca per user (dipakai untuk broadcast maupun personal).
+    CREATE TABLE IF NOT EXISTS web_notif_read (
+      discord_id   TEXT NOT NULL,
+      notif_id     INTEGER NOT NULL,
+      dibaca_at    INTEGER NOT NULL,
+      PRIMARY KEY (discord_id, notif_id)
+    );
+
+    -- Notifikasi PANEL ADMIN: pembelian baru, feedback masuk, alert sistem.
+    CREATE TABLE IF NOT EXISTS admin_notifications (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      tipe        TEXT DEFAULT 'info',
+      judul       TEXT NOT NULL,
+      isi         TEXT,
+      url         TEXT,
+      dibaca_at   INTEGER,
+      created_at  INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_an_created ON admin_notifications(created_at);
+
+    -- Feedback / laporan dari user web (diteruskan bot ke channel Discord).
+    CREATE TABLE IF NOT EXISTS web_feedback (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      discord_id  TEXT NOT NULL,
+      username    TEXT,
+      jenis       TEXT DEFAULT 'Saran',
+      pesan       TEXT NOT NULL,
+      halaman     TEXT,
+      created_at  INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_wf_created ON web_feedback(created_at);
   `);
 
   // Kolom ganti server (migrasi idempoten; error = kolom sudah ada)

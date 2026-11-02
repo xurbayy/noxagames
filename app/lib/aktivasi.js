@@ -7,11 +7,18 @@
 // paket identik.
 
 import { antrekanProfilUlang } from './profile-request';
+import { kirimNotifAdmin, kirimNotifUser } from './notifikasi';
 
 export function tierDariPlan(planId) {
   if (planId === 'premium-ultimate') return 'NOXA Premium Ultimate';
   if (planId === 'premium-plus') return 'NOXA Premium+';
   return 'NOXA Premium';
+}
+
+/** Format rupiah ringkas untuk judul notifikasi ("Rp 35.000"). */
+function rupiah(n) {
+  const v = Number(n) || 0;
+  return `Rp ${v.toLocaleString('id-ID')}`;
 }
 
 /**
@@ -57,6 +64,26 @@ export async function aktifkanLangganan(db, tx, now = Date.now()) {
 
   // Profil dibangun ulang agar lencana premium & riwayat lagu sesuai tier tampil
   await antrekanProfilUlang(db, String(tx.discord_id));
+
+  // --- Notifikasi (dipanggil di SATU titik supaya semua jalur ikut) ---
+  // Admin: alert pembelian masuk ke lonceng panel /admin.
+  // User: konfirmasi bahwa paketnya aktif + tanggal berakhirnya.
+  const tanggal = new Date(expiresAt).toLocaleDateString('id-ID', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  });
+  await kirimNotifAdmin({
+    tipe: 'pembelian',
+    judul: `Pembelian baru: ${tierName}`,
+    isi: `${tx.username || tx.discord_id} - ${rupiah(tx.amount)} (${durasiBulan} bulan)${tx.guild_id ? ` untuk server ${tx.guild_id}` : ''}`,
+    url: '/admin',
+  }).catch(() => {});
+  await kirimNotifUser({
+    discordId: String(tx.discord_id),
+    tipe: 'pembelian',
+    judul: `${tierName} aktif`,
+    isi: `Terima kasih! Paketmu berlaku sampai ${tanggal}. Lencana NOXA Pass sudah muncul di Discord dan profil web.`,
+    url: '/me',
+  }).catch(() => {});
 
   // Kirimkan notifikasi aktivasi ke antrean bot agar bot tahu akun/guild sudah premium
   try {

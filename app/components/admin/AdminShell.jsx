@@ -6,6 +6,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Emoji from '../Emoji';
 import GrafikBatang, { deretHarian } from './Grafik';
+import NotifAdmin from './NotifAdmin';
+import KirimNotif from './KirimNotif';
 import { durasi } from '../../lib/format';
 import PremiumManagement from './PremiumManagement';
 
@@ -43,9 +45,12 @@ export default function AdminShell() {
     <div className="mx-auto max-w-6xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)]">
       <div className="bg-grid pointer-events-none fixed inset-x-0 top-0 -z-10 h-72" aria-hidden="true" />
       {/* Header panel: tanpa baris akun - identitas & keluar sudah ada di navbar */}
-      <div>
-        <div className="text-xs font-bold uppercase tracking-wider text-faint">Panel Admin NOXA Sound</div>
-        <h1 className="font-display text-xl font-bold">Monitoring</h1>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-wider text-faint">Panel Admin NOXA Sound</div>
+          <h1 className="font-display text-xl font-bold">Monitoring</h1>
+        </div>
+        <NotifAdmin />
       </div>
 
       <div className="hairline my-6" />
@@ -71,6 +76,7 @@ export default function AdminShell() {
           <DashboardLive data={data} lastUpdate={lastUpdate} />
           <Statistik data={data} />
           <PremiumManagement />
+          <KirimNotif />
           <PlayerLookup />
           <RingkasanTop data={data} />
         </div>
