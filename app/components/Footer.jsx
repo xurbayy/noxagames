@@ -12,8 +12,10 @@ export default function Footer() {
 
   return (
     <footer className="mt-28 border-t border-line bg-bg md:mt-36">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-5 py-12 sm:grid-cols-2 lg:grid-cols-5">
-        <div className="sm:col-span-2 lg:col-span-1">
+      {/* 2 kolom mulai 380px; di HP sangat sempit (<= 360px) tetap 1 kolom
+          supaya tautan tidak patah jadi 2-3 baris. */}
+      <div className="mx-auto grid max-w-6xl gap-x-5 gap-y-8 px-4 py-12 min-[360px]:grid-cols-2 sm:px-5 lg:grid-cols-5">
+        <div className="min-[360px]:col-span-2 lg:col-span-1">
           <Link href="/" prefetch={false} className="group inline-flex items-center gap-3">
             <img
               src="/logo.png"
@@ -36,6 +38,8 @@ export default function Footer() {
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/panduan" className="text-muted hover:text-neon transition-colors">Panduan Perintah</Link></li>
             <li><Link href="/top" className="text-muted hover:text-neon transition-colors">Top Lagu & Listener</Link></li>
+            <li><Link href="/komunitas" className="text-muted hover:text-neon transition-colors">Komunitas Server</Link></li>
+            <li><Link href="/tentang" className="text-muted hover:text-neon transition-colors">Tentang NOXA</Link></li>
             <li><Link href="/premium" className="text-muted hover:text-neon transition-colors">NOXA Pass</Link></li>
           </ul>
         </div>

@@ -18,7 +18,12 @@ const LINKS = [
   { href: '/#kontak', label: 'Kontak' },
 ];
 
+// Daftar "Info" (pola NEXO): halaman sekunder yang tidak muat di menu utama.
+// Dipakai dropdown desktop DAN daftar drawer mobile - satu sumber, tidak
+// pernah beda isi antara dua ukuran layar.
 const LEGAL = [
+  { href: '/tentang', label: 'Tentang NOXA' },
+  { href: '/komunitas', label: 'Komunitas Server' },
   { href: '/privacy-policy', label: 'Kebijakan Privasi' },
   { href: '/terms-of-service', label: 'Ketentuan Layanan' },
 ];
@@ -99,7 +104,7 @@ export default function Navbar({ session, isAdmin = false }) {
               <summary className="list-none cursor-pointer rounded-md px-1 py-1 text-sm font-medium text-muted transition-colors duration-200 hover:text-ink">
                 Info
               </summary>
-              <div className="invisible absolute right-0 top-full z-50 w-48 rounded-xl border border-line bg-surface2 p-1.5 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.45)] transition-all duration-150 group-focus-within:visible group-hover:visible group-hover:opacity-100 group-focus-within:opacity-100">
+              <div className="invisible absolute right-0 top-full z-50 w-56 rounded-xl border border-line bg-surface2 p-1.5 opacity-0 shadow-[0_12px_32px_rgba(0,0,0,0.45)] transition-all duration-150 group-focus-within:visible group-hover:visible group-hover:opacity-100 group-focus-within:opacity-100">
                 {LEGAL.map((l) => (
                   <Link
                     key={l.href}
@@ -129,13 +134,16 @@ export default function Navbar({ session, isAdmin = false }) {
 
         {/* Cluster kanan */}
         <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-          {/* Lonceng + feedback: desktop saja. Di HP keduanya ada di drawer
-              supaya navbar tidak meluber (NOXA Pass + Login + hamburger sudah
-              memenuhi lebar layar kecil). */}
-          <span className="hidden items-center gap-1.5 md:flex">
-            <NotifikasiUser />
-            <FeedbackButton sudahLogin={Boolean(session)} />
-          </span>
+          {/* Lonceng + feedback (pola NEXO): tampil DI SEMUA ukuran layar,
+              tapi HANYA setelah login. Tamu tidak melihat ikon apa pun.
+              Di mobile, profil tetap lewat drawer - avatar pill khusus mobile
+              dihapus supaya navbar tidak meluber (NEXO juga begitu). */}
+          {session && (
+            <>
+              <NotifikasiUser />
+              <FeedbackButton />
+            </>
+          )}
           <Link
             href="/premium"
             prefetch={false}
@@ -169,30 +177,9 @@ export default function Navbar({ session, isAdmin = false }) {
             </Link>
           )}
 
-          {/* Mobile saat sudah login: avatar ringkas sebagai pengganti tombol login. */}
-          {session && (
-            <Link
-              href="/me"
-              prefetch={false}
-              aria-label={`Profil ${session.username}`}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-line bg-surface2 transition hover:border-linebright md:hidden"
-            >
-              {session.avatar ? (
-                <img
-                  src={session.avatar}
-                  alt=""
-                  width={28}
-                  height={28}
-                  className="h-7 w-7 rounded-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-crimson text-[10px] font-bold text-white">
-                  {String(session.username || '?').slice(0, 2).toUpperCase()}
-                </span>
-              )}
-            </Link>
-          )}
+          {/* Mobile saat sudah login TIDAK lagi menampilkan avatar terpisah -
+              profil ada di drawer (pola NEXO). Ikon lonceng & feedback di atas
+              yang mewakili interaksi akun di navbar mobile. */}
 
           {session ? (
             <Link
@@ -311,12 +298,9 @@ export default function Navbar({ session, isAdmin = false }) {
                 </Link>
               </li>
             )}
-            {/* Notifikasi & feedback untuk HP (di desktop sudah ada di cluster kanan) */}
-            <li className="mt-2 flex items-center gap-2 border-t border-line pt-3 md:hidden">
-              <NotifikasiUser />
-              <FeedbackButton sudahLogin={Boolean(session)} />
-              <span className="text-xs text-faint">Notifikasi & feedback</span>
-            </li>
+            {/* Lonceng & feedback TIDAK lagi perlu muncul di drawer: keduanya
+                sudah tampil di cluster kanan navbar untuk SEMUA ukuran layar
+                saat login (pola NEXO). */}
             {LEGAL.map((l) => (
               <li key={l.href}>
                 <Link

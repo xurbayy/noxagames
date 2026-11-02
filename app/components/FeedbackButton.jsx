@@ -3,6 +3,9 @@
 // Tombol feedback di navbar (sebelah lonceng). Modal kecil berisi pilihan
 // jenis (Saran / Bug / Laporan) + textarea. Masuk ke web (tabel web_feedback),
 // lonceng admin, dan di-forward bot ke channel laporan Discord.
+//
+// Pola NEXO: tombol ini HANYA dirender saat user login (lihat Navbar) -
+// tamu tidak melihatnya sama sekali.
 import { useEffect, useRef, useState } from 'react';
 
 const JENIS = [
@@ -11,7 +14,7 @@ const JENIS = [
   { id: 'Laporan', label: 'Laporan' },
 ];
 
-export default function FeedbackButton({ sudahLogin = false }) {
+export default function FeedbackButton() {
   const [buka, setBuka] = useState(false);
   const [jenis, setJenis] = useState('Saran');
   const [pesan, setPesan] = useState('');
@@ -85,67 +88,58 @@ export default function FeedbackButton({ sudahLogin = false }) {
             <p className="mt-0.5 text-[11px] text-faint">Langsung sampai ke admin lewat Discord.</p>
           </div>
 
-          {!sudahLogin ? (
-            <div className="px-4 py-5">
-              <p className="text-xs leading-relaxed text-muted">
-                Login dengan Discord dulu supaya kami bisa membalas laporanmu.
-              </p>
-              <a href="/login?returnTo=%2F" className="btn-primary mt-3 inline-flex !px-3.5 !py-2 text-xs">
-                Login
-              </a>
-            </div>
-          ) : (
-            <form onSubmit={kirim} className="px-4 py-3">
-              <div className="flex gap-1.5" role="radiogroup" aria-label="Jenis laporan">
-                {JENIS.map((j) => (
-                  <button
-                    key={j.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={jenis === j.id}
-                    onClick={() => setJenis(j.id)}
-                    className={`rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition cursor-pointer ${
-                      jenis === j.id
-                        ? 'border-crimson bg-[#3B0004] text-neon'
-                        : 'border-line bg-surface3 text-muted hover:text-ink'
-                    }`}
-                  >
-                    {j.label}
-                  </button>
-                ))}
-              </div>
-
-              <textarea
-                value={pesan}
-                onChange={(e) => setPesan(e.target.value)}
-                rows={3}
-                maxLength={1500}
-                placeholder={placeholder}
-                className="mt-3 w-full resize-y rounded-xl border border-line bg-bg px-3 py-2 text-xs text-ink outline-none focus:border-crimson sm:text-sm"
-              />
-
-              {hasil && (
-                <p className={`mt-2 rounded-lg border px-3 py-2 text-[11px] leading-relaxed ${
-                  hasil.ok
-                    ? 'border-[#22C55E] bg-[#14532D] text-[#86EFAC]'
-                    : 'border-crimson bg-[#3B0004] text-neon'
-                }`}>
-                  {hasil.teks}
-                </p>
-              )}
-
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-[10px] text-faint">{pesan.length}/1500</span>
+          {/* Tombol hanya dirender saat login (lihat Navbar), jadi tidak ada
+              cabang tamu di sini - form langsung tampil. */}
+          <form onSubmit={kirim} className="px-4 py-3">
+            <div className="flex gap-1.5" role="radiogroup" aria-label="Jenis laporan">
+              {JENIS.map((j) => (
                 <button
-                  type="submit"
-                  disabled={sibuk || pesan.trim().length < 5}
-                  className="btn-primary !px-4 !py-2 text-xs disabled:cursor-not-allowed disabled:opacity-40"
+                  key={j.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={jenis === j.id}
+                  onClick={() => setJenis(j.id)}
+                  className={`rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition cursor-pointer ${
+                    jenis === j.id
+                      ? 'border-crimson bg-[#3B0004] text-neon'
+                      : 'border-line bg-surface3 text-muted hover:text-ink'
+                  }`}
                 >
-                  {sibuk ? 'Mengirim...' : 'Kirim'}
+                  {j.label}
                 </button>
-              </div>
-            </form>
-          )}
+              ))}
+            </div>
+
+            <textarea
+              value={pesan}
+              onChange={(e) => setPesan(e.target.value)}
+              rows={3}
+              maxLength={1500}
+              placeholder={placeholder}
+              className="mt-3 w-full resize-y rounded-xl border border-line bg-bg px-3 py-2 text-xs text-ink outline-none focus:border-crimson sm:text-sm"
+            />
+
+            {hasil && (
+              <p className={`mt-2 rounded-lg border px-3 py-2 text-[11px] leading-relaxed ${
+                hasil.ok
+                  ? 'border-[#22C55E] bg-[#14532D] text-[#86EFAC]'
+                  : 'border-crimson bg-[#3B0004] text-neon'
+              }`}>
+                {hasil.teks}
+              </p>
+            )}
+
+            <div className="mt-3 flex items-center justify-between">
+              <span className="text-[10px] text-faint">{pesan.length}/1500</span>
+              <button
+                type="submit"
+                disabled={sibuk || pesan.trim().length < 5}
+                className="btn-primary !px-4 !py-2 text-xs disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {sibuk ? 'Mengirim...' : 'Kirim'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
     </div>
