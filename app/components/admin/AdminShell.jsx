@@ -5,6 +5,7 @@
 // Aturan panel: tanpa confirm()/alert() bawaan, error tampil inline.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Emoji from '../Emoji';
+import GrafikBatang, { deretHarian } from './Grafik';
 import { durasi } from '../../lib/format';
 import PremiumManagement from './PremiumManagement';
 
@@ -166,6 +167,12 @@ function Statistik({ data }) {
   const totalServer = server.reduce((a, s) => a + (Number(s.duration) || 0), 0);
   const maxSongCount = songs.reduce((m, s) => Math.max(m, Number(s.count) || 0), 0);
 
+  // Rentang tren harian (7/14/30 hari). Data = stat_history (titik per hari).
+  const [rentang, setRentang] = useState(14);
+  const trenLagu = deretHarian(data.history, 'plays', rentang);
+  const trenDurasi = deretHarian(data.history, 'durationSec', rentang);
+  const adaTren = trenLagu.length > 0;
+
   return (
     <section>
       <div className="mb-4 flex items-center justify-between">
@@ -182,6 +189,47 @@ function Statistik({ data }) {
             <div className="mt-0.5 text-[10px] sm:text-[11px] text-faint leading-tight break-words">{k.sub}</div>
           </div>
         ))}
+      </div>
+
+      {/* Tren aktivitas harian (grafik batang) */}
+      <div className="card mb-4 p-4 sm:p-5">
+        <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-faint">
+            <Emoji name="mulai" size={14} /> Tren Aktivitas Harian
+          </div>
+          <div className="flex items-center gap-1.5">
+            {[7, 14, 30].map((r) => (
+              <button
+                key={r}
+                type="button"
+                onClick={() => setRentang(r)}
+                className={`rounded-lg border px-2.5 py-1 text-[11px] font-bold transition cursor-pointer ${
+                  rentang === r
+                    ? 'border-neon bg-[#3B0004] text-neon'
+                    : 'border-line bg-surface2 text-muted hover:text-ink'
+                }`}
+              >
+                {r}H
+              </button>
+            ))}
+          </div>
+        </div>
+        {adaTren ? (
+          <div className="mt-3 space-y-6">
+            <div>
+              <div className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-faint">Lagu Diputar / Hari</div>
+              <GrafikBatang titik={trenLagu} warna="#FF4B2B" satuan="lagu" format={(n) => n.toLocaleString('id-ID')} />
+            </div>
+            <div>
+              <div className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-faint">Durasi Didengar / Hari</div>
+              <GrafikBatang titik={trenDurasi} warna="#B11226" satuan="didengar" format={(n) => durasi(n)} />
+            </div>
+          </div>
+        ) : (
+          <p className="mt-3 text-xs leading-relaxed text-faint">
+            Grafik butuh minimal 2 hari data. Tren akan otomatis muncul setelah bot mengirim snapshot beberapa hari.
+          </p>
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

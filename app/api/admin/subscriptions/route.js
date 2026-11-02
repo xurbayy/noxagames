@@ -1,9 +1,8 @@
-import { randomBytes } from 'node:crypto';
 import { getAdminActor } from '../../../lib/session';
 import { json, ready } from '../../../lib/api-helpers';
 import { getDb } from '../../../lib/db';
 import { PREMIUM_PLANS } from '../../../lib/premiumPlan';
-import { antrekanProfilUlang } from '../../../lib/profile-request';
+import { aktifkanLangganan } from '../../../lib/aktivasi';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,16 +26,17 @@ export async function GET() {
     const subs = [];
     for (const row of subsRes.rows) {
       const isExpired = row.expires_at <= now;
-      let username = 'Pengguna';
       let avatar = null;
 
-      // Cari username dari transactions
-      const txRes = await db.execute({
-        sql: 'SELECT username FROM transactions WHERE discord_id = ? ORDER BY created_at DESC LIMIT 1',
-        args: [String(row.discord_id)],
-      });
-      if (txRes.rows[0]?.username) {
-        username = txRes.rows[0].username;
+      // Nama pelanggan: pakai kolom username kalau ada (aktivasi manual),
+      // kalau tidak cari dari transaksi terakhir.
+      let username = row.username || null;
+      if (!username) {
+        const txRes = await db.execute({
+          sql: 'SELECT username FROM transactions WHERE discord_id = ? ORDER BY created_at DESC LIMIT 1',
+          args: [String(row.discord_id)],
+        });
+        username = txRes.rows[0]?.username || 'Pengguna';
       }
 
       // Hitung sisa hari
@@ -59,9 +59,10 @@ export async function GET() {
       });
     }
 
-    // 3. Ambil riwayat transaksi QiosPay
+    // 3. Ambil riwayat transaksi QiosPay. Batasnya cukup panjang supaya admin
+    //    masih bisa menemukan invoice lama yang kedaluwarsa lalu membebaskannya.
     const txRes = await db.execute({
-      sql: 'SELECT * FROM transactions ORDER BY created_at DESC LIMIT 30',
+      sql: 'SELECT * FROM transactions ORDER BY created_at DESC LIMIT 100',
     });
 
     const transactions = txRes.rows.map((r) => ({
@@ -77,10 +78,28 @@ export async function GET() {
       paidAt: r.paid_at,
     }));
 
+    // 4. Omzet harian 30 hari terakhir untuk grafik (agregat SQL - tidak
+    //    terbatas 100 baris riwayat di atas). Hari = pembulatan created_at
+    //    ke UTC 00:00 lewat CAST supaya aman di semua engine libSQL.
+    let omzetHarian = [];
+    try {
+      const sejak = Date.now() - 30 * 86400000;
+      const omzetRes = await db.execute({
+        sql: "SELECT CAST(created_at / 86400000 AS INTEGER) * 86400000 AS day, COUNT(*) AS jumlah, SUM(amount) AS total FROM transactions WHERE status = 'paid' AND created_at >= ? GROUP BY day ORDER BY day ASC",
+        args: [sejak],
+      });
+      omzetHarian = omzetRes.rows.map((r) => ({
+        day: Number(r.day),
+        jumlah: Number(r.jumlah) || 0,
+        total: Number(r.total) || 0,
+      }));
+    } catch { /* grafik boleh kosong, daftar transaksi tetap jalan */ }
+
     return json({
       ok: true,
       subscriptions: subs,
       transactions,
+      omzetHarian,
     });
   } catch (err) {
     console.error('[ADMIN-SUBS] Error:', err);
@@ -89,126 +108,91 @@ export async function GET() {
 }
 
 // POST /api/admin/subscriptions
-// Tambah langganan manual oleh admin (Create)
+// Tambah pelanggan premium MANUAL dari panel admin (di luar QRIS).
+// Sengaja TIDAK membuat baris di tabel transactions supaya riwayat omzet
+// tetap murni dari gateway. Aktivasi dikirim ke bot lewat data_requests,
+// jadi badge & benefit benar-benar aktif di Discord dan web.
 export async function POST(request) {
   const admin = await getAdminActor();
   if (!admin) return json({ ok: false, error: 'Bukan admin' }, 403);
 
   let body;
   try { body = await request.json(); } catch {}
-  const { discordId, username = 'Manual Grant', planId = 'premium-plus', durationMonths = 1, guildId = null } = body || {};
 
-  const cleanId = String(discordId || '').replace(/\D/g, '');
-  if (!/^\d{17,20}$/.test(cleanId)) {
-    return json({ ok: false, error: 'Discord ID harus 17 sampai 20 digit angka.' }, 400);
+  const discordId = String(body?.discordId || '').replace(/\D/g, '');
+  const username = String(body?.username || '').trim().slice(0, 64) || null;
+  const planId = String(body?.planId || '');
+  const durasiBulan = Math.max(1, Math.min(36, parseInt(body?.durationMonths, 10) || 1));
+  const guildInput = String(body?.guildId || '').replace(/\D/g, '');
+
+  if (!/^\d{15,20}$/.test(discordId)) {
+    return json({ ok: false, error: 'ID Discord tidak valid (15-20 angka).' }, 400);
   }
+  const plan = PREMIUM_PLANS.find((p) => p.id === planId);
+  if (!plan) return json({ ok: false, error: 'Paket tidak dikenal.' }, 400);
 
-  const plan = PREMIUM_PLANS.find((p) => p.id === planId) || PREMIUM_PLANS[1];
-  const durasiBulan = Math.max(1, parseInt(durationMonths, 10) || 1);
+  const paketServer = planId === 'premium-ultimate';
+  if (paketServer && !guildInput) {
+    return json({ ok: false, error: 'Paket Ultimate wajib diisi ID server tujuan.' }, 400);
+  }
+  if (guildInput && !/^\d{15,20}$/.test(guildInput)) {
+    return json({ ok: false, error: 'ID server tidak valid (15-20 angka).' }, 400);
+  }
+  // Paket individu selalu personal: ID server diabaikan walau admin mengisinya.
+  const targetGuild = paketServer ? guildInput : null;
 
   await ready();
   const db = getDb();
   const now = Date.now();
-  const expiresAt = now + durasiBulan * 30 * 24 * 60 * 60 * 1000;
+  const durasiMs = durasiBulan * 30 * 24 * 60 * 60 * 1000;
+  const tierName = plan.nama;
 
   try {
-    // DEDUPE: tidak boleh ada 2 langganan aktif yang tumpang tindih.
-    // - Paket sama sudah aktif  -> perpanjang baris lama (bukan buat baru)
-    // - Paket lain sudah aktif  -> tolak (aturan perpanjang cerdas)
-    const adaRes = await db.execute({
-      sql: "SELECT id, plan_id, expires_at, guild_id, last_switch_at FROM premium_subscriptions WHERE discord_id = ? AND status = 'active' AND expires_at > ? ORDER BY expires_at DESC",
-      args: [cleanId, now],
+    // Perpanjang cerdas: paket & server sama yang masih aktif ditambah durasinya,
+    // bukan menumpuk baris baru.
+    const exist = await db.execute({
+      sql: `SELECT id, expires_at FROM premium_subscriptions
+            WHERE discord_id = ? AND plan_id = ? AND status = 'active' AND expires_at > ?
+              AND COALESCE(guild_id, '') = ?
+            ORDER BY expires_at DESC LIMIT 1`,
+      args: [discordId, planId, now, targetGuild || ''],
     });
-    const aktifIndividu = adaRes.rows.find((r) => r.plan_id !== 'premium-ultimate');
-    const aktifUltimate = adaRes.rows.find((r) => r.plan_id === 'premium-ultimate');
-    // Ultimate (server) boleh ditumpuk dengan individu. Individu tidak tumpuk sesama.
-    const aktif = plan.id === 'premium-ultimate' ? aktifUltimate : (aktifIndividu || null);
-    const konflikIndividu = plan.id !== 'premium-ultimate' && aktifIndividu && aktifIndividu.plan_id !== plan.id;
-    if (konflikIndividu) {
-      return json({ ok: false, error: `User ini sedang aktif ${aktifIndividu.plan_id}. Paket individu tidak bisa ditumpuk sesamanya - cabut dulu atau tunggu kedaluwarsa.` }, 400);
-    }
-    if (aktif) {
-      if (aktif.plan_id !== plan.id) {
-        return json({ ok: false, error: `User ini sudah punya ${aktif.plan_id} aktif.` }, 400);
-      }
-      const baseTime = Number(aktif.expires_at) > now ? Number(aktif.expires_at) : now;
-      const newExpires = baseTime + durasiBulan * 30 * 24 * 60 * 60 * 1000;
-      await db.execute({
-        sql: "UPDATE premium_subscriptions SET expires_at = ?, tier_name = ?, guild_id = COALESCE(?, guild_id) WHERE id = ?",
-        args: [newExpires, plan.nama, guildId ? String(guildId).trim() : null, Number(aktif.id)],
-      });
 
-      const txId = `MANUAL-${Date.now().toString(36).toUpperCase()}-${randomBytes(2).toString('hex').toUpperCase()}`;
-      await db.execute({
-        sql: `INSERT INTO transactions
-              (id, discord_id, username, guild_id, plan_id, duration_months, amount, status, qiospay_invoice_id, created_at, paid_at)
-              VALUES (?, ?, ?, ?, ?, ?, 0, 'paid', 'ADMIN_EXTEND', ?, ?)`,
-        args: [txId, cleanId, username, guildId ? String(guildId).trim() : null, plan.id, durasiBulan, now, now],
-      });
+    let subId;
+    let expiresAt;
+    const lama = exist.rows[0];
 
-      await antrekanProfilUlang(db, cleanId);
+    if (lama) {
+      expiresAt = Math.max(now, Number(lama.expires_at) || now) + durasiMs;
+      subId = Number(lama.id);
       await db.execute({
-        sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
-        args: [
-          cleanId,
-          JSON.stringify({
-            action: 'activate_premium',
-            planId: plan.id,
-            guildId: guildId ? String(guildId).trim() : null,
-            expiresAt: newExpires,
-          }),
-          now,
-        ],
+        sql: `UPDATE premium_subscriptions
+              SET expires_at = ?, tier_name = ?, status = 'active',
+                  username = COALESCE(?, username)
+              WHERE id = ?`,
+        args: [expiresAt, tierName, username, subId],
       });
-
-      return json({ ok: true, id: Number(aktif.id), extended: true, expiresAt: newExpires, discordId: cleanId });
+    } else {
+      expiresAt = now + durasiMs;
+      const ins = await db.execute({
+        sql: `INSERT INTO premium_subscriptions
+                (discord_id, guild_id, plan_id, tier_name, status, starts_at, expires_at, created_at, username)
+              VALUES (?, ?, ?, ?, 'active', ?, ?, ?, ?)`,
+        args: [discordId, targetGuild, planId, tierName, now, expiresAt, now, username],
+      });
+      subId = Number(ins.lastInsertRowid);
     }
 
-    // Masukkan ke premium_subscriptions
-    const res = await db.execute({
-      sql: `INSERT INTO premium_subscriptions (discord_id, guild_id, plan_id, tier_name, status, starts_at, expires_at, created_at)
-            VALUES (?, ?, ?, ?, 'active', ?, ?, ?)`,
-      args: [
-        cleanId,
-        guildId ? String(guildId).trim() : null,
-        plan.id,
-        plan.nama,
-        now,
-        expiresAt,
-        now,
-      ],
-    });
-
-    // Catat riwayat manual di transactions
-    const txId = `MANUAL-${Date.now().toString(36).toUpperCase()}-${randomBytes(2).toString('hex').toUpperCase()}`;
-    await db.execute({
-      sql: `INSERT INTO transactions 
-            (id, discord_id, username, guild_id, plan_id, duration_months, amount, status, qiospay_invoice_id, created_at, paid_at)
-            VALUES (?, ?, ?, ?, ?, ?, 0, 'paid', 'ADMIN_GRANT', ?, ?)`,
-      args: [
-        txId,
-        cleanId,
-        username,
-        guildId ? String(guildId).trim() : null,
-        plan.id,
-        durasiBulan,
-        now,
-        now,
-      ],
-    });
-
-    // Profil dibangun ulang agar lencana premium tampil
-    await antrekanProfilUlang(db, cleanId);
-
-    // Antrekan ke bot
+    // Kirim aktivasi ke bot. Bot membalas dengan profil terbaru, jadi lencana
+    // di web ikut segar tanpa permintaan profil terpisah (yang bisa balapan).
     await db.execute({
       sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
       args: [
-        cleanId,
+        discordId,
         JSON.stringify({
           action: 'activate_premium',
-          planId: plan.id,
-          guildId: guildId || null,
+          planId,
+          guildId: targetGuild,
           durationMonths: durasiBulan,
           expiresAt,
         }),
@@ -216,14 +200,24 @@ export async function POST(request) {
       ],
     });
 
-    return json({ ok: true, id: Number(res.lastInsertRowid), discordId: cleanId });
+    console.log(`[ADMIN-SUBS-MANUAL] ${tierName} ${durasiBulan} bln -> ${discordId}${targetGuild ? ` (guild ${targetGuild})` : ''}`);
+
+    return json({
+      ok: true,
+      id: subId,
+      discordId,
+      planId,
+      tierName,
+      durationMonths: durasiBulan,
+      expiresAt,
+      guildId: targetGuild,
+    });
   } catch (err) {
-    console.error('[ADMIN-SUBS-CREATE] Error:', err);
-    return json({ ok: false, error: 'Gagal menambahkan langganan.' }, 500);
+    console.error('[ADMIN-SUBS-MANUAL] Error:', err);
+    return json({ ok: false, error: 'Gagal menambah pelanggan manual.' }, 500);
   }
 }
 
-// PUT /api/admin/subscriptions
 // Perpanjang durasi atau ubah paket (Update)
 export async function PUT(request) {
   const admin = await getAdminActor();
@@ -272,10 +266,8 @@ export async function PUT(request) {
       args: [newExpiresAt, targetPlan, targetTier, targetGuild, Number(id)],
     });
 
-    // Profil dibangun ulang agar tier/riwayat terbaru tampil
-    await antrekanProfilUlang(db, String(sub.discord_id));
-
-    // Antrekan sinkronisasi ke bot
+    // Antrekan sinkronisasi ke bot. Bot membalas dengan profil terbaru, jadi
+    // lencana premium di web ikut diperbarui tanpa request profil terpisah.
     await db.execute({
       sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
       args: [
@@ -297,6 +289,61 @@ export async function PUT(request) {
   }
 }
 
+// PATCH /api/admin/subscriptions
+// Bebaskan transaksi yang sudah kedaluwarsa/batal: tandai lunas lalu aktifkan
+// paketnya untuk pembeli. Dipakai kalau pembayaran QRIS benar-benar masuk tapi
+// invoice keburu lewat batas waktu (webhook tidak sempat memproses), sehingga
+// pembeli tidak perlu membuat tagihan baru.
+export async function PATCH(request) {
+  const admin = await getAdminActor();
+  if (!admin) return json({ ok: false, error: 'Bukan admin' }, 403);
+
+  let body;
+  try { body = await request.json(); } catch {}
+  const txId = String(body?.txId || '').trim();
+  if (!txId) return json({ ok: false, error: 'ID transaksi wajib diisi.' }, 400);
+
+  await ready();
+  const db = getDb();
+  const now = Date.now();
+
+  try {
+    const res = await db.execute({
+      sql: 'SELECT * FROM transactions WHERE id = ? LIMIT 1',
+      args: [txId],
+    });
+    const tx = res.rows[0];
+    if (!tx) return json({ ok: false, error: 'Transaksi tidak ditemukan.' }, 404);
+
+    // Sudah lunas: jangan aktivasi dua kali (bisa menambah durasi ganda).
+    if (tx.status === 'paid') {
+      return json({ ok: true, sudahLunas: true, txId: tx.id, expiresAt: null });
+    }
+
+    await db.execute({
+      sql: "UPDATE transactions SET status = 'paid', paid_at = ? WHERE id = ?",
+      args: [now, tx.id],
+    });
+
+    const expiresAt = await aktifkanLangganan(db, tx, now);
+
+    console.log(
+      `[ADMIN-TX-BEBAS] ${tx.id} (${tx.plan_id}) dibebaskan untuk ${tx.discord_id}, aktif s/d ${new Date(expiresAt).toISOString()}`
+    );
+
+    return json({
+      ok: true,
+      txId: tx.id,
+      discordId: String(tx.discord_id),
+      planId: tx.plan_id,
+      expiresAt,
+    });
+  } catch (err) {
+    console.error('[ADMIN-TX-BEBAS] Error:', err);
+    return json({ ok: false, error: 'Gagal membebaskan transaksi.' }, 500);
+  }
+}
+
 // DELETE /api/admin/subscriptions
 // Hapus atau cabut paket premium, atau hapus riwayat transaksi (Delete)
 export async function DELETE(request) {
@@ -305,11 +352,28 @@ export async function DELETE(request) {
 
   let body;
   try { body = await request.json(); } catch {}
-  const { id, txId } = body || {};
+  const { id, txId, hapusKedaluwarsa, lebihTuaDariMenit } = body || {};
 
   await ready();
   const db = getDb();
   const now = Date.now();
+
+  // Bersihkan transaksi yang TIDAK lunas (pending/expired/cancelled/failed).
+  // Transaksi berstatus 'paid' tidak pernah ikut dihapus, seberapa tua pun.
+  if (hapusKedaluwarsa) {
+    const menit = Math.max(5, Math.min(24 * 60, parseInt(lebihTuaDariMenit, 10) || 60));
+    const batas = now - menit * 60 * 1000;
+    try {
+      const res = await db.execute({
+        sql: "DELETE FROM transactions WHERE COALESCE(status, 'pending') <> 'paid' AND created_at < ?",
+        args: [batas],
+      });
+      return json({ ok: true, terhapus: Number(res.rowsAffected) || 0, batas });
+    } catch (err) {
+      console.error('[ADMIN-TX-BERSIH] Error:', err);
+      return json({ ok: false, error: 'Gagal membersihkan transaksi kedaluwarsa.' }, 500);
+    }
+  }
 
   // Hapus riwayat transaksi jika txId diberikan
   if (txId) {
@@ -342,10 +406,8 @@ export async function DELETE(request) {
       args: [Number(id)],
     });
 
-    // Profil dibangun ulang agar lencana premium hilang dari web
-    await antrekanProfilUlang(db, String(sub.discord_id));
-
-    // Beritahu bot untuk mencabut status premium
+    // Beritahu bot untuk mencabut status premium. Bot membalas dengan profil
+    // terbaru sehingga lencana premium ikut hilang dari web.
     await db.execute({
       sql: "INSERT INTO data_requests (discord_id, status, data, created_at) VALUES (?, 'pending', ?, ?)",
       args: [

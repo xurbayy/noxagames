@@ -51,6 +51,9 @@ body {
   line-height: 1.65;
   overflow-x: hidden;
   width: 100%;
+  /* Jaring pengaman mobile: kata sangat panjang (judul lagu, URL, username)
+     dipatahkan, bukan dibiarkan terpotong oleh overflow-x: hidden di atas. */
+  overflow-wrap: break-word;
   /* Aura studio: satu semburat merah tipis di atas, sisanya hitam rata.
      Dikurangi dari versi sebelumnya supaya latar tidak terlihat "berasap" dan
      pola hexagon di tiap seksi tetap jadi aksen utama (pola NEXO: latar bersih). */
@@ -438,15 +441,17 @@ textarea:focus-visible {
   .shimmer::after, .skeleton { animation: none !important; }
 }
 
-/* Maskot hero (pola NEXO): desktop bob lembut, mobile wiggle lebih lincah,
-   bayangan oval menyusut sinkron dengan bob, bubble melayang bergantian. */
+/* Maskot hero (pola NEXO): desktop bob lembut, layar kecil/tablet wiggle
+   lebih lincah, bayangan oval menyusut sinkron dengan bob, bubble melayang
+   bergantian. */
 @keyframes mascotBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-18px); }
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-18px) rotate(1.5deg); }
 }
 @keyframes mascotWiggle {
-  0%, 100% { transform: translateY(0) rotate(-2.5deg); }
-  50% { transform: translateY(-12px) rotate(2.5deg); }
+  0%, 100% { transform: translateY(0) rotate(2.5deg) scale(1); }
+  30% { transform: translateY(-10px) rotate(-2.5deg) scale(1.02); }
+  60% { transform: translateY(0) rotate(2deg) scale(1); }
 }
 @keyframes mascotShadow {
   0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.5; }
@@ -457,16 +462,35 @@ textarea:focus-visible {
   50% { transform: translateY(-12px); }
 }
 .mascot-anim { animation: mascotBob 3.2s ease-in-out infinite; }
-@media (max-width: 767px) {
-  .mascot-anim { animation: mascotWiggle 2.6s ease-in-out infinite; }
+/* Permintaan pemilik 2 Nov 2026: maskot WAJIB gerak juga di platform kecil.
+   Breakpoint diperluas sampai tablet (1023px) - sebelumnya cuma <=767px, jadi
+   di HP besar/tablet maskot cuma bob pelan yang nyaris tidak kelihatan. */
+@media (max-width: 1023px) {
+  .mascot-anim { animation: mascotWiggle 1.6s ease-in-out infinite; }
 }
-.mascot-shadow { animation: mascotShadow 3.2s ease-in-out infinite; }
+/* Bayangan oval: POSISI juga diatur di sini (translateX(-50%) bagian dari
+   keyframe), jadi markup cukup memberi margin/tinggi saja. */
+.mascot-shadow {
+  position: relative;
+  left: 50%;
+  animation: mascotShadow 3.2s ease-in-out infinite;
+}
 .bubble-a { animation: bubbleFloat 4.2s ease-in-out infinite; }
 .bubble-b { animation: bubbleFloat 4.2s ease-in-out 2.1s infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .eq-bar, .live-dot, .mascot-anim, .mascot-shadow, .bubble-a, .bubble-b { animation: none; }
+  .eq-bar, .live-dot { animation: none; }
   .fade-up { opacity: 1; transform: none; transition: none; }
   .anim-in { opacity: 1; transform: none; animation: none; }
   html { scroll-behavior: auto; }
+  /* Pola NEXO: maskot + bubble TETAP hidup walau perangkat memilih
+     "reduce motion" - ini elemen dekoratif utama dan gerakannya kecil serta
+     lambat, tidak memicu ketidaknyamanan seperti animasi besar. */
+  .mascot-anim { animation: mascotBob 3.2s ease-in-out infinite; }
+  .mascot-shadow { animation: mascotShadow 3.2s ease-in-out infinite; }
+  .bubble-a { animation: bubbleFloat 4.2s ease-in-out infinite; }
+  .bubble-b { animation: bubbleFloat 4.2s ease-in-out 2.1s infinite; }
+  @media (max-width: 1023px) {
+    .mascot-anim { animation: mascotWiggle 1.6s ease-in-out infinite; }
+  }
 }

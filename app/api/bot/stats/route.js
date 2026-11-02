@@ -38,6 +38,35 @@ export async function POST(request) {
       'DELETE FROM monitor_snapshots WHERE id NOT IN (SELECT id FROM monitor_snapshots ORDER BY ts DESC LIMIT 3)'
     ).catch(() => {});
 
+    // --- Tren harian untuk grafik panel admin (upsert maksimum per hari UTC) ---
+    // Snapshot bot = TOTAL kumulatif seluruh bot, jadi simpan MAKSIMUM per hari:
+    // maksimum hari ini = angka akhir hari. Kalau bot reset dan total sempat
+    // turun, maksimum lama tetap terpakai (grafik tidak turun-naik palsu).
+    const tot = body.totals || {};
+    const hPlays = Number(tot.plays) || 0;
+    const hDurasi = Number(tot.durationSec) || 0;
+    const hServer = Number(tot.servers) || 0;
+    const hPendengar = Number(tot.listeners) || 0;
+    if (hPlays > 0 || hDurasi > 0 || hServer > 0) {
+      const day = Math.floor(ts / 86400000) * 86400000;
+      await db.execute({
+        sql: `INSERT INTO stat_history (day, ts, servers, listeners, plays, duration_sec)
+              VALUES (?, ?, ?, ?, ?, ?)
+              ON CONFLICT(day) DO UPDATE SET
+                ts = excluded.ts,
+                servers = MAX(servers, excluded.servers),
+                listeners = MAX(listeners, excluded.listeners),
+                plays = MAX(plays, excluded.plays),
+                duration_sec = MAX(duration_sec, excluded.duration_sec)`,
+        args: [day, ts, hServer, hPendengar, hPlays, hDurasi],
+      }).catch(() => {});
+      // Simpan 120 hari terakhir (ringan, cukup untuk grafik 7/30/90 hari).
+      await db.execute({
+        sql: 'DELETE FROM stat_history WHERE day < ?',
+        args: [day - 120 * 86400000],
+      }).catch(() => {});
+    }
+
     invalidateSnapshot();
   } catch (e) {
     // Push tetap dianggap sukses kalau hanya penyimpanan cache yang gagal -

@@ -107,6 +107,21 @@ async function ensureSchema() {
     );
     CREATE INDEX IF NOT EXISTS idx_sub_user ON premium_subscriptions(discord_id, status);
     CREATE INDEX IF NOT EXISTS idx_sub_guild ON premium_subscriptions(guild_id, status);
+
+    -- Tren harian untuk grafik panel admin. SATU baris per hari kalender
+    -- (day = tanggal UTC 00:00 dalam ms). Di-upsert tiap bot push snapshot,
+    -- menyimpan nilai MAKSIMUM sepanjang hari (total plays/durasi/server
+    -- bersifat kumulatif, jadi maksimum = angka akhir hari). Sumber
+    -- kebenaran tetap SQLite bot; ini cuma ringkasan ringan untuk grafik.
+    CREATE TABLE IF NOT EXISTS stat_history (
+      day           INTEGER PRIMARY KEY,
+      ts            INTEGER NOT NULL,
+      servers       INTEGER NOT NULL DEFAULT 0,
+      listeners     INTEGER NOT NULL DEFAULT 0,
+      plays         INTEGER NOT NULL DEFAULT 0,
+      duration_sec  INTEGER NOT NULL DEFAULT 0
+    );
+    CREATE INDEX IF NOT EXISTS idx_sh_day ON stat_history(day);
   `);
 
   // Kolom ganti server (migrasi idempoten; error = kolom sudah ada)
@@ -115,5 +130,9 @@ async function ensureSchema() {
   } catch {}
   try {
     await db.execute('ALTER TABLE transactions ADD COLUMN guild_name TEXT');
+  } catch {}
+  // Nama tampilan pelanggan (diisi saat aktivasi manual dari panel admin).
+  try {
+    await db.execute('ALTER TABLE premium_subscriptions ADD COLUMN username TEXT');
   } catch {}
 }

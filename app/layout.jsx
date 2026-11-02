@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import ScrollProgress from './components/ScrollProgress';
+import PwaPrompt from './components/PwaPrompt';
 import { getSession, isAdminDiscordId } from './lib/session';
 import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, SITE_URL, absoluteUrl } from './lib/site';
 
@@ -82,6 +83,7 @@ export default async function RootLayout({ children }) {
         <main className="flex-1">{children}</main>
         <Footer />
         <CookieConsent />
+        <PwaPrompt />
       </body>
     </html>
   );
