@@ -138,11 +138,13 @@ export default function NotifikasiUser() {
         )}
       </button>
 
-      {/* Panel kecil: dropdown anchored di bawah lonceng, max-w 15rem (240px)
-          di HP dan 16rem (256px) di sm+ (permintaan pemilik 2 Nov: "kegedean").
-          Tailwind v4 TIDAK bisa parse w-[min(...)], jadi pakai calc + max-w. */}
+      {/* Panel kecil. HP: FIXED di tengah bawah navbar (bukan anchored ke
+          ikon) - di mobile lonceng bukan ikon paling kanan (masih ada NOXA
+          Pass + hamburger di sebelahnya), jadi panel yang nempel ikon
+          meluber ke kiri dan KE POTONG tepi layar (laporan pemilik).
+          Desktop (sm+): baru nempel kanan bawah lonceng seperti NEXO. */}
       {buka && (
-        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-3rem)] max-w-[15rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-64">
+        <div className="fixed left-1/2 top-16 z-50 w-60 max-w-[calc(100vw-2rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:absolute sm:left-auto sm:right-0 sm:top-11 sm:w-64 sm:max-w-none sm:translate-x-0">
           <div className="flex items-center justify-between border-b border-line px-3.5 py-2.5">
             <div>
               <p className="text-sm font-bold text-ink">Notifikasi</p>

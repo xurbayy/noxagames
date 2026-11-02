@@ -81,11 +81,12 @@ export default function FeedbackButton() {
         </svg>
       </button>
 
-      {/* Panel kecil (permintaan pemilik 2 Nov: "kegedean"): dropdown anchored,
-          max-w 15rem HP / 16rem sm+, padding ringkas. Textarea WAJIB 16px ->
-          di bawah itu iOS auto-zoom saat fokus. */}
+      {/* Panel kecil. HP: FIXED tengah bawah navbar (bukan nempel ikon - di
+          mobile ikon bukan paling kanan, panel nempel ikon kepotong tepi
+          layar). sm+ baru nempel kanan bawah ikon seperti NEXO.
+          Textarea WAJIB text-base 16px: di bawah itu iOS auto-zoom saat fokus. */}
       {buka && (
-        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-3rem)] max-w-[15rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-64">
+        <div className="fixed left-1/2 top-16 z-50 w-60 max-w-[calc(100vw-2rem)] -translate-x-1/2 overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:absolute sm:left-auto sm:right-0 sm:top-11 sm:w-64 sm:max-w-none sm:translate-x-0">
           <div className="border-b border-line px-3.5 py-2.5">
             <p className="text-[13px] font-bold text-ink">Feedback & Laporan</p>
             <p className="mt-0.5 text-[10px] text-faint">Langsung sampai ke admin lewat Discord.</p>
