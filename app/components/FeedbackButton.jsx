@@ -81,21 +81,20 @@ export default function FeedbackButton() {
         </svg>
       </button>
 
-      {/* Panel mengikuti pola NEXO persis: dropdown anchored di bawah ikon,
-          17rem (272px) di HP - proporsinya "gede, enak, lega" seperti panel
-          notif mereka - sm: melebar ke 20rem. Ritme lega: header px-4 py-3,
-          chip jenis besar, textarea 16px (tanpa auto-zoom iOS). */}
+      {/* Panel kecil (permintaan pemilik 2 Nov: "kegedean"): dropdown anchored,
+          max-w 15rem HP / 16rem sm+, padding ringkas. Textarea WAJIB 16px ->
+          di bawah itu iOS auto-zoom saat fokus. */}
       {buka && (
-        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-2.5rem)] max-w-[17rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-80">
-          <div className="border-b border-line px-4 py-3">
-            <p className="text-sm font-bold text-ink">Feedback & Laporan</p>
-            <p className="mt-0.5 text-xs text-faint">Langsung sampai ke admin lewat Discord.</p>
+        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-3rem)] max-w-[15rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-64">
+          <div className="border-b border-line px-3.5 py-2.5">
+            <p className="text-[13px] font-bold text-ink">Feedback & Laporan</p>
+            <p className="mt-0.5 text-[10px] text-faint">Langsung sampai ke admin lewat Discord.</p>
           </div>
 
           {/* Tombol hanya dirender saat login (lihat Navbar), jadi tidak ada
               cabang tamu di sini - form langsung tampil. */}
-          <form onSubmit={kirim} className="px-4 py-3">
-            <div className="grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="Jenis laporan">
+          <form onSubmit={kirim} className="px-3.5 py-3">
+            <div className="grid grid-cols-3 gap-1" role="radiogroup" aria-label="Jenis laporan">
               {JENIS.map((j) => (
                 <button
                   key={j.id}
@@ -103,7 +102,7 @@ export default function FeedbackButton() {
                   role="radio"
                   aria-checked={jenis === j.id}
                   onClick={() => setJenis(j.id)}
-                  className={`rounded-xl border px-1.5 py-2 text-[11px] font-bold transition cursor-pointer sm:text-xs ${
+                  className={`rounded-lg border px-1 py-1.5 text-[10px] font-bold transition cursor-pointer sm:text-[11px] ${
                     jenis === j.id
                       ? 'border-crimson bg-[#3B0004] text-neon'
                       : 'border-line bg-surface3 text-muted hover:text-ink'
@@ -120,11 +119,11 @@ export default function FeedbackButton() {
               rows={3}
               maxLength={1500}
               placeholder={placeholder}
-              className="mt-3 w-full resize-y rounded-xl border border-line bg-bg px-3 py-2.5 text-base leading-relaxed text-ink outline-none focus:border-crimson"
+              className="mt-2.5 w-full resize-y rounded-lg border border-line bg-bg px-2.5 py-2 text-base leading-relaxed text-ink outline-none focus:border-crimson"
             />
 
             {hasil && (
-              <p className={`mt-2.5 rounded-xl border px-3.5 py-2.5 text-[13px] font-semibold leading-relaxed text-white ${
+              <p className={`mt-2 rounded-lg border px-3 py-2 text-xs font-semibold leading-relaxed text-white ${
                 hasil.ok
                   ? 'border-[#22C55E] bg-[#16A34A]'
                   : 'border-neon bg-crimson'
@@ -133,12 +132,12 @@ export default function FeedbackButton() {
               </p>
             )}
 
-            <div className="mt-3 flex items-center justify-between">
+            <div className="mt-2.5 flex items-center justify-between">
               <span className="text-[10px] text-faint">{pesan.length}/1500</span>
               <button
                 type="submit"
                 disabled={sibuk || pesan.trim().length < 5}
-                className="btn-primary !px-5 !py-2 text-[13px] disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn-primary !px-4 !py-1.5 text-xs disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {sibuk ? 'Mengirim...' : 'Kirim'}
               </button>

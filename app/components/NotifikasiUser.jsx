@@ -138,14 +138,12 @@ export default function NotifikasiUser() {
         )}
       </button>
 
-      {/* Panel persis pola NEXO: dropdown anchored di bawah lonceng, lebar
-          17rem (272px) di HP -> proporsi layar 390px terasa ramping, sm+
-          melebar jadi 20rem (w-80). Ritme lega: judul text-sm/14px, isi
-          text-xs/12px, tanggal kecil. Tailwind v4 TIDAK bisa parse
-          w-[min(...)] (dulu jadi 135px acak), jadi pakai calc + max-w. */}
+      {/* Panel kecil: dropdown anchored di bawah lonceng, max-w 15rem (240px)
+          di HP dan 16rem (256px) di sm+ (permintaan pemilik 2 Nov: "kegedean").
+          Tailwind v4 TIDAK bisa parse w-[min(...)], jadi pakai calc + max-w. */}
       {buka && (
-        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-2.5rem)] max-w-[17rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-80">
-          <div className="flex items-center justify-between border-b border-line px-4 py-3">
+        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-3rem)] max-w-[15rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-64">
+          <div className="flex items-center justify-between border-b border-line px-3.5 py-2.5">
             <div>
               <p className="text-sm font-bold text-ink">Notifikasi</p>
               <p className="mt-0.5 text-xs text-faint">{jumlah > 0 ? `${jumlah} belum dibaca` : 'Semua sudah dibaca'}</p>
@@ -163,27 +161,27 @@ export default function NotifikasiUser() {
           </div>
 
           {items.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[13px] leading-relaxed text-faint">
+            <p className="px-3.5 py-6 text-center text-xs leading-relaxed text-faint">
               Belum ada notifikasi. Kabar pembelian &amp; pengumuman admin muncul di sini.
             </p>
           ) : (
-            <ul className="max-h-72 divide-y divide-line/70 overflow-y-auto sm:max-h-96">
+            <ul className="max-h-64 divide-y divide-line/70 overflow-y-auto sm:max-h-72">
               {items.map((n) => {
                 const ikon = IKON[n.tipe] || null;
                 return (
-                  <li key={n.id} className="px-4 py-3">
-                    <div className="flex items-start justify-between gap-2">
+                  <li key={n.id} className="px-3.5 py-2.5">
+                    <div className="flex items-start justify-between gap-1.5">
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold leading-snug text-ink break-words">
+                        <p className="text-[13px] font-semibold leading-snug text-ink break-words">
                           {ikon && (
-                            <span className={`mr-1.5 inline-block align-middle rounded-full border px-2 py-0.5 text-[9px] font-extrabold ${ikon.kelas}`}>
+                            <span className={`mr-1 inline-block align-middle rounded-full border px-1.5 py-px text-[8px] font-extrabold ${ikon.kelas}`}>
                               {ikon.label}
                             </span>
                           )}
                           {n.judul}
                         </p>
-                        {n.isi && <p className="mt-0.5 text-xs leading-snug text-muted break-words">{n.isi}</p>}
-                        <p className="mt-1 text-[10px] text-faint">
+                        {n.isi && <p className="mt-0.5 text-[11px] leading-snug text-muted break-words line-clamp-2">{n.isi}</p>}
+                        <p className="mt-0.5 text-[9px] text-faint">
                           {new Date(n.createdAt).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
@@ -194,7 +192,7 @@ export default function NotifikasiUser() {
                         title="Tandai dibaca"
                         className="shrink-0 rounded-full p-1 text-faint transition hover:bg-surface3 hover:text-ink cursor-pointer"
                       >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                           <path d="M5 13l4 4L19 7" />
                         </svg>
                       </button>
@@ -203,7 +201,7 @@ export default function NotifikasiUser() {
                       <Link
                         href={n.url}
                         onClick={() => { setBuka(false); tandai(n.id); }}
-                        className="mt-1.5 inline-block text-xs font-semibold text-neon hover:underline"
+                        className="mt-1 inline-block text-[11px] font-semibold text-neon hover:underline"
                       >
                         Buka
                       </Link>
