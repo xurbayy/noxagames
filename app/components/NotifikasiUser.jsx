@@ -138,65 +138,51 @@ export default function NotifikasiUser() {
         )}
       </button>
 
-      {/* Mobile = sheet tengah + backdrop (pola popup pemutar, permintaan
-          pemilik: dropdown sudut "kegedean, teks bablas" di HP).
-          Desktop (md+) = dropdown anchored di bawah lonceng. */}
+      {/* Panel persis pola NEXO: dropdown anchored di bawah lonceng, lebar
+          17rem (272px) di HP -> proporsi layar 390px terasa ramping, sm+
+          melebar jadi 20rem (w-80). Ritme lega: judul text-sm/14px, isi
+          text-xs/12px, tanggal kecil. Tailwind v4 TIDAK bisa parse
+          w-[min(...)] (dulu jadi 135px acak), jadi pakai calc + max-w. */}
       {buka && (
-        <div className="fixed inset-0 z-[88] bg-black/80 md:hidden" aria-hidden="true" onClick={() => setBuka(false)} />
-      )}
-
-      {buka && (
-        <div className="fixed left-1/2 top-1/2 z-[90] flex max-h-[75vh] w-[calc(100vw-2rem)] max-w-96 -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_16px_50px_rgba(0,0,0,0.65)] md:absolute md:inset-auto md:right-0 md:top-11 md:z-50 md:max-h-none md:w-72 md:max-w-[18rem] md:translate-x-0 md:translate-y-0">
-          <div className="flex shrink-0 items-center justify-between border-b border-line px-4 py-3">
+        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-2.5rem)] max-w-[17rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-80">
+          <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <div>
               <p className="text-sm font-bold text-ink">Notifikasi</p>
-              <p className="text-[11px] text-faint">{jumlah > 0 ? `${jumlah} belum dibaca` : 'Semua sudah dibaca'}</p>
+              <p className="mt-0.5 text-xs text-faint">{jumlah > 0 ? `${jumlah} belum dibaca` : 'Semua sudah dibaca'}</p>
             </div>
-            <div className="flex items-center gap-2.5">
-              {jumlah > 0 && (
-                <button
-                  type="button"
-                  onClick={tandaiSemua}
-                  disabled={sibuk}
-                  className="text-[11px] font-semibold text-neon hover:underline cursor-pointer disabled:opacity-50"
-                >
-                  Tandai dibaca
-                </button>
-              )}
+            {jumlah > 0 && (
               <button
                 type="button"
-                onClick={() => setBuka(false)}
-                aria-label="Tutup"
-                className="text-faint transition hover:text-ink cursor-pointer"
+                onClick={tandaiSemua}
+                disabled={sibuk}
+                className="text-xs font-semibold text-neon hover:underline cursor-pointer disabled:opacity-50"
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                  <path d="M18 6 6 18M6 6l12 12" />
-                </svg>
+                Tandai dibaca
               </button>
-            </div>
+            )}
           </div>
 
           {items.length === 0 ? (
-            <p className="px-4 py-7 text-center text-[13px] leading-relaxed text-faint">
-              Belum ada notifikasi. Kabar pembelian, event, dan pengumuman admin muncul di sini.
+            <p className="px-4 py-8 text-center text-[13px] leading-relaxed text-faint">
+              Belum ada notifikasi. Kabar pembelian &amp; pengumuman admin muncul di sini.
             </p>
           ) : (
-            <ul className="min-h-0 flex-1 divide-y divide-line/70 overflow-y-auto md:max-h-[22rem] md:flex-none">
+            <ul className="max-h-72 divide-y divide-line/70 overflow-y-auto sm:max-h-96">
               {items.map((n) => {
                 const ikon = IKON[n.tipe] || null;
                 return (
                   <li key={n.id} className="px-4 py-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <p className="text-[13px] font-semibold leading-snug text-ink break-words">
+                        <p className="text-sm font-semibold leading-snug text-ink break-words">
                           {ikon && (
-                            <span className={`mr-1.5 inline-block rounded border px-1.5 py-0.5 text-[0.55rem] font-extrabold ${ikon.kelas}`}>
+                            <span className={`mr-1.5 inline-block align-middle rounded-full border px-2 py-0.5 text-[9px] font-extrabold ${ikon.kelas}`}>
                               {ikon.label}
                             </span>
                           )}
                           {n.judul}
                         </p>
-                        {n.isi && <p className="mt-1 text-[11px] leading-relaxed text-muted break-words">{n.isi}</p>}
+                        {n.isi && <p className="mt-0.5 text-xs leading-snug text-muted break-words">{n.isi}</p>}
                         <p className="mt-1 text-[10px] text-faint">
                           {new Date(n.createdAt).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                         </p>
@@ -217,7 +203,7 @@ export default function NotifikasiUser() {
                       <Link
                         href={n.url}
                         onClick={() => { setBuka(false); tandai(n.id); }}
-                        className="mt-1.5 inline-block text-[11px] font-semibold text-neon hover:underline"
+                        className="mt-1.5 inline-block text-xs font-semibold text-neon hover:underline"
                       >
                         Buka
                       </Link>

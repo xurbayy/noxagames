@@ -42,15 +42,20 @@ self.addEventListener('fetch', (event) => {
   // API: selalu network (data harus segar; gagal = gagal, jangan basi).
   if (url.pathname.startsWith('/api/')) return;
 
-  // Aset statis ber-hash: cache-first.
+  // Aset statis: stale-while-revalidate (BUKAN cache-first murni).
+  // Produksi: file ber-hash tidak pernah berubah -> tetap cepat dari cache.
+  // Dev: turbopack mengubah ISI dengan NAMA FILE SAMA -> cache-first murni
+  // bikin versi basi menempel selamanya (kejadian 2 Nov 2026). SWR menulis
+  // ulang cache senyap tiap fetch, jadi reload berikutnya sudah segar.
   if (url.pathname.startsWith('/_next/static/') || /\.(png|jpg|jpeg|webp|svg|ico|woff2?)$/.test(url.pathname)) {
     event.respondWith((async () => {
       const cache = await caches.open(CACHE_STATIS);
       const ada = await cache.match(req);
-      if (ada) return ada;
-      const res = await fetch(req);
-      if (res && res.ok) cache.put(req, res.clone());
-      return res;
+      const jaringan = fetch(req).then((res) => {
+        if (res && res.ok) cache.put(req, res.clone());
+        return res;
+      }).catch(() => null);
+      return ada || (await jaringan) || Response.error();
     })());
     return;
   }

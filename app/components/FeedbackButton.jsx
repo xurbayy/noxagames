@@ -81,35 +81,21 @@ export default function FeedbackButton() {
         </svg>
       </button>
 
-      {/* Mobile = sheet tengah + backdrop; desktop = dropdown anchored.
-          Sama seperti lonceng notifikasi (permintaan pemilik 2 Nov 2026). */}
+      {/* Panel mengikuti pola NEXO persis: dropdown anchored di bawah ikon,
+          17rem (272px) di HP - proporsinya "gede, enak, lega" seperti panel
+          notif mereka - sm: melebar ke 20rem. Ritme lega: header px-4 py-3,
+          chip jenis besar, textarea 16px (tanpa auto-zoom iOS). */}
       {buka && (
-        <div className="fixed inset-0 z-[88] bg-black/80 md:hidden" aria-hidden="true" onClick={() => setBuka(false)} />
-      )}
-
-      {buka && (
-        <div className="fixed left-1/2 top-1/2 z-[90] w-[calc(100vw-2rem)] max-w-96 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_16px_50px_rgba(0,0,0,0.65)] md:absolute md:inset-auto md:right-0 md:top-11 md:z-50 md:w-72 md:max-w-[18rem] md:translate-x-0 md:translate-y-0">
-          <div className="flex items-start justify-between gap-2 border-b border-line px-4 py-3">
-            <div>
-              <p className="text-sm font-bold text-ink">Feedback & Laporan</p>
-              <p className="mt-0.5 text-[11px] text-faint">Langsung sampai ke admin lewat Discord.</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setBuka(false)}
-              aria-label="Tutup"
-              className="mt-0.5 shrink-0 text-faint transition hover:text-ink cursor-pointer"
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
-            </button>
+        <div className="absolute right-0 top-11 z-50 w-[calc(100vw-2.5rem)] max-w-[17rem] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)] sm:max-w-80">
+          <div className="border-b border-line px-4 py-3">
+            <p className="text-sm font-bold text-ink">Feedback & Laporan</p>
+            <p className="mt-0.5 text-xs text-faint">Langsung sampai ke admin lewat Discord.</p>
           </div>
 
           {/* Tombol hanya dirender saat login (lihat Navbar), jadi tidak ada
               cabang tamu di sini - form langsung tampil. */}
           <form onSubmit={kirim} className="px-4 py-3">
-            <div className="flex gap-1.5" role="radiogroup" aria-label="Jenis laporan">
+            <div className="grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="Jenis laporan">
               {JENIS.map((j) => (
                 <button
                   key={j.id}
@@ -117,7 +103,7 @@ export default function FeedbackButton() {
                   role="radio"
                   aria-checked={jenis === j.id}
                   onClick={() => setJenis(j.id)}
-                  className={`rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition cursor-pointer ${
+                  className={`rounded-xl border px-1.5 py-2 text-[11px] font-bold transition cursor-pointer sm:text-xs ${
                     jenis === j.id
                       ? 'border-crimson bg-[#3B0004] text-neon'
                       : 'border-line bg-surface3 text-muted hover:text-ink'
@@ -134,11 +120,11 @@ export default function FeedbackButton() {
               rows={3}
               maxLength={1500}
               placeholder={placeholder}
-              className="mt-3 w-full resize-y rounded-xl border border-line bg-bg px-3 py-2 text-xs text-ink outline-none focus:border-crimson sm:text-sm"
+              className="mt-3 w-full resize-y rounded-xl border border-line bg-bg px-3 py-2.5 text-base leading-relaxed text-ink outline-none focus:border-crimson"
             />
 
             {hasil && (
-              <p className={`mt-2 rounded-lg border px-3 py-2 text-[11px] font-semibold leading-relaxed text-white ${
+              <p className={`mt-2.5 rounded-xl border px-3.5 py-2.5 text-[13px] font-semibold leading-relaxed text-white ${
                 hasil.ok
                   ? 'border-[#22C55E] bg-[#16A34A]'
                   : 'border-neon bg-crimson'
@@ -152,7 +138,7 @@ export default function FeedbackButton() {
               <button
                 type="submit"
                 disabled={sibuk || pesan.trim().length < 5}
-                className="btn-primary !px-4 !py-2 text-xs disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn-primary !px-5 !py-2 text-[13px] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {sibuk ? 'Mengirim...' : 'Kirim'}
               </button>
