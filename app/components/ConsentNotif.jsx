@@ -112,7 +112,7 @@ export default function ConsentNotif() {
           <h3 className="font-display text-sm font-bold">Notifikasi</h3>
         </div>
         <p className="mt-2.5 text-xs leading-relaxed text-muted">
-          Izinkan NOXA Sound mengirim kabar pembelian, event, dan pengumuman admin
+          Izinkan NOXA mengirim kabar pembelian, event, dan pengumuman admin
           ke perangkat ini? Bisa dimatikan kapan saja dari lonceng notifikasi.
         </p>
 

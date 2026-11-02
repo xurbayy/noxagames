@@ -112,7 +112,7 @@ export default function PwaPrompt() {
         <div className="min-w-0 flex-1">
           {tampil ? (
             <>
-              <div className="text-sm font-bold leading-tight text-ink">Pasang NOXA Sound</div>
+              <div className="text-sm font-bold leading-tight text-ink">Pasang NOXA</div>
               <div className="mt-0.5 text-[11px] leading-snug text-muted break-words">
                 Buka seperti aplikasi - dari ikon di layar HP-mu.
               </div>
@@ -138,7 +138,7 @@ export default function PwaPrompt() {
               <div className="text-sm font-bold leading-tight text-ink">Tambah ke Layar Depan</div>
               <div className="mt-0.5 text-[11px] leading-snug text-muted break-words">
                 Safari iOS: ketuk tombol <strong className="text-ink">Share</strong> lalu{' '}
-                <strong className="text-ink">&quot;Add to Home Screen&quot;</strong> - NOXA Sound
+                <strong className="text-ink">&quot;Add to Home Screen&quot;</strong> - NOXA
                 terbuka seperti aplikasi.
               </div>
               <div className="mt-2 flex items-center gap-2">

@@ -127,8 +127,8 @@ export default function KirimNotif() {
         </div>
 
         {hasil && (
-          <p className={`rounded-lg border px-3 py-2 text-[11px] leading-relaxed ${
-            hasil.ok ? 'border-[#22C55E] bg-[#14532D] text-[#86EFAC]' : 'border-crimson bg-[#3B0004] text-neon'
+          <p className={`rounded-lg border px-3 py-2 text-[11px] font-semibold leading-relaxed text-white ${
+            hasil.ok ? 'border-[#22C55E] bg-[#16A34A]' : 'border-neon bg-crimson'
           }`}>
             {hasil.teks}
           </p>

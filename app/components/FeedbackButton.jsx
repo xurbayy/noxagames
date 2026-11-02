@@ -81,11 +81,29 @@ export default function FeedbackButton() {
         </svg>
       </button>
 
+      {/* Mobile = sheet tengah + backdrop; desktop = dropdown anchored.
+          Sama seperti lonceng notifikasi (permintaan pemilik 2 Nov 2026). */}
       {buka && (
-        <div className="absolute right-0 top-11 z-50 w-72 max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_12px_32px_rgba(0,0,0,0.55)]">
-          <div className="border-b border-line px-4 py-3">
-            <p className="text-sm font-bold text-ink">Feedback & Laporan</p>
-            <p className="mt-0.5 text-[11px] text-faint">Langsung sampai ke admin lewat Discord.</p>
+        <div className="fixed inset-0 z-[88] bg-black/80 md:hidden" aria-hidden="true" onClick={() => setBuka(false)} />
+      )}
+
+      {buka && (
+        <div className="fixed left-1/2 top-1/2 z-[90] w-[calc(100vw-2rem)] max-w-96 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-line bg-surface2 shadow-[0_16px_50px_rgba(0,0,0,0.65)] md:absolute md:inset-auto md:right-0 md:top-11 md:z-50 md:w-72 md:max-w-[18rem] md:translate-x-0 md:translate-y-0">
+          <div className="flex items-start justify-between gap-2 border-b border-line px-4 py-3">
+            <div>
+              <p className="text-sm font-bold text-ink">Feedback & Laporan</p>
+              <p className="mt-0.5 text-[11px] text-faint">Langsung sampai ke admin lewat Discord.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setBuka(false)}
+              aria-label="Tutup"
+              className="mt-0.5 shrink-0 text-faint transition hover:text-ink cursor-pointer"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
           {/* Tombol hanya dirender saat login (lihat Navbar), jadi tidak ada
@@ -120,10 +138,10 @@ export default function FeedbackButton() {
             />
 
             {hasil && (
-              <p className={`mt-2 rounded-lg border px-3 py-2 text-[11px] leading-relaxed ${
+              <p className={`mt-2 rounded-lg border px-3 py-2 text-[11px] font-semibold leading-relaxed text-white ${
                 hasil.ok
-                  ? 'border-[#22C55E] bg-[#14532D] text-[#86EFAC]'
-                  : 'border-crimson bg-[#3B0004] text-neon'
+                  ? 'border-[#22C55E] bg-[#16A34A]'
+                  : 'border-neon bg-crimson'
               }`}>
                 {hasil.teks}
               </p>
