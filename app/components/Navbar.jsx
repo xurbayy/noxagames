@@ -123,7 +123,7 @@ export default function Navbar({ session, isAdmin = false }) {
               <Link
                 href="/admin"
                 prefetch={false}
-                className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2E6F63]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#930E1F]"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                 Admin
@@ -147,7 +147,7 @@ export default function Navbar({ session, isAdmin = false }) {
           <Link
             href="/premium"
             prefetch={false}
-            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-crimson bg-crimson px-2.5 py-1 text-xs font-bold text-white shadow-xs transition hover:-translate-y-px hover:border-neon hover:bg-[#2E6F63] sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
+            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-crimson bg-crimson px-2.5 py-1 text-xs font-bold text-white shadow-xs transition hover:-translate-y-px hover:border-neon hover:bg-[#930E1F] sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
               src="/badges/noxa-premium-ultimate.png"
@@ -262,7 +262,7 @@ export default function Navbar({ session, isAdmin = false }) {
                 href="/premium"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#2E6F63] transition"
+                className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#930E1F] transition"
               >
                 <span className="flex items-center gap-2">
                   <img
@@ -286,7 +286,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   href="/admin"
                   prefetch={false}
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#2E6F63] transition"
+                  className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#930E1F] transition"
                 >
                   <span className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-white animate-pulse" />

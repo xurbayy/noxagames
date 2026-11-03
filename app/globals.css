@@ -1,42 +1,40 @@
 @import "tailwindcss";
 
 /* ============================================
-   TEMA RESMI NOXA SOUND - Teal TERANG (3 Nov 2026)
-   Aturan 60-30-10: 60% latar terang bersih, 30% teal gelap sebagai jangkar
-   (navbar/hero/footer/tombol sekunder), 10% aksen + peach untuk CTA.
-   Sumber warna: ditetes langsung dari logo (eyedropper).
-   NAMA token lama dipertahankan (crimson/neon/ink dst) supaya ratusan kelas
-   existing ikut berganti tema tanpa ditulis ulang:
-     crimson = teal gelap jangkar, neon = teal tengah (aman utk teks),
-     amber = PEACH CTA, glow = sage terang (ikon/dekor).
+   TEMA RESMI NOXA SOUND - Merah Hitam (identitas final, gaya simpel)
+   (palet sama dengan utils/colors.js di repo bot)
+   PENTING: warna tema HANYA lewat token di sini.
+   Kelas dengan token yang tidak didefinisikan = tidak
+   menghasilkan CSS (elemen jadi bening).
    ============================================ */
 @theme {
-  --color-bg: #F4FAF7;          /* 60%: latar utama terang */
-  --color-surface: #EAF4EE;     /* section selang-seling (mint lembut) */
-  --color-surface2: #FFFFFF;    /* kartu putih */
-  --color-surface3: #E9F3ED;    /* hover / kartu terangkat */
-  --color-darkcrimson: #9DC6B8; /* penanda garis list, aksen sedang */
-  --color-maroon: #1F4E47;      /* gradasi gelap */
-  --color-crimson: #1F4E47;     /* 30%: JANGKAR teal gelap - tombol sekunder, garis, chip aktif */
-  --color-neon: #2E6F63;        /* teal tengah: link & teks aksen (kontras aman di terang) */
-  --color-amber: #F2A15B;       /* 10%: PEACH - CTA & highlight */
-  --color-glow: #8DBFB3;        /* sage terang - ikon kecil, ring dekoratif */
-  --color-ink: #0F2E2A;         /* teks utama: teal paling gelap (BUKAN abu) */
-  --color-muted: #3E5F58;       /* teks sekunder (gelap, kontras tinggi) */
-  --color-faint: #5F7F77;       /* teks tersier - masih kebaca di putih */
-  --color-line: #CBE0D6;        /* border kartu */
-  --color-linebright: #9DC6B8;  /* border hover */
-  --color-ok: #1E8E5A;          /* status hidup (versi terang-legible) */
-  --color-warn: #B45309;        /* status menunggu */
+  --color-bg: #030303;          /* pureBlack - latar utama */
+  --color-surface: #080303;     /* deepBlack - area bernuansa merah */
+  --color-surface2: #120509;    /* kartu */
+  --color-surface3: #1A070C;    /* kartu terangkat / hover */
+  --color-darkcrimson: #3B0004; /* bayangan merah gelap */
+  --color-maroon: #5C0008;      /* gradasi dekoratif */
+  --color-crimson: #B11226;     /* aksen utama (merah anggur, bukan merah Netflix) */
+  --color-neon: #FF4B2B;        /* aksen terang: vermilion hangat */
+  --color-amber: #F0A63C;       /* aksen kedua, senada amber NEXO */
+  --color-glow: #FF3B1F;        /* efek glow */
+  --color-ink: #F7F3F1;         /* teks utama */
+  --color-muted: #A89F9C;       /* teks sekunder (netral, tanpa cast merah) */
+  --color-faint: #726868;       /* teks tersier */
+  --color-line: #2A2022;        /* border kartu */
+  --color-linebright: #453032;  /* border hover */
+  --color-ok: #58C472;          /* status hidup */
+  --color-warn: #C87F0A;        /* status menunggu */
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-space), var(--font-inter), sans-serif;
 
-  /* Bayangan: di tema terang harus LEMBUT & keabuan-sejuk - fungsi
-     "kartu mengambang di atas kertas", bukan glow. */
-  --shadow-hair: 0 1px 2px rgba(15, 46, 42, 0.06);
-  --shadow-soft: 0 4px 18px rgba(15, 46, 42, 0.09);
-  --shadow-lift: 0 14px 34px -12px rgba(15, 46, 42, 0.18);
+  /* Bayangan disamakan bahasa visualnya dengan web NEXO: tipis, netral, tidak
+     berwarna. Di tema gelap bayangan berfungsi sebagai "bayangan jatuh" halus,
+     bukan glow - jadi kartu tetap terasa mengambang tanpa bikin mata sakit. */
+  --shadow-hair: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 3px 14px rgba(0, 0, 0, 0.42);
+  --shadow-lift: 0 14px 34px -12px rgba(0, 0, 0, 0.75);
 }
 
 html {
@@ -56,10 +54,10 @@ body {
   /* Jaring pengaman mobile: kata sangat panjang (judul lagu, URL, username)
      dipatahkan, bukan dibiarkan terpotong oleh overflow-x: hidden di atas. */
   overflow-wrap: break-word;
-  /* Aura studio: satu semburat teal tipis di atas, sisanya gelap rata.
+  /* Aura studio: satu semburat merah tipis di atas, sisanya hitam rata.
      Dikurangi dari versi sebelumnya supaya latar tidak terlihat "berasap" dan
      pola hexagon di tiap seksi tetap jadi aksen utama (pola NEXO: latar bersih). */
-  background-image: radial-gradient(900px 420px at 50% -12%, rgba(141, 191, 179, 0.22), transparent 70%);
+  background-image: radial-gradient(900px 420px at 50% -12%, rgba(177, 18, 38, 0.1), transparent 70%);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -76,23 +74,23 @@ textarea:focus-visible {
 }
 
 ::selection {
-  background: rgba(242, 161, 91, 0.5);
-  color: var(--color-ink);
+  background: rgba(184, 0, 18, 0.55);
+  color: #fff;
 }
 
 /* Scrollbar tipis, menyatu dengan latar (gaya NEXO) */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #EAF4EE; }
+::-webkit-scrollbar-track { background: #080303; }
 ::-webkit-scrollbar-thumb {
-  background: #9DC6B8;
+  background: #2E1216;
   border-radius: 8px;
 }
-::-webkit-scrollbar-thumb:hover { background: #2E6F63; }
+::-webkit-scrollbar-thumb:hover { background: #4A1D23; }
 
 /* ── BACKDROP SARANG LEBAH (hexagon) ──
    Padanan `.bg-grid` milik NEXO, tapi bentuknya hexagon supaya tetap nyambung
    dengan logo NOXA. Dipasang sebagai lapisan dekoratif (div absolute), warnanya
-   teal sangat tipis dan dipudarkan ke tepi lewat mask - bukan blok yang ramai. */
+   merah sangat tipis dan dipudarkan ke tepi lewat mask - bukan blok yang ramai. */
 .bg-grid {
   background-image: url('/hex-grid.svg');
   background-size: 72px 41.57px;
@@ -114,21 +112,21 @@ textarea:focus-visible {
   background-image: url('/hex-tiles.svg');
   background-size: 96px 55.42px;
   background-repeat: repeat;
-  opacity: 0.07;
+  opacity: 0.14;
   filter: blur(2px);
   mask-image: radial-gradient(ellipse 95% 80% at 50% 0%, #000 35%, transparent 100%);
   -webkit-mask-image: radial-gradient(ellipse 95% 80% at 50% 0%, #000 35%, transparent 100%);
   pointer-events: none;
 }
 
-/* ── SCROLL PROGRESS (garis teal atas ala NEXO) ── */
+/* ── SCROLL PROGRESS (garis merah atas ala NEXO) ── */
 #scroll-bar {
   position: fixed;
   top: 0;
   left: 0;
   height: 3px;
   z-index: 9999;
-  background: #F2A15B;
+  background: #FF4B2B;
   width: 0;
   border-radius: 0 2px 2px 0;
   transition: width 0.08s linear;
@@ -161,20 +159,20 @@ textarea:focus-visible {
 .delay-4 { animation-delay: 0.38s; }
 
 @layer components {
-  /* Kartu: nyaris tanpa border, melayang di bayangan lembut (gaya Soundly/
-     Boogie: sederhana, bersih, elegan). Border sisa sebagai penggaris tipis. */
+  /* Kartu dasar: border tipis + bayangan tipis netral (pola NEXO) */
   .card {
     background-color: var(--color-surface2);
-    border: 1px solid rgba(31, 78, 71, 0.09);
+    border: 1px solid rgba(177, 18, 38, 0.14);
     border-radius: 1.25rem;
-    box-shadow: 0 2px 14px rgba(15, 46, 42, 0.07);
+    box-shadow: var(--shadow-soft);
   }
   .card-hover {
     transition: border-color 0.18s ease, background-color 0.18s ease,
       transform 0.18s ease, box-shadow 0.18s ease;
   }
   .card-hover:hover {
-    border-color: rgba(31, 78, 71, 0.16);
+    border-color: rgba(255, 75, 43, 0.4);
+    background-color: var(--color-surface2);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lift);
   }
@@ -186,10 +184,8 @@ textarea:focus-visible {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    /* CTA = peach hangat, teks teal-gelap: koma warna yang bikin tombol
-       langsung kebaca di tema terang (aturan aksen 60-30-10). */
-    background-color: var(--color-amber);
-    color: var(--color-ink);
+    background-color: var(--color-crimson);
+    color: #fff;
     font-weight: 700;
     white-space: nowrap;
     border-radius: 9999px;
@@ -199,7 +195,7 @@ textarea:focus-visible {
     cursor: pointer;
   }
   .btn-primary:hover {
-    background-color: #E8924A;
+    background-color: var(--color-neon);
     box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
   }
@@ -246,9 +242,9 @@ textarea:focus-visible {
   .cmd {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.85em;
-    background-color: #E3F1EA;
-    border: 1px solid #CBE0D6;
-    color: #1F4E47;
+    background-color: rgba(177, 18, 38, 0.14);
+    border: 1px solid var(--color-linebright);
+    color: #FFBE8C;
     border-radius: 0.375rem;
     padding: 0.1rem 0.4rem;
     word-break: break-word;
@@ -270,27 +266,26 @@ textarea:focus-visible {
   }
   .badge-ok { background-color: var(--color-ok); color: #04170a; }
   .badge-warn { background-color: var(--color-warn); color: #1c1204; }
-  .badge-danger { background-color: var(--color-crimson); color: #F4FAF7; }
+  .badge-danger { background-color: var(--color-crimson); color: #fff; }
   .badge-neutral { background-color: var(--color-surface3); color: var(--color-muted); border: 1px solid var(--color-line); }
 
-  /* Teks display: teal gelap anchor, tanpa gradasi */
+  /* Teks display: warna merah NOXA solid, tanpa gradasi */
   .neon-text {
-    color: #2E6F63;
-    font-weight: inherit;
+    color: #FF4B2B;
   }
 
-  /* Garis teal tipis dekoratif */
+  /* Garis merah tipis dekoratif */
   .hairline {
     height: 1px;
-    background: #CBE0D6;
+    background: #3B0004;
   }
 
-  /* Garis aksen pendek: penanda seksi, tidak berteriak */
+  /* Garis aksen pendek: penanda seksi, halus ala Soundly */
   .accent-bar {
     width: 64px;
     height: 4px;
     border-radius: 9999px;
-    background: #F2A15B;
+    background: #B11226;
   }
 }
 
@@ -314,7 +309,7 @@ textarea:focus-visible {
    SISTEM UI SOLID (diadaptasi 1:1 dari web NEXO negoxiastore)
    Bahasa visual yang sama: badge terstandar, tombol aksi solid dengan
    bayangan warna lembut, tile statistik, scrollbar tabel yang terlihat,
-   skeleton, dan shimmer premium. Warna diadaptasi ke palet Deep Teal NOXA.
+   skeleton, dan shimmer premium. Warna diadaptasi ke palet merah NOXA.
    ════════════════════════════════════════════════════════════════ */
 
 /* ── BADGE TERSTANDAR (semua status pakai kelas ini + utilitas warna solid) ── */
@@ -351,16 +346,16 @@ textarea:focus-visible {
 .btn-solid:hover { transform: translateY(-1px); }
 .btn-solid:active { transform: translateY(0); }
 .btn-solid:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-solid-accent { background: var(--color-amber); color: var(--color-ink); box-shadow: 0 2px 8px rgba(242, 161, 91, 0.35); }
-.btn-solid-accent:hover { background: #E8924A; }
+.btn-solid-accent { background: var(--color-crimson); color: #fff; box-shadow: 0 2px 8px rgba(177, 18, 38, 0.3); }
+.btn-solid-accent:hover { background: var(--color-neon); }
 .btn-solid-danger { background: #C74B3C; color: #fff; box-shadow: 0 2px 8px rgba(199, 75, 60, 0.28); }
 .btn-solid-danger:hover { background: #A83F32; }
 .btn-solid-success { background: #1F7A44; color: #fff; box-shadow: 0 2px 8px rgba(88, 196, 114, 0.25); }
 .btn-solid-success:hover { background: #58C472; }
 .btn-solid-neutral { background: var(--color-surface2); color: var(--color-ink); border-color: var(--color-linebright); box-shadow: var(--shadow-hair); }
 .btn-solid-neutral:hover { background: var(--color-surface3); }
-.btn-solid-light { background: var(--color-crimson); color: #F4FAF7; box-shadow: 0 2px 8px rgba(31, 78, 71, 0.25); }
-.btn-solid-light:hover { background: var(--color-neon); }
+.btn-solid-light { background: var(--color-ink); color: #030303; box-shadow: 0 2px 8px rgba(247, 243, 241, 0.18); }
+.btn-solid-light:hover { background: #ffffff; }
 
 /* ── TILE STATISTIK (kartu KPI solid dengan hover aksen) ── */
 .stat-tile {
@@ -371,18 +366,18 @@ textarea:focus-visible {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .stat-tile:hover {
-  border-color: rgba(46, 111, 99, 0.45);
-  box-shadow: 0 4px 14px rgba(15, 46, 42, 0.1);
+  border-color: rgba(255, 75, 43, 0.3);
+  box-shadow: 0 0 12px rgba(177, 18, 38, 0.12);
 }
 
 /* ── SCROLLBAR HORIZONTAL TABEL: tebal dan terlihat ── */
 .noxa-scroll {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-linebright) rgba(15, 46, 42, 0.05);
+  scrollbar-color: var(--color-linebright) rgba(247, 243, 241, 0.05);
 }
 .noxa-scroll::-webkit-scrollbar { height: 12px; }
 .noxa-scroll::-webkit-scrollbar-track {
-  background: rgba(15, 46, 42, 0.05);
+  background: rgba(247, 243, 241, 0.05);
   border-radius: 999px;
 }
 .noxa-scroll::-webkit-scrollbar-thumb {
@@ -392,7 +387,7 @@ textarea:focus-visible {
   background-clip: content-box;
 }
 .noxa-scroll::-webkit-scrollbar-thumb:hover {
-  background: #2E6F63;
+  background: #6B4A4D;
   background-clip: content-box;
 }
 
@@ -467,6 +462,22 @@ textarea:focus-visible {
   50% { transform: translateY(-12px); }
 }
 
+/* Marquee social proof (pola Soundly): daftar logo server berjalan pelan.
+   Track berisi dua salinan deret, jadi geser 50% menyambung mulus.
+   Fade tepi kiri-kanan via mask. Dihormati prefers-reduced-motion di bawah. */
+@keyframes marqueeGeser {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marqueeGeser 36s linear infinite;
+  will-change: transform;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track:hover { animation-play-state: paused; }
 .mascot-anim { animation: mascotBob 3.2s ease-in-out infinite; }
 /* Permintaan pemilik 2 Nov 2026: maskot WAJIB gerak juga di platform kecil.
    Breakpoint diperluas sampai tablet (1023px) - sebelumnya cuma <=767px, jadi
@@ -486,6 +497,7 @@ textarea:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .eq-bar, .live-dot { animation: none; }
+  .marquee-track { animation: none; }
   .fade-up { opacity: 1; transform: none; transition: none; }
   .anim-in { opacity: 1; transform: none; animation: none; }
   html { scroll-behavior: auto; }

@@ -69,10 +69,10 @@ function demoArt(seed = 0) {
   const hue = 350 + (seed % 4) * 6;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180">
     <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="hsl(${hue},100%,12%)"/><stop offset="0.55" stop-color="#1F4E47"/><stop offset="1" stop-color="#2E6F63"/>
+      <stop offset="0" stop-color="hsl(${hue},100%,12%)"/><stop offset="0.55" stop-color="#3B0004"/><stop offset="1" stop-color="#B80012"/>
     </linearGradient></defs>
     <rect width="320" height="180" fill="url(#g)"/>
-    <g fill="#8DBFB3" opacity="0.85">
+    <g fill="#FF101F" opacity="0.85">
       <rect x="128" y="86" width="10" height="40" rx="3"/>
       <rect x="144" y="66" width="10" height="60" rx="3"/>
       <rect x="160" y="76" width="10" height="50" rx="3"/>
@@ -119,7 +119,7 @@ export default function PlayerShowcase({ singleMode = null, botAvatar = null, co
               onClick={() => setTab(key)}
               className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
                 tab === key
-                  ? 'border-crimson bg-[#1F4E47] text-[#DCEFE6]'
+                  ? 'border-crimson bg-[#3B0004] text-ink'
                   : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'
               }`}
             >
@@ -215,7 +215,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
           compact={compact}
-          color="#2E6F63"
+          color="#B80012"
           author="NOXA Sound • Sedang Memutar"
           title={`${song.name}`}
           titleUrl="#"
@@ -339,7 +339,7 @@ function RadioPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
           compact={compact}
-          color="#1F4E47"
+          color="#5C0008"
           title={DEMO_RADIO.name}
           titleUrl="#"
           description={
@@ -412,7 +412,7 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
           compact={compact}
-          color="#1F4E47"
+          color="#3B0004"
           author="NOXA Sound • Studio Podcast"
           title={ep.name}
           titleUrl="#"
@@ -501,7 +501,7 @@ function StandbyPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
           compact={compact}
-          color="#2E6F63"
+          color="#B80012"
           title="Sesi Selesai"
           titleEmoji="finish"
           description={
@@ -647,8 +647,8 @@ function LyricsPop({ song }) {
         <div className="rounded-lg bg-[#1E1F22] border border-[#2B2D31] p-3 text-[12px] leading-relaxed space-y-2 select-none">
           <div className="text-[#80848E] text-[11px]">[00:18] Di antara deru kota yang terlelap...</div>
           <div className="text-[#949BA4] text-[11.5px]">[00:26] Ku melangkah mencari arti senyumanmu...</div>
-          <div className="rounded bg-[#8DBFB3]/20 border border-[#8DBFB3]/50 px-2 py-1.5 text-white font-semibold flex items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-[#8DBFB3] animate-pulse shrink-0" />
+          <div className="rounded bg-[#FF4B2B]/20 border border-[#FF4B2B]/50 px-2 py-1.5 text-white font-semibold flex items-center gap-2">
+            <span className="inline-block h-2 w-2 rounded-full bg-[#FF4B2B] animate-pulse shrink-0" />
             <span className="min-w-0 flex-1 text-[12px] break-words">▶ [00:38] Senja datang membawa semua bayanganmu</span>
           </div>
           <div className="text-[#949BA4] text-[11.5px]">[00:47] Menemani sepi malam yang sunyi...</div>
@@ -661,7 +661,7 @@ function LyricsPop({ song }) {
             Ku melangkah mencari arti senyumanmu<br />
             Malam berlari mengejar bayang rindu
           </p>
-          <p className="text-white font-medium border-l-2 border-[#8DBFB3] pl-2">
+          <p className="text-white font-medium border-l-2 border-[#FF4B2B] pl-2">
             Senja datang membawa semua bayanganmu<br />
             Menemani sepi malam yang sunyi<br />
             Dan ku tahu waktu kan menjawabnya

@@ -60,7 +60,7 @@ export default function PanduanCari({ kategori }) {
             type="button"
             onClick={() => setFilter('semua')}
             className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition cursor-pointer ${
-              filter === 'semua' ? 'border-crimson bg-[#1F4E47] text-[#DCEFE6]' : 'border-line bg-surface2 text-muted hover:text-ink'
+              filter === 'semua' ? 'border-crimson bg-[#3B0004] text-neon' : 'border-line bg-surface2 text-muted hover:text-ink'
             }`}
           >
             Semua
@@ -71,7 +71,7 @@ export default function PanduanCari({ kategori }) {
               type="button"
               onClick={() => setFilter(kat.key)}
               className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition cursor-pointer ${
-                filter === kat.key ? 'border-crimson bg-[#1F4E47] text-[#DCEFE6]' : 'border-line bg-surface2 text-muted hover:text-ink'
+                filter === kat.key ? 'border-crimson bg-[#3B0004] text-neon' : 'border-line bg-surface2 text-muted hover:text-ink'
               }`}
             >
               {kat.label}

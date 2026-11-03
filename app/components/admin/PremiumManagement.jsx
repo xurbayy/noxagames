@@ -454,7 +454,7 @@ export default function PremiumManagement() {
                         type="button"
                         onClick={() => setHapusId(s.id)}
                         disabled={busy}
-                        className="rounded-lg border border-crimson px-2 py-1 text-xs font-semibold text-[#DCEFE6] hover:bg-crimson hover:text-white cursor-pointer ml-1"
+                        className="rounded-lg border border-crimson px-2 py-1 text-xs font-semibold text-neon hover:bg-crimson hover:text-white cursor-pointer ml-1"
                       >
                         Cabut
                       </button>
@@ -481,7 +481,7 @@ export default function PremiumManagement() {
               type="button"
               onClick={() => setKonfirmasi({ tipe: 'bersihkan' })}
               disabled={busy}
-              className="rounded-lg border border-crimson bg-surface2 px-2.5 py-1 text-[11px] font-bold text-[#DCEFE6] transition hover:bg-crimson hover:text-white cursor-pointer disabled:opacity-50"
+              className="rounded-lg border border-crimson bg-surface2 px-2.5 py-1 text-[11px] font-bold text-neon transition hover:bg-crimson hover:text-white cursor-pointer disabled:opacity-50"
               title="Hapus semua transaksi yang tidak lunas"
             >
               Bersihkan yang Kedaluwarsa
@@ -534,7 +534,7 @@ export default function PremiumManagement() {
                           type="button"
                           onClick={() => setKonfirmasi({ tipe: 'hapusTx', tx })}
                           disabled={busy}
-                          className="rounded-md border border-line bg-surface3 px-2 py-0.5 text-[11px] font-bold text-crimson hover:bg-[#1F4E47] hover:text-white transition cursor-pointer"
+                          className="rounded-md border border-line bg-surface3 px-2 py-0.5 text-[11px] font-bold text-crimson hover:bg-[#3B0004] hover:text-white transition cursor-pointer"
                           title="Hapus riwayat transaksi ini"
                         >
                           Hapus

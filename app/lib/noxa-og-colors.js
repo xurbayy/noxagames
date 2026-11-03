@@ -1,11 +1,11 @@
 // Palet brand untuk route edge (opengraph-image/icon) - dipisah dari site.js
 // supaya route edge tidak menarik seluruh konstanta env SEO.
 export const BRAND = {
-  pureBlack: '#0F2E2A',
-  deepBlack: '#1F4E47',
-  darkCrimson: '#1F4E47',
-  darkMaroon: '#1F4E47',
-  crimson: '#2E6F63',
-  neonRed: '#8DBFB3',
-  glowRed: '#A8D5C8',
+  pureBlack: '#030303',
+  deepBlack: '#080303',
+  darkCrimson: '#3B0004',
+  darkMaroon: '#5C0008',
+  crimson: '#B80012',
+  neonRed: '#FF101F',
+  glowRed: '#FF001A',
 };
