@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Emoji from '../Emoji';
+import TrialBanner from './TrialBanner';
 import { PREMIUM_PLANS, FITUR_KOMPARASI, LANGKAH_AKTIVASI, CATATAN_BITRATE, CATATAN_CAKUPAN, BUKTI_NYATA, labelHarga } from '../../lib/premiumPlan';
 
 const PILIHAN_DURASI = [
@@ -215,6 +216,11 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
           </div>
         );
       })()}
+
+      {/* Trial 3 hari gratis (pola Soundly) - hanya tampil utk user yang
+          memenuhi syarat (cek server: belum trial, belum pernah bayar,
+          tidak ada individu aktif). */}
+      <TrialBanner session={session} />
 
       {/* Grid 3 Kartu Tier Paket */}
       <div className="grid gap-8 md:grid-cols-3 items-stretch">

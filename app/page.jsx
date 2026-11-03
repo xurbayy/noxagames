@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import Emoji from './components/Emoji';
+import SafeImg from './components/SafeImg';
 import PlayerShowcase from './components/panel/PlayerPanels';
 import Reveal from './components/Reveal';
 import { getSession } from './lib/session';
-import { getSnapshot, totals, botAlive, ageLabel, durasi } from './lib/snapshot';
+import { getSnapshot, totals, botAlive, ageLabel, durasi, topServers } from './lib/snapshot';
 import { faqList } from './lib/faq-content';
 import { podcastTema, providers } from './lib/panduan-content';
 import { PREMIUM_PLANS, labelHarga } from './lib/premiumPlan';
@@ -144,6 +145,55 @@ export default async function Home() {
           )}
         </Reveal>
       </section>
+
+      {/* ================= SOCIAL PROOF (pola Soundly "Running in servers
+           like these") - logo server yang benar-benar memakai bot, hasil
+           snapshot live. Marquee CSS, tanpa JS. ================= */}
+      {(() => {
+        const deret = topServers(snap?.data)
+          .filter((g) => g && g.name && (Number(g.duration) > 0 || Number(g.users) > 0))
+          .slice(0, 10);
+        if (deret.length < 3) return null;
+        const ganda = [...deret, ...deret];
+        return (
+          <section className="bg-bg overflow-hidden">
+            <div className="mx-auto max-w-6xl px-5 pb-10 text-center">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-faint">
+                Dibuka tiap hari di server seperti ini
+              </p>
+              <div className="marquee-mask relative mt-5 overflow-hidden">
+                <div className="marquee-track flex w-max gap-3">
+                  {ganda.map((g, i) => (
+                    <span
+                      key={`${g.id || g.name}-${i}`}
+                      className="card flex shrink-0 items-center gap-2.5 px-3.5 py-2"
+                      aria-hidden={i >= deret.length ? 'true' : undefined}
+                    >
+                      {g.icon ? (
+                        <SafeImg
+                          src={g.icon}
+                          alt=""
+                          className="h-6 w-6 shrink-0 rounded-full border border-line object-cover"
+                          fallback={
+                            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface3 text-[10px] font-bold text-faint">
+                              {String(g.name).slice(0, 1).toUpperCase()}
+                            </span>
+                          }
+                        />
+                      ) : (
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface3 text-[10px] font-bold text-faint">
+                          {String(g.name).slice(0, 1).toUpperCase()}
+                        </span>
+                      )}
+                      <span className="max-w-[160px] truncate text-xs font-semibold text-muted">{g.name}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* ================= FITUR ================= */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:py-24">

@@ -67,6 +67,20 @@ export async function POST(request) {
       }).catch(() => {});
     }
 
+    // --- Heartbeat utk halaman /status publik ---
+    // Bucket 30 menit: PUSH_MS=60s berarti 1 baris per ~30 push, bukan 1 per
+    // menit (hemat). Celah antar-heartbeat di halaman status = insiden nyata
+    // (bot mati / web down / bridge putus), bukan angka dekorasi.
+    const bucket = Math.floor(ts / 1800000) * 1800000;
+    await db.execute({
+      sql: 'INSERT OR IGNORE INTO status_heartbeats (ts) VALUES (?)',
+      args: [bucket],
+    }).catch(() => {});
+    await db.execute({
+      sql: 'DELETE FROM status_heartbeats WHERE ts < ?',
+      args: [bucket - 31 * 86400000],
+    }).catch(() => {});
+
     invalidateSnapshot();
   } catch (e) {
     // Push tetap dianggap sukses kalau hanya penyimpanan cache yang gagal -

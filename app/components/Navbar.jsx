@@ -24,6 +24,7 @@ const LINKS = [
 const LEGAL = [
   { href: '/tentang', label: 'Tentang NOXA' },
   { href: '/komunitas', label: 'Komunitas Server' },
+  { href: '/status', label: 'Status Sistem' },
   { href: '/privacy-policy', label: 'Kebijakan Privasi' },
   { href: '/terms-of-service', label: 'Ketentuan Layanan' },
 ];
