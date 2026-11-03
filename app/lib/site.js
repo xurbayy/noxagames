@@ -57,13 +57,15 @@ export const SITE_KEYWORDS = [
 
 /** Palet resmi NOXA Sound, sama dengan utils/colors.js di repo bot. */
 export const BRAND = {
-  pureBlack: '#04171A',
-  deepBlack: '#092830',
-  darkCrimson: '#0C3A44',
-  darkMaroon: '#123F45',
-  crimson: '#14B8A6',
-  neonRed: '#2DD4BF',
-  glowRed: '#5EEAD4',
+  pureBlack: '#0F2E2A',    // teks & jangkar tergelap
+  deepBlack: '#1F4E47',     // ribbon utama logo / footer
+  darkCrimson: '#2E6F63',   // hover & link
+  darkMaroon: '#8DBFB3',    // sage: border, ikon sekunder
+  crimson: '#1F4E47',       // aksen gelap (nama var dipertahankan utk kelas)
+  neonRed: '#2E6F63',
+  glowRed: '#F2A15B',       // peach CTA - satu-satunya aksen hangat
+  mint: '#DCEFE6',          // background lembut
+  paper: '#F4FAF7',         // latar terang 60%
 };
 
 export function absoluteUrl(path = '/') {

@@ -1,40 +1,42 @@
 @import "tailwindcss";
 
 /* ============================================
-   TEMA RESMI NOXA SOUND - Deep Teal (chill, smooth, sophisticated)
-   (palet sama dengan utils/colors.js di repo bot)
-   PENTING: warna tema HANYA lewat token di sini.
-   Kelas dengan token yang tidak didefinisikan = tidak
-   menghasilkan CSS (elemen jadi bening).
+   TEMA RESMI NOXA SOUND - Teal TERANG (3 Nov 2026)
+   Aturan 60-30-10: 60% latar terang bersih, 30% teal gelap sebagai jangkar
+   (navbar/hero/footer/tombol sekunder), 10% aksen + peach untuk CTA.
+   Sumber warna: ditetes langsung dari logo (eyedropper).
+   NAMA token lama dipertahankan (crimson/neon/ink dst) supaya ratusan kelas
+   existing ikut berganti tema tanpa ditulis ulang:
+     crimson = teal gelap jangkar, neon = teal tengah (aman utk teks),
+     amber = PEACH CTA, glow = sage terang (ikon/dekor).
    ============================================ */
 @theme {
-  --color-bg: #04171A;          /* pureBlack - latar utama */
-  --color-surface: #092830;     /* area bernuansa teal */
-  --color-surface2: #0F333D;    /* kartu */
-  --color-surface3: #123F45;    /* kartu terangkat / hover */
-  --color-darkcrimson: #0C3A44; /* teal gelap (chip aktif) */
-  --color-maroon: #123F45;      /* gradasi dekoratif (deep teal) */
-  --color-crimson: #14B8A6;     /* aksen utama: Electric Teal #14B8A6 (nama var: crimson) */
-  --color-neon: #2DD4BF;        /* aksen terang: Bright Mint #2DD4BF (nama var: neon) */
-  --color-amber: #F0A63C;       /* aksen kedua, senada amber NEXO */
-  --color-glow: #5EEAD4;        /* efek glow */
-  --color-ink: #E2F1EC;         /* teks utama */
-  --color-muted: #A3C6C1;       /* teks sekunder (netral sejuk) */
-  --color-faint: #73A19C;       /* teks tersier */
-  --color-line: #22565F;        /* border kartu */
-  --color-linebright: #357581;  /* border hover */
-  --color-ok: #58C472;          /* status hidup */
-  --color-warn: #C87F0A;        /* status menunggu */
+  --color-bg: #F4FAF7;          /* 60%: latar utama terang */
+  --color-surface: #EAF4EE;     /* section selang-seling (mint lembut) */
+  --color-surface2: #FFFFFF;    /* kartu putih */
+  --color-surface3: #E9F3ED;    /* hover / kartu terangkat */
+  --color-darkcrimson: #9DC6B8; /* penanda garis list, aksen sedang */
+  --color-maroon: #1F4E47;      /* gradasi gelap */
+  --color-crimson: #1F4E47;     /* 30%: JANGKAR teal gelap - tombol sekunder, garis, chip aktif */
+  --color-neon: #2E6F63;        /* teal tengah: link & teks aksen (kontras aman di terang) */
+  --color-amber: #F2A15B;       /* 10%: PEACH - CTA & highlight */
+  --color-glow: #8DBFB3;        /* sage terang - ikon kecil, ring dekoratif */
+  --color-ink: #0F2E2A;         /* teks utama: teal paling gelap (BUKAN abu) */
+  --color-muted: #3E5F58;       /* teks sekunder (gelap, kontras tinggi) */
+  --color-faint: #5F7F77;       /* teks tersier - masih kebaca di putih */
+  --color-line: #CBE0D6;        /* border kartu */
+  --color-linebright: #9DC6B8;  /* border hover */
+  --color-ok: #1E8E5A;          /* status hidup (versi terang-legible) */
+  --color-warn: #B45309;        /* status menunggu */
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-space), var(--font-inter), sans-serif;
 
-  /* Bayangan disamakan bahasa visualnya dengan web NEXO: tipis, netral, tidak
-     berwarna. Di tema gelap bayangan berfungsi sebagai "bayangan jatuh" halus,
-     bukan glow - jadi kartu tetap terasa mengambang tanpa bikin mata sakit. */
-  --shadow-hair: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.38);
-  --shadow-lift: 0 8px 24px -10px rgba(0, 0, 0, 0.7);
+  /* Bayangan: di tema terang harus LEMBUT & keabuan-sejuk - fungsi
+     "kartu mengambang di atas kertas", bukan glow. */
+  --shadow-hair: 0 1px 2px rgba(15, 46, 42, 0.1);
+  --shadow-soft: 0 2px 10px rgba(15, 46, 42, 0.08);
+  --shadow-lift: 0 10px 28px -12px rgba(15, 46, 42, 0.28);
 }
 
 html {
@@ -57,7 +59,7 @@ body {
   /* Aura studio: satu semburat teal tipis di atas, sisanya gelap rata.
      Dikurangi dari versi sebelumnya supaya latar tidak terlihat "berasap" dan
      pola hexagon di tiap seksi tetap jadi aksen utama (pola NEXO: latar bersih). */
-  background-image: radial-gradient(900px 420px at 50% -12%, rgba(20, 184, 166, 0.16), transparent 70%);
+  background-image: radial-gradient(900px 420px at 50% -12%, rgba(141, 191, 179, 0.22), transparent 70%);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -74,18 +76,18 @@ textarea:focus-visible {
 }
 
 ::selection {
-  background: rgba(20, 184, 166, 0.55);
-  color: #fff;
+  background: rgba(242, 161, 91, 0.5);
+  color: var(--color-ink);
 }
 
 /* Scrollbar tipis, menyatu dengan latar (gaya NEXO) */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #092830; }
+::-webkit-scrollbar-track { background: #EAF4EE; }
 ::-webkit-scrollbar-thumb {
-  background: #2E1216;
+  background: #9DC6B8;
   border-radius: 8px;
 }
-::-webkit-scrollbar-thumb:hover { background: #4A1D23; }
+::-webkit-scrollbar-thumb:hover { background: #2E6F63; }
 
 /* ── BACKDROP SARANG LEBAH (hexagon) ──
    Padanan `.bg-grid` milik NEXO, tapi bentuknya hexagon supaya tetap nyambung
@@ -126,7 +128,7 @@ textarea:focus-visible {
   left: 0;
   height: 3px;
   z-index: 9999;
-  background: #2DD4BF;
+  background: #F2A15B;
   width: 0;
   border-radius: 0 2px 2px 0;
   transition: width 0.08s linear;
@@ -184,8 +186,10 @@ textarea:focus-visible {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background-color: var(--color-crimson);
-    color: #fff;
+    /* CTA = peach hangat, teks teal-gelap: koma warna yang bikin tombol
+       langsung kebaca di tema terang (aturan aksen 60-30-10). */
+    background-color: var(--color-amber);
+    color: var(--color-ink);
     font-weight: 700;
     white-space: nowrap;
     border-radius: 9999px;
@@ -195,7 +199,7 @@ textarea:focus-visible {
     cursor: pointer;
   }
   .btn-primary:hover {
-    background-color: var(--color-neon);
+    background-color: #E8924A;
     box-shadow: var(--shadow-soft);
     transform: translateY(-1px);
   }
@@ -242,9 +246,9 @@ textarea:focus-visible {
   .cmd {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.85em;
-    background-color: rgba(20, 184, 166, 0.14);
-    border: 1px solid var(--color-linebright);
-    color: #FFBE8C;
+    background-color: #E3F1EA;
+    border: 1px solid #CBE0D6;
+    color: #1F4E47;
     border-radius: 0.375rem;
     padding: 0.1rem 0.4rem;
     word-break: break-word;
@@ -266,26 +270,27 @@ textarea:focus-visible {
   }
   .badge-ok { background-color: var(--color-ok); color: #04170a; }
   .badge-warn { background-color: var(--color-warn); color: #1c1204; }
-  .badge-danger { background-color: var(--color-crimson); color: #fff; }
+  .badge-danger { background-color: var(--color-crimson); color: #F4FAF7; }
   .badge-neutral { background-color: var(--color-surface3); color: var(--color-muted); border: 1px solid var(--color-line); }
 
-  /* Teks display: Sea Glass solid, tanpa gradasi */
+  /* Teks display: teal gelap anchor, tanpa gradasi */
   .neon-text {
-    color: #2DD4BF;
+    color: #1F4E47;
+    font-weight: inherit;
   }
 
   /* Garis teal tipis dekoratif */
   .hairline {
     height: 1px;
-    background: #0C3A44;
+    background: #CBE0D6;
   }
 
-  /* Accent underline ala NEXO: bar solid teal di bawah judul seksi */
+  /* Accent underline ala NEXO: bar peach di bawah judul seksi */
   .accent-bar {
     width: 180px;
     height: 7px;
     border-radius: 9999px;
-    background: #2DD4BF;
+    background: #F2A15B;
   }
 }
 
@@ -346,16 +351,16 @@ textarea:focus-visible {
 .btn-solid:hover { transform: translateY(-1px); }
 .btn-solid:active { transform: translateY(0); }
 .btn-solid:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-solid-accent { background: var(--color-crimson); color: #fff; box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3); }
-.btn-solid-accent:hover { background: var(--color-neon); }
+.btn-solid-accent { background: var(--color-amber); color: var(--color-ink); box-shadow: 0 2px 8px rgba(242, 161, 91, 0.35); }
+.btn-solid-accent:hover { background: #E8924A; }
 .btn-solid-danger { background: #C74B3C; color: #fff; box-shadow: 0 2px 8px rgba(199, 75, 60, 0.28); }
 .btn-solid-danger:hover { background: #A83F32; }
 .btn-solid-success { background: #1F7A44; color: #fff; box-shadow: 0 2px 8px rgba(88, 196, 114, 0.25); }
 .btn-solid-success:hover { background: #58C472; }
 .btn-solid-neutral { background: var(--color-surface2); color: var(--color-ink); border-color: var(--color-linebright); box-shadow: var(--shadow-hair); }
 .btn-solid-neutral:hover { background: var(--color-surface3); }
-.btn-solid-light { background: var(--color-ink); color: #04171A; box-shadow: 0 2px 8px rgba(247, 243, 241, 0.18); }
-.btn-solid-light:hover { background: #ffffff; }
+.btn-solid-light { background: var(--color-crimson); color: #F4FAF7; box-shadow: 0 2px 8px rgba(31, 78, 71, 0.25); }
+.btn-solid-light:hover { background: var(--color-neon); }
 
 /* ── TILE STATISTIK (kartu KPI solid dengan hover aksen) ── */
 .stat-tile {
@@ -366,18 +371,18 @@ textarea:focus-visible {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .stat-tile:hover {
-  border-color: rgba(45, 212, 191, 0.3);
-  box-shadow: 0 0 12px rgba(20, 184, 166, 0.12);
+  border-color: rgba(46, 111, 99, 0.45);
+  box-shadow: 0 4px 14px rgba(15, 46, 42, 0.1);
 }
 
 /* ── SCROLLBAR HORIZONTAL TABEL: tebal dan terlihat ── */
 .noxa-scroll {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-linebright) rgba(247, 243, 241, 0.05);
+  scrollbar-color: var(--color-linebright) rgba(15, 46, 42, 0.05);
 }
 .noxa-scroll::-webkit-scrollbar { height: 12px; }
 .noxa-scroll::-webkit-scrollbar-track {
-  background: rgba(247, 243, 241, 0.05);
+  background: rgba(15, 46, 42, 0.05);
   border-radius: 999px;
 }
 .noxa-scroll::-webkit-scrollbar-thumb {
@@ -387,7 +392,7 @@ textarea:focus-visible {
   background-clip: content-box;
 }
 .noxa-scroll::-webkit-scrollbar-thumb:hover {
-  background: #6B4A4D;
+  background: #2E6F63;
   background-clip: content-box;
 }
 

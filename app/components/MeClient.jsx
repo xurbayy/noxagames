@@ -206,7 +206,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             <Link
               href="/admin"
               prefetch={false}
-              className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2C6568]"
+              className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2E6F63]"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
               Panel Admin
@@ -358,7 +358,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
             )}
             <Link
               href="/premium"
-              className="inline-flex items-center justify-center rounded-full border border-crimson bg-crimson px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2C6568]"
+              className="inline-flex items-center justify-center rounded-full border border-crimson bg-crimson px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2E6F63]"
             >
               Perpanjang Paket →
             </Link>
@@ -404,7 +404,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           <div className="flex flex-col gap-2 shrink-0">
             <Link
               href="/premium"
-              className="inline-flex items-center justify-center rounded-full border border-crimson bg-crimson px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2C6568]"
+              className="inline-flex items-center justify-center rounded-full border border-crimson bg-crimson px-4 py-2 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2E6F63]"
             >
               Perpanjang Paket →
             </Link>

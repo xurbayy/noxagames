@@ -13,19 +13,21 @@
 import { SITE_URL } from './site';
 import { emojiSrc } from './noxa-emojis';
 
+// Kartu share = tema GELAP keluarga logo (kartu di Discord memang harus
+// gelap biar kontras). Peach cuma utk ornamen; CTA & tautan sage.
 const WARNA = {
-  bgTop: '#04171A',
-  bgMid: '#092830',
-  bgBottom: '#123F45',
-  crimson: '#14B8A6',
-  neon: '#2DD4BF',
-  amber: '#F0A63C',
-  ink: '#E2F1EC',
-  muted: '#A3C6C1',
-  faint: '#73A19C',
-  line: '#22565F',
-  surface: '#140609',
-  surface2: '#1C080C',
+  bgTop: '#0F2E2A',
+  bgMid: '#16403A',
+  bgBottom: '#1F4E47',
+  crimson: '#2E6F63',      // garis & blok aksen
+  neon: '#8DBFB3',         // teks menyala di kartu gelap
+  amber: '#F2A15B',        // peach - aksen hangat kedua
+  ink: '#F4FAF7',
+  muted: '#B9D6CB',
+  faint: '#7FA398',
+  line: '#2E5A50',
+  surface: '#123A34',
+  surface2: '#1B4A42',
   green: '#22C55E',
   gold: '#F6C445',
   silver: '#CBD5E1',
@@ -39,7 +41,7 @@ const LEBAR = W - PAD * 2; // 888
 
 // Palet badge per tier (solid, sama seperti di web).
 const TIER_STYLE = {
-  free: { label: 'NOXA USER', bg: '#1C080C', text: '#E2F1EC', border: 'rgba(45,212,191,0.55)' },
+  free: { label: 'NOXA USER', bg: '#1C080C', text: '#F4FAF7', border: 'rgba(141,191,179,0.55)' },
   premium: { label: 'NOXA PREMIUM', bg: '#F0A63C', text: '#1A0F00', border: '#FFD08A' },
   'premium-plus': { label: 'NOXA PREMIUM+', bg: '#CBD5E1', text: '#0B1016', border: '#F1F5F9' },
   'premium-ultimate': { label: 'NOXA PREMIUM ULTIMATE', bg: '#7C3AED', text: '#FFFFFF', border: '#C4B5FD' },
@@ -275,7 +277,7 @@ function hexGrid(ctx, alpha = 0.05) {
   const h = Math.sqrt(3) * r;
   const stepX = r * 1.5;
   ctx.save();
-  ctx.strokeStyle = `rgba(94,234,212,${alpha})`;
+  ctx.strokeStyle = `rgba(141,191,179,${alpha})`;
   ctx.lineWidth = 1.4;
   for (let col = -1; col * stepX < W + r * 2; col += 1) {
     for (let row = -1; row * h < H + h; row += 1) {
@@ -404,7 +406,7 @@ function pillRank(ctx, medali, centerX, y, icon) {
 function barisServer(ctx, y, nama, durasi, emoji) {
   if (!nama) return;
   const h = 104;
-  panel(ctx, PAD, y, LEBAR, h, 22, { fill: WARNA.surface2, stroke: 'rgba(20,184,166,0.55)' });
+  panel(ctx, PAD, y, LEBAR, h, 22, { fill: WARNA.surface2, stroke: 'rgba(46,111,99,0.55)' });
 
   ctx.fillStyle = WARNA.neon;
   roundRect(ctx, PAD + 18, y + 22, 5, h - 44, 3);
@@ -557,7 +559,7 @@ function waveform(ctx, y, tinggi = 70) {
     const gelombang = Math.abs(Math.sin(i * 0.9)) * 0.55 + Math.abs(Math.sin(i * 0.23 + 1.4)) * 0.45;
     const h = Math.max(6, Math.round(tinggi * gelombang));
     const x = PAD + i * (lebarBar + gap);
-    ctx.fillStyle = t > 0.5 ? 'rgba(45,212,191,0.45)' : 'rgba(20,184,166,0.55)';
+    ctx.fillStyle = t > 0.5 ? 'rgba(141,191,179,0.45)' : 'rgba(46,111,99,0.55)';
     roundRect(ctx, x, y + Math.round((tinggi - h) / 2), lebarBar, h, Math.max(2, Math.floor(lebarBar / 2)));
     ctx.fill();
   }
@@ -566,8 +568,8 @@ function waveform(ctx, y, tinggi = 70) {
 /** Lingkaran avatar dengan cincin aksen + glow tipis (tanpa blur teks). */
 async function avatar(ctx, cx, cy, r, url, username, aksen) {
   const ringGlow = ctx.createRadialGradient(cx, cy, r - 12, cx, cy, r + 52);
-  ringGlow.addColorStop(0, 'rgba(45,212,191,0.36)');
-  ringGlow.addColorStop(1, 'rgba(45,212,191,0)');
+  ringGlow.addColorStop(0, 'rgba(141,191,179,0.36)');
+  ringGlow.addColorStop(1, 'rgba(141,191,179,0)');
   ctx.fillStyle = ringGlow;
   ctx.beginPath();
   ctx.arc(cx, cy, r + 52, 0, Math.PI * 2);
@@ -583,7 +585,7 @@ async function avatar(ctx, cx, cy, r, url, username, aksen) {
     ctx.restore();
   } else {
     const fallback = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
-    fallback.addColorStop(0, '#123F45');
+    fallback.addColorStop(0, '#1F4E47');
     fallback.addColorStop(1, WARNA.crimson);
     ctx.fillStyle = fallback;
     ctx.beginPath();
@@ -601,7 +603,7 @@ async function avatar(ctx, cx, cy, r, url, username, aksen) {
   ctx.beginPath();
   ctx.arc(cx, cy, r + 6, 0, Math.PI * 2);
   ctx.stroke();
-  ctx.strokeStyle = 'rgba(45,212,191,0.4)';
+  ctx.strokeStyle = 'rgba(141,191,179,0.4)';
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.arc(cx, cy, r + 18, 0, Math.PI * 2);
@@ -674,8 +676,8 @@ export async function renderShareCard({
 
   // Glow radial lembut di area identitas.
   const glow = ctx.createRadialGradient(540, 430, 60, 540, 430, 700);
-  glow.addColorStop(0, 'rgba(20, 184, 166, 0.32)');
-  glow.addColorStop(1, 'rgba(20, 184, 166, 0)');
+  glow.addColorStop(0, 'rgba(46, 111, 99, 0.32)');
+  glow.addColorStop(1, 'rgba(46, 111, 99, 0)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, 1200);
 
@@ -691,7 +693,7 @@ export async function renderShareCard({
   // ---------- Header band (pola kartu NEXO: blok gelap + avatar menumpuk) ----------
   const BAND_Y = 36;
   const BAND_H = 200;
-  panel(ctx, PAD, BAND_Y, LEBAR, BAND_H, 28, { fill: WARNA.surface2, stroke: 'rgba(20,184,166,0.5)' });
+  panel(ctx, PAD, BAND_Y, LEBAR, BAND_H, 28, { fill: WARNA.surface2, stroke: 'rgba(46,111,99,0.5)' });
   ctx.fillStyle = WARNA.neon;
   roundRect(ctx, PAD + 20, BAND_Y + 40, 6, BAND_H - 80, 3);
   ctx.fill();
@@ -703,7 +705,7 @@ export async function renderShareCard({
     ctx.clip();
     ctx.drawImage(logoImg, PAD + 56, BAND_Y + 52, 72, 72);
     ctx.restore();
-    ctx.strokeStyle = 'rgba(45,212,191,0.55)';
+    ctx.strokeStyle = 'rgba(141,191,179,0.55)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(PAD + 92, BAND_Y + 88, 37, 0, Math.PI * 2);
@@ -807,8 +809,8 @@ export async function renderShareCard({
     const ctaBottom = waveY - 24;
     const ctaH = Math.max(96, Math.min(230, ctaBottom - y));
     panel(ctx, PAD, y, LEBAR, ctaH, 22, {
-      fill: 'rgba(45,212,191,0.10)',
-      stroke: 'rgba(45,212,191,0.45)',
+      fill: 'rgba(141,191,179,0.10)',
+      stroke: 'rgba(141,191,179,0.45)',
     });
     const podium = rank >= 1 && rank <= 3;
     const ctaEmoji = podium ? eParty : eMusik;
@@ -868,7 +870,7 @@ export async function renderShareCard({
 
   // ---------- Footer (strip gelap ala pita CTA NEXO) ----------
   const footH = 74;
-  panel(ctx, PAD, FOOT_Y, LEBAR, footH, 22, { fill: WARNA.surface2, stroke: 'rgba(20,184,166,0.55)' });
+  panel(ctx, PAD, FOOT_Y, LEBAR, footH, 22, { fill: WARNA.surface2, stroke: 'rgba(46,111,99,0.55)' });
 
   // Logo bulat kecil di kiri strip.
   if (logoImg) {
@@ -878,7 +880,7 @@ export async function renderShareCard({
     ctx.clip();
     ctx.drawImage(logoImg, PAD + 24, FOOT_Y + footH / 2 - 20, 40, 40);
     ctx.restore();
-    ctx.strokeStyle = 'rgba(45,212,191,0.5)';
+    ctx.strokeStyle = 'rgba(141,191,179,0.5)';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(PAD + 44, FOOT_Y + footH / 2, 21, 0, Math.PI * 2);

@@ -20,8 +20,8 @@ export default function OgImage() {
           justifyContent: 'center',
           backgroundColor: BRAND.pureBlack,
           backgroundImage:
-            `radial-gradient(700px 380px at 80% 0%, rgba(20,184,166,0.35), transparent 65%), radial-gradient(500px 300px at 10% 100%, rgba(18,63,69,0.5), transparent 60%)`,
-          color: '#E2F1EC',
+            `radial-gradient(700px 380px at 80% 0%, rgba(46,111,99,0.35), transparent 65%), radial-gradient(500px 300px at 10% 100%, rgba(15,46,42,0.6), transparent 60%)`,
+          color: '#F4FAF7',
         }}
       >
         {/* Equalizer bars */}
@@ -40,7 +40,7 @@ export default function OgImage() {
         </div>
         <div style={{ display: 'flex', marginTop: 36, fontSize: 92, fontWeight: 700, letterSpacing: -2 }}>
           <span style={{ display: 'flex' }}>NOXA&nbsp;</span>
-          <span style={{ display: 'flex', color: BRAND.neonRed, textShadow: `0 0 40px rgba(94,234,212,0.6)` }}>Sound</span>
+          <span style={{ display: 'flex', color: BRAND.neonRed, textShadow: `0 0 40px rgba(141,191,179,0.5)` }}>Sound</span>
         </div>
         <div style={{ display: 'flex', marginTop: 18, fontSize: 34, color: '#A3C6C1' }}>
           Bot hiburan audio Discord: musik, podcast, dan radio

@@ -58,7 +58,7 @@ export function ActionRow({ children, compact = false }) {
  * fields inline + footer + timestamp. Semua isi lewat props/children.
  */
 export function PanelEmbed({
-  color = '#14B8A6',
+  color = '#2E6F63',
   author,
   authorEmoji,
   title,

@@ -54,7 +54,7 @@ export default function KonfirmasiModal({
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-lg font-bold ${
               varian === 'aman'
                 ? 'border-[#22C55E] bg-[#14532D] text-[#86EFAC]'
-                : 'border-crimson bg-[#0C3A44] text-neon'
+                : 'border-crimson bg-[#1F4E47] text-[#DCEFE6]'
             }`}
             aria-hidden="true"
           >

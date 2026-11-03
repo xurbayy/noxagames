@@ -26,7 +26,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
           onClick={() => setTab('all')}
           className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             tab === 'all'
-              ? 'border-crimson bg-[#0C3A44] text-ink'
+              ? 'border-crimson bg-[#1F4E47] text-[#DCEFE6]'
               : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'
           }`}
         >
@@ -37,7 +37,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
           onClick={() => setTab('songs')}
           className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             tab === 'songs'
-              ? 'border-crimson bg-[#0C3A44] text-ink'
+              ? 'border-crimson bg-[#1F4E47] text-[#DCEFE6]'
               : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'
           }`}
         >
@@ -48,7 +48,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
           onClick={() => setTab('listeners')}
           className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             tab === 'listeners'
-              ? 'border-crimson bg-[#0C3A44] text-ink'
+              ? 'border-crimson bg-[#1F4E47] text-[#DCEFE6]'
               : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'
           }`}
         >
@@ -59,7 +59,7 @@ export default function TopTabsView({ lagu = [], listener = [], server = [], ses
           onClick={() => setTab('servers')}
           className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
             tab === 'servers'
-              ? 'border-crimson bg-[#0C3A44] text-ink'
+              ? 'border-crimson bg-[#1F4E47] text-[#DCEFE6]'
               : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'
           }`}
         >
