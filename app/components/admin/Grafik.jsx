@@ -12,7 +12,7 @@ import { useId, useState } from 'react';
  * @param {string} warna - warna utama bar
  * @param {string} satuan - label satuan untuk caption ("lagu", "Rp", ...)
  */
-export default function GrafikBatang({ titik, format = (n) => String(n), warna = '#A2C9C4', satuan = '' }) {
+export default function GrafikBatang({ titik, format = (n) => String(n), warna = '#2DD4BF', satuan = '' }) {
   const [pilih, setPilih] = useState(null);
   const gradId = useId();
 

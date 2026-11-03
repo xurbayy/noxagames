@@ -534,7 +534,7 @@ export default function PremiumManagement() {
                           type="button"
                           onClick={() => setKonfirmasi({ tipe: 'hapusTx', tx })}
                           disabled={busy}
-                          className="rounded-md border border-line bg-surface3 px-2 py-0.5 text-[11px] font-bold text-crimson hover:bg-[#0A3238] hover:text-white transition cursor-pointer"
+                          className="rounded-md border border-line bg-surface3 px-2 py-0.5 text-[11px] font-bold text-crimson hover:bg-[#0C3A44] hover:text-white transition cursor-pointer"
                           title="Hapus riwayat transaksi ini"
                         >
                           Hapus

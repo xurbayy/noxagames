@@ -2,10 +2,10 @@
 // supaya route edge tidak menarik seluruh konstanta env SEO.
 export const BRAND = {
   pureBlack: '#04171A',
-  deepBlack: '#082126',
-  darkCrimson: '#0A3238',
+  deepBlack: '#092830',
+  darkCrimson: '#0C3A44',
   darkMaroon: '#123F45',
-  crimson: '#397F80',
-  neonRed: '#A2C9C4',
-  glowRed: '#7FC6BE',
+  crimson: '#14B8A6',
+  neonRed: '#2DD4BF',
+  glowRed: '#5EEAD4',
 };
