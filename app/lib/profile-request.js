@@ -5,8 +5,17 @@
 // profil terbaru dan halaman /me jadi kosong. Helper ini hanya menerima baris
 // yang datanya benar-benar profil lengkap (punya kunci user).
 
-const FRESH_MS = 2 * 60 * 1000;        // profil <= 2 menit dianggap segar
-const REFRESH_GAP_MS = 60 * 1000;      // jangan antre ulang lebih cepat dari ini
+// Ambang kesegaran profil (revisi 3 Nov 2026 - keluhan "/me loading lama"):
+//   <= 12 menit          : SEGAR total, tidak ada apa-apa.
+//   12 menit - 6 jam     : basi lembut - refresh di belakang layar SENYAP
+//                          (tanpa spinner). Kunjungan berikutnya langsung dapat
+//                          data baru.
+//   > 6 jam / tidak ada  : basi keras - spinner + polling sampai bot balas.
+// Dulu FRESH 2 menit saja -> hampir tiap buka /me user lihat "Menyegarkan
+// data dari bot..." selama 25-45 detik padahal datanya sebenarnya sudah ada.
+const FRESH_MS = 12 * 60 * 1000;      // segar penuh
+const SOFT_MS = 6 * 60 * 60 * 1000;   // di bawah ini: refresh senyap tanpa spinner
+const REFRESH_GAP_MS = 5 * 60 * 1000; // jeda antar-antrean ulang
 
 /** Ambil profil terakhir yang valid (punya kunci user) dari data_requests. */
 export async function ambilProfilTerbaru(db, discordId) {
@@ -32,10 +41,13 @@ export async function antrekanProfilUlang(db, discordId) {
 }
 
 /**
- * Stale-while-revalidate: kembalikan profil yang ada sekarang, TAPI kalau
- * umurnya sudah lewat FRESH_MS, antrekan permintaan baru di belakang layar.
- * Dengan begitu statistik/playlist di web tidak pernah "beku" di data lama.
- *
+ * Stale-while-revalidate bertingkat (lihat konstanta di atas):
+ *   - <= FRESH_MS        : sajikan, tidak antre apa pun.
+ *   - <= SOFT_MS         : sajikan + antrekan refresh DI BELAKANG LAYAR tanpa
+ *                          menyalakan spinner (stale:false) - user tidak lagi
+ *                          disuguhi "Menyegarkan..." tiap buka halaman.
+ *   - > SOFT_MS / kosong : stale:true - UI menampilkan spinner + polling
+ *                          sampai bot membalas profil baru.
  * @returns {Promise<{profile: object|null, stale: boolean}>}
  */
 export async function ambilProfilDenganRefresh(db, discordId) {
@@ -57,5 +69,5 @@ export async function ambilProfilDenganRefresh(db, discordId) {
     if (!baruSaja) await antrekanProfilUlang(db, discordId);
   } catch { /* kalau gagal, tetap sajikan profil lama */ }
 
-  return { profile, stale: true };
+  return { profile, stale: umur > SOFT_MS };
 }
