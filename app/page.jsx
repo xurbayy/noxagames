@@ -97,7 +97,7 @@ export default async function Home() {
                 </>
               ) : (
                 <>
-                  <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                  <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-primary">
                     Tambahkan ke Discord
                   </a>
                   <Link href="/pemutar" prefetch={false} className="btn-ghost">
@@ -136,7 +136,7 @@ export default async function Home() {
           {!hidup && (
             <div className="mt-4 text-xs leading-relaxed text-faint">
               {snap ? `Data terakhir ${ageLabel(snap.ageSec)}.` : 'Belum ada data dari bot.'} Kalau bot tidak merespons di Discord, buka{' '}
-              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="font-semibold text-neon hover:underline">
+              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-neon hover:underline">
                 server dukungan
               </a>
               .
@@ -222,7 +222,7 @@ export default async function Home() {
               <p className="mt-1.5 flex-1 text-sm leading-relaxed text-muted">
                 Buka tiket, admin dan member lain siap bantu.
               </p>
-              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
+              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
                 Gabung Server
               </a>
             </div>
@@ -235,7 +235,7 @@ export default async function Home() {
                 Sertakan perintah yang dipakai, server tempat kejadian, dan waktu kejadiannya.
                 Laporan begitu biasanya langsung bisa ditelusuri.
               </p>
-              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
+              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
                 Kirim Laporan
               </a>
             </div>
@@ -248,7 +248,7 @@ export default async function Home() {
                 Ada perintah atau perilaku yang kamu harap ada? Tulis di server dukungan,
                 setiap usulan dibaca sebelum masuk daftar kerja.
               </p>
-              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
+              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
                 Usulkan Fitur
               </a>
             </div>
@@ -332,8 +332,8 @@ export default async function Home() {
               Mainkan satu lagu, lalu putuskan sendiri.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary">Tambahkan ke Discord</a>
-              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-ghost">Server Dukungan</a>
+              <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-primary">Tambahkan ke Discord</a>
+              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-ghost">Server Dukungan</a>
             </div>
           </div>
         </Reveal>

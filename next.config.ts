@@ -7,7 +7,7 @@ const CSP = [
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "img-src 'self' data: blob: https://cdn.discordapp.com https://i.ytimg.com https://img.youtube.com https://*.mzstatic.com https://cdns-images.dzcdn.net https://*.scdn.co https://my.qiospay.com https://*.qiospay.com",
+  "img-src 'self' data: blob: https://cdn.discordapp.com https://i.ytimg.com https://img.youtube.com https://*.mzstatic.com https://cdns-images.dzcdn.net https://*.scdn.co https://*.spotifycdn.com https://images.spotify.com https://my.qiospay.com https://*.qiospay.com",
   "connect-src 'self' https://my.qiospay.com https://*.qiospay.com",
   "form-action 'self'",
   "base-uri 'self'",

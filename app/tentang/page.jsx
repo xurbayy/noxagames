@@ -110,7 +110,7 @@ export default async function TentangPage() {
             <a
               href={BOT_INVITE}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               className="btn-primary"
             >
               Tambahkan ke Discord
@@ -118,7 +118,7 @@ export default async function TentangPage() {
             <a
               href={SUPPORT_INVITE}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               className="btn-ghost"
             >
               Gabung Server Support

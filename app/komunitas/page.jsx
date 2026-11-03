@@ -82,7 +82,7 @@ export default async function KomunitasPage() {
                 <a
                   href={g.inviteUrl}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="noopener noreferrer nofollow"
                   className="btn-solid btn-solid-accent shrink-0 !px-3 !py-1.5 text-[11px]"
                 >
                   Gabung
@@ -113,7 +113,7 @@ export default async function KomunitasPage() {
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap justify-center gap-2.5">
-          <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer" className="btn-primary !px-4 !py-2 text-sm">
+          <a href={BOT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-primary !px-4 !py-2 text-sm">
             Tambahkan ke Discord
           </a>
           <Link href="/top" className="btn-ghost !px-4 !py-2 text-sm">
@@ -124,7 +124,7 @@ export default async function KomunitasPage() {
 
       <p className="mt-8 text-center text-xs text-faint">
         Server tidak dikenal? Laporkan lewat{' '}
-        <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="font-semibold text-neon hover:underline">
+        <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="font-semibold text-neon hover:underline">
           server dukungan
         </a>{' '}
         dan kami akan meninjaunya.

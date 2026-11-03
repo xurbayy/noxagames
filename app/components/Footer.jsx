@@ -56,7 +56,7 @@ export default function Footer() {
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-faint">Komunitas</div>
           <ul className="mt-3 space-y-2 text-sm">
-            <li><a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-neon transition-colors">Server Dukungan</a></li>
+            <li><a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="text-muted hover:text-neon transition-colors">Server Dukungan</a></li>
             <li><Link href="/premium" className="text-muted hover:text-neon transition-colors">Aktivasi NOXA Pass</Link></li>
           </ul>
         </div>

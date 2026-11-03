@@ -9,6 +9,31 @@ import { createClient } from '@libsql/client';
 import { mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
+// --- Transient retry ala NEXO (audit VPS 2 Nov 2026) ---------------------
+// Turso lewat jaringan: blip (fetch failed / ECONNRESET / timeout) sering
+// sekali lewat. Tanpa retry, satu blip = 500 / halaman "Gangguan". Semua
+// execute() dibungkus retry 3x dengan jeda 300ms; error BUKAN jaringan
+// (SQL salah, tabel tidak ada) tidak diulang supaya request gagal tidak
+// jadi lambat.
+const TRANSIENT = /ConnectTimeout|fetch failed|ECONNRESET|ETIMEDOUT|EAI_AGAIN|socket hang up|Connection terminated|timeout|too many connections|busy|locked/i;
+function withTransientRetry(client) {
+  for (const name of ['execute', 'executeMultiple']) {
+    const orig = client[name].bind(client);
+    client[name] = async (...args) => {
+      for (let i = 0; i < 3; i++) {
+        try {
+          return await orig(...args);
+        } catch (e) {
+          const msg = String(e?.message) + ' ' + String(e?.cause?.message);
+          if (i === 2 || !TRANSIENT.test(msg)) throw e;
+          await new Promise((res) => setTimeout(res, 300 * (i + 1)));
+        }
+      }
+    };
+  }
+  return client;
+}
+
 let _db = null;
 
 export function getDb() {
@@ -16,13 +41,13 @@ export function getDb() {
   const url = process.env.TURSO_URL;
   const token = process.env.TURSO_AUTH_TOKEN;
   if (url && url.startsWith('libsql://')) {
-    _db = createClient({ url, authToken: token || undefined });
+    _db = withTransientRetry(createClient({ url, authToken: token || undefined }));
   } else {
     // Dev lokal: file SQLite di folder .data/. Folder HARUS dibuat dulu -
     // libsql tidak membuat folder sendiri dan gagal CANTOPEN kalau hilang.
     const file = resolve('.data/noxa-web.db');
     mkdirSync(dirname(file), { recursive: true });
-    _db = createClient({ url: `file:${file}` });
+    _db = withTransientRetry(createClient({ url: `file:${file}` }));
   }
   return _db;
 }
