@@ -10,21 +10,20 @@ import Emoji from './Emoji';
 import NotifikasiUser from './NotifikasiUser';
 import FeedbackButton from './FeedbackButton';
 
+// Semua halaman penting tampil sebagai menu utama (permintaan pemilik: item
+// footer harus ada di navbar). "Info" khusus legal; NOXA Pass tetap pill.
 const LINKS = [
   { href: '/pemutar', label: 'Pemutar' },
   { href: '/panduan', label: 'Panduan' },
   { href: '/top', label: 'Top' },
-  { href: '/#cara-pakai', label: 'Cara Pakai' },
-  { href: '/#kontak', label: 'Kontak' },
+  { href: '/komunitas', label: 'Komunitas' },
+  { href: '/tentang', label: 'Tentang' },
 ];
 
 // Daftar "Info" (pola NEXO): halaman sekunder yang tidak muat di menu utama.
 // Dipakai dropdown desktop DAN daftar drawer mobile - satu sumber, tidak
 // pernah beda isi antara dua ukuran layar.
 const LEGAL = [
-  { href: '/tentang', label: 'Tentang NOXA' },
-  { href: '/komunitas', label: 'Komunitas Server' },
-  { href: '/status', label: 'Status Sistem' },
   { href: '/privacy-policy', label: 'Kebijakan Privasi' },
   { href: '/terms-of-service', label: 'Ketentuan Layanan' },
 ];
@@ -124,7 +123,7 @@ export default function Navbar({ session, isAdmin = false }) {
               <Link
                 href="/admin"
                 prefetch={false}
-                className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#930E1F]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-crimson bg-crimson px-3.5 py-1 text-xs font-bold text-white shadow-xs transition hover:border-neon hover:bg-[#2C6568]"
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                 Admin
@@ -148,7 +147,7 @@ export default function Navbar({ session, isAdmin = false }) {
           <Link
             href="/premium"
             prefetch={false}
-            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-crimson bg-black px-2.5 py-1 text-xs font-bold text-white shadow-xs transition hover:-translate-y-px hover:border-neon hover:bg-[#1A0508] sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
+            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-crimson bg-black px-2.5 py-1 text-xs font-bold text-white shadow-xs transition hover:-translate-y-px hover:border-neon hover:bg-[#062228] sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
               src="/badges/noxa-premium-ultimate.png"
@@ -263,7 +262,7 @@ export default function Navbar({ session, isAdmin = false }) {
                 href="/premium"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between rounded-xl border border-crimson bg-black px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#1A0508] transition"
+                className="flex items-center justify-between rounded-xl border border-crimson bg-black px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#062228] transition"
               >
                 <span className="flex items-center gap-2">
                   <img
@@ -287,7 +286,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   href="/admin"
                   prefetch={false}
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#930E1F] transition"
+                  className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#2C6568] transition"
                 >
                   <span className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-white animate-pulse" />

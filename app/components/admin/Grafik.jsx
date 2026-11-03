@@ -12,7 +12,7 @@ import { useId, useState } from 'react';
  * @param {string} warna - warna utama bar
  * @param {string} satuan - label satuan untuk caption ("lagu", "Rp", ...)
  */
-export default function GrafikBatang({ titik, format = (n) => String(n), warna = '#FF4B2B', satuan = '' }) {
+export default function GrafikBatang({ titik, format = (n) => String(n), warna = '#A2C9C4', satuan = '' }) {
   const [pilih, setPilih] = useState(null);
   const gradId = useId();
 
@@ -102,7 +102,7 @@ export default function GrafikBatang({ titik, format = (n) => String(n), warna =
                 height={h}
                 rx={2}
                 fill={terpilih ? warna : `url(#${gradId})`}
-                stroke={terpilih ? '#F7F3F1' : 'none'}
+                stroke={terpilih ? '#E2F1EC' : 'none'}
                 strokeWidth={terpilih ? 1.5 : 0}
                 vectorEffect="non-scaling-stroke"
                 pointerEvents="none"

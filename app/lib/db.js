@@ -195,14 +195,6 @@ async function ensureSchema() {
     );
     CREATE INDEX IF NOT EXISTS idx_wf_created ON web_feedback(created_at);
 
-    -- Heartbeat utk halaman publik /status: dicatat dari push snapshot bot,
-    -- maksimal satu titik per 30 menit (ts UNIQUE via INSERT OR REPLACE by
-    -- range check di route). Halaman status menghitung uptime 30 hari dan
-    -- mendeteksi insiden dari CELAH antar-heartbeat - bukan angka palsu.
-    CREATE TABLE IF NOT EXISTS status_heartbeats (
-      ts INTEGER PRIMARY KEY
-    );
-
     -- Trial NOXA Pass: satu kali per user, selamanya. Tabel terpisah dari
     -- premium_subscriptions supaya riwayat trial & berbayar tetap bersih.
     CREATE TABLE IF NOT EXISTS web_trials (

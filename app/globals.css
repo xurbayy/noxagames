@@ -1,28 +1,28 @@
 @import "tailwindcss";
 
 /* ============================================
-   TEMA RESMI NOXA SOUND - dark studio merah hitam
+   TEMA RESMI NOXA SOUND - Deep Teal (chill, smooth, sophisticated)
    (palet sama dengan utils/colors.js di repo bot)
    PENTING: warna tema HANYA lewat token di sini.
    Kelas dengan token yang tidak didefinisikan = tidak
    menghasilkan CSS (elemen jadi bening).
    ============================================ */
 @theme {
-  --color-bg: #030303;          /* pureBlack - latar utama */
-  --color-surface: #080303;     /* deepBlack - area bernuansa merah */
-  --color-surface2: #120509;    /* kartu */
-  --color-surface3: #1A070C;    /* kartu terangkat / hover */
-  --color-darkcrimson: #3B0004; /* bayangan merah gelap */
-  --color-maroon: #5C0008;      /* gradasi dekoratif */
-  --color-crimson: #B11226;     /* aksen utama (merah anggur, bukan merah Netflix) */
-  --color-neon: #FF4B2B;        /* aksen terang: vermilion hangat */
+  --color-bg: #04171A;          /* pureBlack - latar utama */
+  --color-surface: #082126;     /* area bernuansa teal */
+  --color-surface2: #0D2A30;    /* kartu */
+  --color-surface3: #123F45;    /* kartu terangkat / hover */
+  --color-darkcrimson: #0A3238; /* teal gelap (chip aktif) */
+  --color-maroon: #123F45;      /* gradasi dekoratif (deep teal) */
+  --color-crimson: #397F80;     /* aksen utama: Muted Teal (nama var: crimson) */
+  --color-neon: #A2C9C4;        /* aksen terang: Sea Glass (nama var: neon) */
   --color-amber: #F0A63C;       /* aksen kedua, senada amber NEXO */
-  --color-glow: #FF3B1F;        /* efek glow */
-  --color-ink: #F7F3F1;         /* teks utama */
-  --color-muted: #A89F9C;       /* teks sekunder (netral, tanpa cast merah) */
-  --color-faint: #726868;       /* teks tersier */
-  --color-line: #2A2022;        /* border kartu */
-  --color-linebright: #453032;  /* border hover */
+  --color-glow: #7FC6BE;        /* efek glow */
+  --color-ink: #E2F1EC;         /* teks utama */
+  --color-muted: #9DB8B6;       /* teks sekunder (netral sejuk) */
+  --color-faint: #6E8B8B;       /* teks tersier */
+  --color-line: #1F4A51;        /* border kartu */
+  --color-linebright: #2E6469;  /* border hover */
   --color-ok: #58C472;          /* status hidup */
   --color-warn: #C87F0A;        /* status menunggu */
 
@@ -54,10 +54,10 @@ body {
   /* Jaring pengaman mobile: kata sangat panjang (judul lagu, URL, username)
      dipatahkan, bukan dibiarkan terpotong oleh overflow-x: hidden di atas. */
   overflow-wrap: break-word;
-  /* Aura studio: satu semburat merah tipis di atas, sisanya hitam rata.
+  /* Aura studio: satu semburat teal tipis di atas, sisanya gelap rata.
      Dikurangi dari versi sebelumnya supaya latar tidak terlihat "berasap" dan
      pola hexagon di tiap seksi tetap jadi aksen utama (pola NEXO: latar bersih). */
-  background-image: radial-gradient(900px 420px at 50% -12%, rgba(177, 18, 38, 0.1), transparent 70%);
+  background-image: radial-gradient(900px 420px at 50% -12%, rgba(57, 127, 128, 0.1), transparent 70%);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -74,13 +74,13 @@ textarea:focus-visible {
 }
 
 ::selection {
-  background: rgba(184, 0, 18, 0.55);
+  background: rgba(57, 127, 128, 0.55);
   color: #fff;
 }
 
 /* Scrollbar tipis, menyatu dengan latar (gaya NEXO) */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #080303; }
+::-webkit-scrollbar-track { background: #082126; }
 ::-webkit-scrollbar-thumb {
   background: #2E1216;
   border-radius: 8px;
@@ -90,7 +90,7 @@ textarea:focus-visible {
 /* ── BACKDROP SARANG LEBAH (hexagon) ──
    Padanan `.bg-grid` milik NEXO, tapi bentuknya hexagon supaya tetap nyambung
    dengan logo NOXA. Dipasang sebagai lapisan dekoratif (div absolute), warnanya
-   merah sangat tipis dan dipudarkan ke tepi lewat mask - bukan blok yang ramai. */
+   teal sangat tipis dan dipudarkan ke tepi lewat mask - bukan blok yang ramai. */
 .bg-grid {
   background-image: url('/hex-grid.svg');
   background-size: 72px 41.57px;
@@ -119,14 +119,14 @@ textarea:focus-visible {
   pointer-events: none;
 }
 
-/* ── SCROLL PROGRESS (garis merah atas ala NEXO) ── */
+/* ── SCROLL PROGRESS (garis teal atas ala NEXO) ── */
 #scroll-bar {
   position: fixed;
   top: 0;
   left: 0;
   height: 3px;
   z-index: 9999;
-  background: #FF4B2B;
+  background: #A2C9C4;
   width: 0;
   border-radius: 0 2px 2px 0;
   transition: width 0.08s linear;
@@ -242,7 +242,7 @@ textarea:focus-visible {
   .cmd {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.85em;
-    background-color: rgba(177, 18, 38, 0.14);
+    background-color: rgba(57, 127, 128, 0.14);
     border: 1px solid var(--color-linebright);
     color: #FFBE8C;
     border-radius: 0.375rem;
@@ -269,23 +269,23 @@ textarea:focus-visible {
   .badge-danger { background-color: var(--color-crimson); color: #fff; }
   .badge-neutral { background-color: var(--color-surface3); color: var(--color-muted); border: 1px solid var(--color-line); }
 
-  /* Teks display: warna merah NOXA solid, tanpa gradasi */
+  /* Teks display: Sea Glass solid, tanpa gradasi */
   .neon-text {
-    color: #FF4B2B;
+    color: #A2C9C4;
   }
 
-  /* Garis merah tipis dekoratif */
+  /* Garis teal tipis dekoratif */
   .hairline {
     height: 1px;
-    background: #3B0004;
+    background: #0A3238;
   }
 
-  /* Accent underline ala NEXO: bar solid merah NOXA di bawah judul seksi */
+  /* Accent underline ala NEXO: bar solid teal di bawah judul seksi */
   .accent-bar {
     width: 180px;
     height: 7px;
     border-radius: 9999px;
-    background: #FF4B2B;
+    background: #A2C9C4;
   }
 }
 
@@ -309,7 +309,7 @@ textarea:focus-visible {
    SISTEM UI SOLID (diadaptasi 1:1 dari web NEXO negoxiastore)
    Bahasa visual yang sama: badge terstandar, tombol aksi solid dengan
    bayangan warna lembut, tile statistik, scrollbar tabel yang terlihat,
-   skeleton, dan shimmer premium. Warna diadaptasi ke palet merah NOXA.
+   skeleton, dan shimmer premium. Warna diadaptasi ke palet Deep Teal NOXA.
    ════════════════════════════════════════════════════════════════ */
 
 /* ── BADGE TERSTANDAR (semua status pakai kelas ini + utilitas warna solid) ── */
@@ -346,7 +346,7 @@ textarea:focus-visible {
 .btn-solid:hover { transform: translateY(-1px); }
 .btn-solid:active { transform: translateY(0); }
 .btn-solid:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-solid-accent { background: var(--color-crimson); color: #fff; box-shadow: 0 2px 8px rgba(177, 18, 38, 0.3); }
+.btn-solid-accent { background: var(--color-crimson); color: #fff; box-shadow: 0 2px 8px rgba(57, 127, 128, 0.3); }
 .btn-solid-accent:hover { background: var(--color-neon); }
 .btn-solid-danger { background: #C74B3C; color: #fff; box-shadow: 0 2px 8px rgba(199, 75, 60, 0.28); }
 .btn-solid-danger:hover { background: #A83F32; }
@@ -354,7 +354,7 @@ textarea:focus-visible {
 .btn-solid-success:hover { background: #58C472; }
 .btn-solid-neutral { background: var(--color-surface2); color: var(--color-ink); border-color: var(--color-linebright); box-shadow: var(--shadow-hair); }
 .btn-solid-neutral:hover { background: var(--color-surface3); }
-.btn-solid-light { background: var(--color-ink); color: #030303; box-shadow: 0 2px 8px rgba(247, 243, 241, 0.18); }
+.btn-solid-light { background: var(--color-ink); color: #04171A; box-shadow: 0 2px 8px rgba(247, 243, 241, 0.18); }
 .btn-solid-light:hover { background: #ffffff; }
 
 /* ── TILE STATISTIK (kartu KPI solid dengan hover aksen) ── */
@@ -366,8 +366,8 @@ textarea:focus-visible {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .stat-tile:hover {
-  border-color: rgba(255, 75, 43, 0.3);
-  box-shadow: 0 0 12px rgba(177, 18, 38, 0.12);
+  border-color: rgba(162, 201, 196, 0.3);
+  box-shadow: 0 0 12px rgba(57, 127, 128, 0.12);
 }
 
 /* ── SCROLLBAR HORIZONTAL TABEL: tebal dan terlihat ── */

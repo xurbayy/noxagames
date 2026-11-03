@@ -57,13 +57,13 @@ export const SITE_KEYWORDS = [
 
 /** Palet resmi NOXA Sound, sama dengan utils/colors.js di repo bot. */
 export const BRAND = {
-  pureBlack: '#030303',
-  deepBlack: '#080303',
-  darkCrimson: '#3B0004',
-  darkMaroon: '#5C0008',
-  crimson: '#B80012',
-  neonRed: '#FF101F',
-  glowRed: '#FF001A',
+  pureBlack: '#04171A',
+  deepBlack: '#082126',
+  darkCrimson: '#0A3238',
+  darkMaroon: '#123F45',
+  crimson: '#397F80',
+  neonRed: '#A2C9C4',
+  glowRed: '#7FC6BE',
 };
 
 export function absoluteUrl(path = '/') {

@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const IKON = {
   pembelian: { label: 'PEMBELIAN', kelas: 'bg-[#14532D] text-[#86EFAC] border-[#22C55E]' },
   feedback: { label: 'FEEDBACK', kelas: 'bg-[#1E232A] text-[#CBD5E1] border-slate-400' },
-  penting: { label: 'PENTING', kelas: 'bg-[#3B0004] text-neon border-crimson' },
+  penting: { label: 'PENTING', kelas: 'bg-[#0A3238] text-neon border-crimson' },
   info: null,
 };
 
@@ -144,7 +144,7 @@ export default function NotifAdmin() {
               {items.map((n) => {
                 const ikon = IKON[n.tipe] || null;
                 return (
-                  <li key={n.id} className={`px-4 py-3 ${n.dibaca ? '' : 'bg-[#170306]'}`}>
+                  <li key={n.id} className={`px-4 py-3 ${n.dibaca ? '' : 'bg-[#07242A]'}`}>
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-xs font-semibold leading-snug text-ink break-words">

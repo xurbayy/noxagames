@@ -23,7 +23,7 @@ function MusicLive({ p, jam }) {
     <DiscordMessage botAvatar={p.botAvatar}>
       <div className="space-y-3">
         <PanelEmbed
-          color={p.embedColor || '#B80012'}
+          color={p.embedColor || '#397F80'}
           author="NOXA Sound • Sedang Memutar"
           title={p.title}
           titleUrl={p.url || null}
@@ -81,7 +81,7 @@ function RadioLive({ p, jam }) {
     <DiscordMessage botAvatar={p.botAvatar}>
       <div className="space-y-3">
         <PanelEmbed
-          color={p.embedColor || '#5C0008'}
+          color={p.embedColor || '#123F45'}
           title={p.title || 'NOXA Radio 24/7'}
           titleUrl={p.url || null}
           description={
@@ -120,7 +120,7 @@ function PodcastLive({ p, jam }) {
     <DiscordMessage botAvatar={p.botAvatar}>
       <div className="space-y-3">
         <PanelEmbed
-          color={p.embedColor || '#3B0004'}
+          color={p.embedColor || '#0A3238'}
           author="NOXA Sound • Studio Podcast"
           title={p.title}
           titleUrl={p.url || null}

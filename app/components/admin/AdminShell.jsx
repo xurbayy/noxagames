@@ -211,7 +211,7 @@ function Statistik({ data }) {
                 onClick={() => setRentang(r)}
                 className={`rounded-lg border px-2.5 py-1 text-[11px] font-bold transition cursor-pointer ${
                   rentang === r
-                    ? 'border-neon bg-[#3B0004] text-neon'
+                    ? 'border-neon bg-[#0A3238] text-neon'
                     : 'border-line bg-surface2 text-muted hover:text-ink'
                 }`}
               >
@@ -224,11 +224,11 @@ function Statistik({ data }) {
           <div className="mt-3 space-y-6">
             <div>
               <div className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-faint">Lagu Diputar / Hari</div>
-              <GrafikBatang titik={trenLagu} warna="#FF4B2B" satuan="lagu" format={(n) => n.toLocaleString('id-ID')} />
+              <GrafikBatang titik={trenLagu} warna="#A2C9C4" satuan="lagu" format={(n) => n.toLocaleString('id-ID')} />
             </div>
             <div>
               <div className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-faint">Durasi Didengar / Hari</div>
-              <GrafikBatang titik={trenDurasi} warna="#B11226" satuan="didengar" format={(n) => durasi(n)} />
+              <GrafikBatang titik={trenDurasi} warna="#397F80" satuan="didengar" format={(n) => durasi(n)} />
             </div>
           </div>
         ) : (

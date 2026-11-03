@@ -39,7 +39,6 @@ export default function Footer() {
             <li><Link href="/panduan" className="text-muted hover:text-neon transition-colors">Panduan Perintah</Link></li>
             <li><Link href="/top" className="text-muted hover:text-neon transition-colors">Top Lagu & Listener</Link></li>
             <li><Link href="/komunitas" className="text-muted hover:text-neon transition-colors">Komunitas Server</Link></li>
-            <li><Link href="/status" className="text-muted hover:text-neon transition-colors">Status Sistem</Link></li>
             <li><Link href="/tentang" className="text-muted hover:text-neon transition-colors">Tentang NOXA</Link></li>
             <li><Link href="/premium" className="text-muted hover:text-neon transition-colors">NOXA Pass</Link></li>
           </ul>

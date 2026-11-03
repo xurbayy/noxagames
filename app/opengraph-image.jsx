@@ -20,8 +20,8 @@ export default function OgImage() {
           justifyContent: 'center',
           backgroundColor: BRAND.pureBlack,
           backgroundImage:
-            `radial-gradient(700px 380px at 80% 0%, rgba(184,0,18,0.35), transparent 65%), radial-gradient(500px 300px at 10% 100%, rgba(92,0,8,0.5), transparent 60%)`,
-          color: '#F7F1F1',
+            `radial-gradient(700px 380px at 80% 0%, rgba(57,127,128,0.35), transparent 65%), radial-gradient(500px 300px at 10% 100%, rgba(18,63,69,0.5), transparent 60%)`,
+          color: '#E2F1EC',
         }}
       >
         {/* Equalizer bars */}
@@ -40,12 +40,12 @@ export default function OgImage() {
         </div>
         <div style={{ display: 'flex', marginTop: 36, fontSize: 92, fontWeight: 700, letterSpacing: -2 }}>
           <span style={{ display: 'flex' }}>NOXA&nbsp;</span>
-          <span style={{ display: 'flex', color: BRAND.neonRed, textShadow: `0 0 40px rgba(255,0,26,0.6)` }}>Sound</span>
+          <span style={{ display: 'flex', color: BRAND.neonRed, textShadow: `0 0 40px rgba(127,198,190,0.6)` }}>Sound</span>
         </div>
-        <div style={{ display: 'flex', marginTop: 18, fontSize: 34, color: '#A89899' }}>
+        <div style={{ display: 'flex', marginTop: 18, fontSize: 34, color: '#9DB8B6' }}>
           Bot hiburan audio Discord: musik, podcast, dan radio
         </div>
-        <div style={{ display: 'flex', marginTop: 44, fontSize: 26, color: '#6E5C5E' }}>{SITE_NAME} | gratis untuk semua server</div>
+        <div style={{ display: 'flex', marginTop: 44, fontSize: 26, color: '#5F7D7C' }}>{SITE_NAME} | gratis untuk semua server</div>
       </div>
     ),
     size

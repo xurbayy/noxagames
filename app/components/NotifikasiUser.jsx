@@ -15,7 +15,7 @@ import Link from 'next/link';
 const IKON = {
   pembelian: { label: 'PEMBELIAN', kelas: 'bg-[#14532D] text-[#86EFAC] border-[#22C55E]' },
   event: { label: 'EVENT', kelas: 'bg-[#3A2503] text-[#FBBF24] border-[#F59E0B]' },
-  penting: { label: 'PENTING', kelas: 'bg-[#3B0004] text-neon border-crimson' },
+  penting: { label: 'PENTING', kelas: 'bg-[#0A3238] text-neon border-crimson' },
   info: null,
 };
 
