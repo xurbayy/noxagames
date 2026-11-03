@@ -467,22 +467,6 @@ textarea:focus-visible {
   50% { transform: translateY(-12px); }
 }
 
-/* Marquee social proof (pola Soundly): daftar logo server berjalan pelan.
-   Track berisi dua salinan deret, jadi geser 50% menyambung mulus.
-   Fade tepi kiri-kanan via mask. Dihormati prefers-reduced-motion di bawah. */
-@keyframes marqueeGeser {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-.marquee-track {
-  animation: marqueeGeser 36s linear infinite;
-  will-change: transform;
-}
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-}
-.marquee-track:hover { animation-play-state: paused; }
 .mascot-anim { animation: mascotBob 3.2s ease-in-out infinite; }
 /* Permintaan pemilik 2 Nov 2026: maskot WAJIB gerak juga di platform kecil.
    Breakpoint diperluas sampai tablet (1023px) - sebelumnya cuma <=767px, jadi
@@ -502,7 +486,6 @@ textarea:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .eq-bar, .live-dot { animation: none; }
-  .marquee-track { animation: none; }
   .fade-up { opacity: 1; transform: none; transition: none; }
   .anim-in { opacity: 1; transform: none; animation: none; }
   html { scroll-behavior: auto; }
