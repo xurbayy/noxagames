@@ -10,7 +10,7 @@ import { pageMeta, SUPPORT_INVITE } from '../lib/site';
 export const metadata = pageMeta({
   title: 'Paket Langganan Premium',
   description:
-    'Pilih paket NOXA Premium, Premium+, atau Ultimate. Dapatkan bypass vote-skip, mode radio 24/7, audio Ultra HD 320kbps, antrean tanpa batas, dan badge eksklusif.',
+    'Pilih paket NOXA Premium, Premium+, atau Ultimate. Skip lagu instan tanpa voting, volume sampai 200%, radio 24/7 tanpa jadi admin, hingga 4 efek audio sekaligus, 40 playlist, dengar bareng 40 orang, riwayat 60 lagu di profil web, dan badge eksklusif. Semua benefit dijalankan langsung oleh bot.',
   path: '/premium',
 });
 

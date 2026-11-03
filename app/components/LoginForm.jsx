@@ -50,11 +50,6 @@ export default function LoginForm({ loginUrl }) {
           </svg>
           Lanjutkan dengan Discord
         </a>
-        {!setuju && (
-          <p className="mt-2 text-[11px] text-faint">
-            Centang persetujuan di atas untuk melanjutkan login.
-          </p>
-        )}
       </div>
     </div>
   );

@@ -87,7 +87,10 @@ export default async function MePage() {
 
   return (
     <MeClient
-      initialUser={{ username: session.username, avatar: session.avatar }}
+      initialUser={{
+        username: initialProfile?.user?.username || session.username,
+        avatar: initialProfile?.user?.avatar || session.avatar,
+      }}
       initialProfile={initialProfile}
       isAdmin={isAdmin}
       subscription={activeSubscription}

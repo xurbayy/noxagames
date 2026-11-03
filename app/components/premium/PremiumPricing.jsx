@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Emoji from '../Emoji';
-import { PREMIUM_PLANS, FITUR_KOMPARASI, LANGKAH_AKTIVASI, CATATAN_BITRATE, CATATAN_CAKUPAN, labelHarga } from '../../lib/premiumPlan';
+import { PREMIUM_PLANS, FITUR_KOMPARASI, LANGKAH_AKTIVASI, CATATAN_BITRATE, CATATAN_CAKUPAN, BUKTI_NYATA, labelHarga } from '../../lib/premiumPlan';
 
 const PILIHAN_DURASI = [
   { index: 0, bulan: 1, label: '1 Bulan' },
@@ -135,13 +135,15 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
     <div className="space-y-16 sm:space-y-24">
       {/* Selector Siklus Pembayaran */}
       <div className="flex flex-col items-center">
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface2 p-1.5 shadow-[var(--shadow-soft)]">
+        {/* Di HP: grid 4 kolom sama lebar supaya keempat durasi tetap satu baris
+            (sebelumnya barisan ini lebih lebar dari layar dan terpotong). */}
+        <div className="grid w-full max-w-[340px] grid-cols-4 gap-1 rounded-2xl border border-line bg-surface2 p-1.5 shadow-[var(--shadow-soft)] sm:flex sm:w-auto sm:max-w-none sm:justify-center sm:gap-1.5 sm:rounded-full">
           {PILIHAN_DURASI.map((d) => (
             <button
               key={d.bulan}
               type="button"
               onClick={() => setDurasiPilihan(d.index)}
-              className={`relative cursor-pointer rounded-full px-3.5 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 ${
+              className={`relative cursor-pointer whitespace-nowrap rounded-full px-1 py-2 text-[11px] sm:px-3.5 sm:text-sm font-semibold transition-all duration-200 ${
                 durasiPilihan === d.index
                   ? 'bg-crimson text-white shadow-xs'
                   : 'text-muted hover:text-ink hover:bg-surface3'
@@ -149,7 +151,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             >
               <span>{d.label}</span>
               {d.badge && (
-                <span className="hidden sm:inline-block ml-1.5 rounded-full bg-white text-black px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                <span className="hidden sm:inline-block ml-1.5 rounded-full bg-crimson px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-white">
                   {d.bulan === 12 ? 'VIP' : 'Hemat'}
                 </span>
               )}
@@ -163,12 +165,12 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
         const isPlus = activeSubscription.plan_id === 'premium-plus';
         const sisa = Math.max(0, Math.ceil((Number(activeSubscription.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)));
         return (
-          <div className={`p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full shadow-sm ${
-            isPlus
-              ? 'border-2 border-[#CBD5E1] bg-[#161B22]'
-              : 'border-2 border-[#F59E0B] bg-[#1C1204]'
-          }`}>
-            <div className="flex items-center gap-3">
+          // Latar kartu penuh (solid) + garis aksen kiri, seragam dengan kartu
+          // NOXA Pass. Dulu tiap tier memakai latar gelap berwarna sendiri
+          // sehingga terlihat seperti panel transparan di atas halaman.
+          <div className="card relative overflow-hidden p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full">
+            <span className={`absolute inset-y-0 left-0 w-1.5 ${isPlus ? 'bg-slate-300' : 'bg-amber-400'}`} aria-hidden="true" />
+            <div className="flex items-center gap-3 pl-1.5">
               <img
                 src={isPlus ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
                 alt=""
@@ -196,8 +198,9 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
       {activeServer && Number(activeServer.expires_at) > Date.now() && (() => {
         const sisa = Math.max(0, Math.ceil((Number(activeServer.expires_at) - Date.now()) / (1000 * 60 * 60 * 24)));
         return (
-          <div className="border-2 border-purple-500 bg-[#1C0D2E] p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full shadow-sm">
-            <div className="flex items-center gap-3">
+          <div className="card relative overflow-hidden p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full">
+            <span className="absolute inset-y-0 left-0 w-1.5 bg-purple-500" aria-hidden="true" />
+            <div className="flex items-center gap-3 pl-1.5">
               <img src="/badges/noxa-premium-ultimate.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
               <div>
                 <div className="text-sm font-bold text-ink">{activeServer.tier_name} (Server) sedang aktif</div>
@@ -294,15 +297,21 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                     <span className="text-xs text-faint">/ {currentDurasi.label}</span>
                   </div>
                   {currentDurasi.bulan > 1 && (
-                    <div className="mt-1 flex items-center gap-2 text-xs">
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
                       <span className="text-muted">Setara {labelHarga(hargaPerBulan)}/bln</span>
+                      {/* Tag hemat: SOLID merah, bukan hijau gelap semi tembus.
+                          Disamakan dengan tag durasi & tombol NOXA Pass. */}
                       {hargaDurasi.hemat && (
-                        <span className="rounded bg-[#14532D] border border-[#22C55E] px-1.5 py-0.5 text-[10px] font-bold text-[#86EFAC]">
+                        <span className="rounded-md bg-crimson px-2 py-0.5 text-[10px] font-extrabold text-white">
                           {hargaDurasi.hemat}
                         </span>
                       )}
                     </div>
                   )}
+                  {/* Harga per hari: bikin nominalnya terasa kecil & konkret. */}
+                  <p className="mt-1.5 text-[11px] text-faint">
+                    Sekitar {labelHarga(Math.max(1, Math.round(hargaPerBulan / 30)))} per hari
+                  </p>
                 </div>
 
                 {/* Fitur Utama */}
@@ -378,17 +387,76 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
         </div>
 
         {tabTabel && (
-          <div className="card overflow-x-auto noxa-scroll p-4 sm:p-6 shadow-[var(--shadow-lift)]">
-            <h3 className="font-display text-lg font-bold mb-4">Matriks Perbandingan Fitur Semua Paket</h3>
+          <>
+            {/* Mobile: kartu per kategori. Tabel 5 kolom (620px) tidak terbaca di HP,
+                jadi di layar kecil isinya dipecah per fitur tanpa geser horizontal. */}
+            <div className="space-y-3 sm:hidden">
+              <p className="flex items-start gap-1.5 rounded-xl border border-line bg-surface2 px-3 py-2.5 text-[11px] leading-relaxed text-faint">
+                <Emoji name="noxapremium" size={14} className="mt-0.5 shrink-0" />
+                <span>Emoji NOXA Pass menandai nilai yang <strong className="text-muted">bertambah</strong> karena langganan. Tanpa emoji = sama dengan paket gratis.</span>
+              </p>
+              {FITUR_KOMPARASI.map((kat) => (
+                <div key={kat.kategori} className="card p-4 shadow-[var(--shadow-hair)]">
+                  <h3 className="font-display text-xs font-bold uppercase tracking-wider text-neon">{kat.kategori}</h3>
+                  <div className="mt-3 space-y-2.5">
+                    {kat.items.map((it) => (
+                      <div key={it.nama} className="rounded-xl border border-line bg-surface2 p-3">
+                        <p className="break-words text-xs font-semibold leading-snug text-ink">{it.nama}</p>
+                        <dl className="mt-2.5 grid grid-cols-2 gap-x-3 gap-y-2 text-[11px] leading-snug">
+                          <div className="min-w-0">
+                            <dt className="text-[10px] font-semibold uppercase tracking-wide text-faint">Gratis</dt>
+                            <dd className="mt-0.5 break-words font-medium text-muted">{renderNilai(it.gratis)}</dd>
+                          </div>
+                          <div className="min-w-0">
+                            <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-amber-500/90">
+                              <Emoji name="noxapremium" size={12} /> Premium
+                            </dt>
+                            <dd className="mt-0.5 break-words font-medium text-amber-300">{nilaiPass(it.premium, it.gratis, 'noxapremium')}</dd>
+                          </div>
+                          <div className="min-w-0">
+                            <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                              <Emoji name="noxapremiumplus" size={12} /> Premium+
+                            </dt>
+                            <dd className="mt-0.5 break-words font-medium text-slate-200">{nilaiPass(it.plus, it.gratis, 'noxapremiumplus')}</dd>
+                          </div>
+                          <div className="min-w-0">
+                            <dt className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-purple-400">
+                              <Emoji name="noxapremiumultimate" size={12} /> Ultimate
+                            </dt>
+                            <dd className="mt-0.5 break-words font-bold text-purple-300">{nilaiPass(it.ultimate, it.gratis, 'noxapremiumultimate')}</dd>
+                          </div>
+                        </dl>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <p className="text-[11px] leading-relaxed text-faint break-words">{CATATAN_BITRATE}</p>
+              <p className="text-[11px] leading-relaxed text-faint break-words">{CATATAN_CAKUPAN}</p>
+            </div>
+
+            {/* Desktop: tabel penuh */}
+            <div className="card hidden overflow-x-auto noxa-scroll p-4 sm:block sm:p-6 shadow-[var(--shadow-lift)]">
+            <h3 className="font-display text-lg font-bold mb-2">Matriks Perbandingan Fitur Semua Paket</h3>
+            <p className="mb-4 flex items-start gap-1.5 text-[11px] leading-relaxed text-faint">
+              <Emoji name="noxapremium" size={14} className="mt-0.5 shrink-0" />
+              <span>Emoji NOXA Pass menandai nilai yang <strong className="text-muted">bertambah</strong> karena langganan. Tanpa emoji = sama dengan paket gratis.</span>
+            </p>
             <div className="min-w-[620px]">
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-line text-faint uppercase tracking-wider text-[11px]">
                     <th className="py-3 px-3">Fitur</th>
                     <th className="py-3 px-3 text-center">Gratis</th>
-                    <th className="py-3 px-3 text-center text-amber-400">Premium</th>
-                    <th className="py-3 px-3 text-center text-slate-200">Premium+</th>
-                    <th className="py-3 px-3 text-center text-purple-400">Ultimate</th>
+                    <th className="py-3 px-3 text-center text-amber-400">
+                      <span className="inline-flex items-center gap-1"><Emoji name="noxapremium" size={14} /> Premium</span>
+                    </th>
+                    <th className="py-3 px-3 text-center text-slate-200">
+                      <span className="inline-flex items-center gap-1"><Emoji name="noxapremiumplus" size={14} /> Premium+</span>
+                    </th>
+                    <th className="py-3 px-3 text-center text-purple-400">
+                      <span className="inline-flex items-center gap-1"><Emoji name="noxapremiumultimate" size={14} /> Ultimate</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/60">
@@ -403,9 +471,9 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                         <tr key={it.nama} className="hover:bg-surface2 transition-colors">
                           <td className="py-2.5 px-3 text-muted">{it.nama}</td>
                           <td className="py-2.5 px-3 text-center">{renderNilai(it.gratis)}</td>
-                          <td className="py-2.5 px-3 text-center font-medium text-amber-300">{renderNilai(it.premium)}</td>
-                          <td className="py-2.5 px-3 text-center font-medium text-slate-200">{renderNilai(it.plus)}</td>
-                          <td className="py-2.5 px-3 text-center font-bold text-purple-300">{renderNilai(it.ultimate)}</td>
+                          <td className="py-2.5 px-3 text-center font-medium text-amber-300">{nilaiPass(it.premium, it.gratis, 'noxapremium')}</td>
+                          <td className="py-2.5 px-3 text-center font-medium text-slate-200">{nilaiPass(it.plus, it.gratis, 'noxapremiumplus')}</td>
+                          <td className="py-2.5 px-3 text-center font-bold text-purple-300">{nilaiPass(it.ultimate, it.gratis, 'noxapremiumultimate')}</td>
                         </tr>
                       ))}
                     </React.Fragment>
@@ -415,8 +483,31 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             </div>
             <p className="mt-4 text-[11px] leading-relaxed text-faint break-words">{CATATAN_BITRATE}</p>
             <p className="mt-2 text-[11px] leading-relaxed text-faint break-words">{CATATAN_CAKUPAN}</p>
-          </div>
+            </div>
+          </>
         )}
+      </section>
+
+      {/* Bukti Nyata: cara pembeli memastikan benefitnya benar-benar jalan. */}
+      <section>
+        <div className="text-center mb-8">
+          <h2 className="font-display text-2xl sm:text-3xl font-bold">Buktikan Sendiri di Discord</h2>
+          <div className="accent-bar mx-auto mt-4" aria-hidden="true" />
+          <p className="mt-3 text-xs sm:text-sm text-muted max-w-xl mx-auto">
+            Semua benefit di tabel dijalankan langsung oleh bot NOXA - bukan sekadar tulisan di web. Cek pakai perintah ini:
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {BUKTI_NYATA.map((b) => (
+            <div key={b.perintah} className="card flex items-start gap-3 p-4">
+              <code className="shrink-0 rounded-lg border border-line bg-surface2 px-2 py-1 text-xs font-bold text-neon">{b.perintah}</code>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-ink break-words">{b.judul}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted break-words">{b.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* 3 Langkah Aktivasi */}
@@ -628,9 +719,11 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                     <span>{labelHarga(modalBeli.hargaBulanan * currentDurasi.bulan)}</span>
                   </div>
                   {modalBeli.durasi[durasiPilihan]?.hemat && (
-                    <div className="flex justify-between text-ok font-medium">
-                      <span>Diskon Durasi</span>
-                      <span>-{modalBeli.durasi[durasiPilihan].hemat}</span>
+                    <div className="flex items-center justify-between font-medium">
+                      <span className="text-muted">Diskon Durasi</span>
+                      <span className="rounded-md bg-crimson px-2 py-0.5 text-[10px] font-extrabold text-white">
+                        {modalBeli.durasi[durasiPilihan].hemat}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between text-muted">
@@ -792,6 +885,22 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Nilai sel + emoji NOXA Pass HANYA kalau paket ini benar-benar menambah dari
+ * paket gratis. Jadi emoji yang muncul = bagian yang aktif/meningkat karena
+ * langganan; sel tanpa emoji berarti isinya sama dengan paket gratis.
+ */
+function nilaiPass(val, gratisVal, emojiName) {
+  const beda = val !== false && val !== null && val !== undefined && val !== ''
+    && String(val) !== String(gratisVal);
+  return (
+    <span className="inline-flex items-center justify-center gap-1">
+      {beda ? <Emoji name={emojiName} size={14} /> : null}
+      {renderNilai(val)}
+    </span>
   );
 }
 

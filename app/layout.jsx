@@ -5,7 +5,6 @@ import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import ConsentNotif from './components/ConsentNotif';
 import ScrollProgress from './components/ScrollProgress';
-import PwaPrompt from './components/PwaPrompt';
 import { getSession, isAdminDiscordId } from './lib/session';
 import { SITE_NAME, SITE_TAGLINE, SITE_DESCRIPTION, SITE_URL, absoluteUrl } from './lib/site';
 
@@ -52,7 +51,10 @@ export const metadata = {
     ],
     shortcut: '/favicon.ico',
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
-    other: [{ rel: 'manifest', url: '/site.webmanifest' }],
+    // CATATAN 3 Nov 2026: link rel=manifest SENGAJA DIHAPUS. Situs ini kini
+    // web biasa (bukan PWA) - prompt "Pasang aplikasi" terdeteksi heuristik
+    // Safe Browsing sebagai pola instalasi agresif. Tanpa manifest, Chrome
+    // tidak akan pernah menawarkan install.
   },
 };
 
@@ -90,7 +92,6 @@ export default async function RootLayout({ children }) {
         <Footer />
         <CookieConsent />
         <ConsentNotif />
-        <PwaPrompt />
       </body>
     </html>
   );

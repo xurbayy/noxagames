@@ -1,4 +1,4 @@
-import { getSession } from '../../lib/session';
+import { getSession, updateSessionAvatar } from '../../lib/session';
 import { json } from '../../lib/api-helpers';
 import { getDb, schemaReady } from '../../lib/db';
 import { ambilProfilDenganRefresh, antrekanProfilUlang } from '../../lib/profile-request';
@@ -10,7 +10,17 @@ export async function GET(req) {
   const session = await getSession();
   if (!session) return json({ error: 'belum login' }, 401);
 
-  const user = { username: session.username, avatar: session.avatar };
+  // Avatar terbaru dari bot (payload profil) menang atas avatar yang tersimpan
+  // di cookie sesi, yang bisa saja sudah lama saat user ganti foto profil.
+  const userUntuk = (profile) => ({
+    username: profile?.user?.username || session.username,
+    avatar: profile?.user?.avatar || session.avatar,
+  });
+  const sinkronSesi = async (profile) => {
+    const fresh = profile?.user?.avatar;
+    if (fresh && fresh !== session.avatar) await updateSessionAvatar(fresh).catch(() => {});
+  };
+  const user = userUntuk(null);
 
   try {
     await schemaReady();
@@ -22,8 +32,9 @@ export async function GET(req) {
       const now = Date.now();
       await antrekanProfilUlang(db, session.discordId);
       const profile = await ambilProfilDenganRefresh(db, session.discordId);
+      await sinkronSesi(profile.profile);
       return json({
-        user,
+        user: userUntuk(profile.profile),
         profile: profile.profile,
         fresh: Boolean(profile.profile),
         pending: true,
@@ -37,8 +48,9 @@ export async function GET(req) {
     // menyusul tanpa membuat halaman kosong.
     const hasil = await ambilProfilDenganRefresh(db, session.discordId);
     if (hasil.profile) {
+      await sinkronSesi(hasil.profile);
       return json({
-        user,
+        user: userUntuk(hasil.profile),
         profile: hasil.profile,
         fresh: !hasil.stale,
         pending: hasil.stale,

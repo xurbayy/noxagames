@@ -32,7 +32,9 @@ export default function ConsentNotif() {
     let batal = false;
     const cek = async () => {
       if (typeof window === 'undefined') return;
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+      // Cukup Notification API (halaman sudah HTTPS) - service worker tidak
+      // dipakai lagi sejak PWA dimatikan.
+      if (!('Notification' in window)) return;
 
       try {
         const sudah = localStorage.getItem(KUNCI);
@@ -69,7 +71,9 @@ export default function ConsentNotif() {
       const izin = await Notification.requestPermission();
       if (izin === 'granted') {
         try { localStorage.setItem(KUNCI, 'ya'); } catch {}
-        await navigator.serviceWorker.register('/sw.js').catch(() => {});
+        // Tidak lagi me-registrasi service worker (PWA dimatikan 3 Nov 2026).
+        // Notifikasi lokal dari halaman (new Notification) tetap jalan di
+        // desktop tanpa SW; lonceng in-app selalu tersedia untuk semua device.
         setStatus('siap');
         setTimeout(() => setTampil(false), 1800);
       } else if (izin === 'denied') {

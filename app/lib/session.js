@@ -114,6 +114,21 @@ export async function getAdminActor() {
   return null;
 }
 
+/**
+ * Perbarui avatar di cookie sesi tanpa memaksa user login ulang.
+ * Dipakai saat profil dari bot membawa avatar Discord terbaru supaya navbar
+ * & header profil tidak terus memakai foto lama yang tersimpan saat login.
+ */
+export async function updateSessionAvatar(avatar) {
+  const session = await getSession();
+  if (!session || !avatar || session.avatar === avatar) return;
+  await createSession({
+    discordId: session.discordId,
+    username: session.username,
+    avatar,
+  });
+}
+
 export async function destroySession() {
   const store = await cookies();
   store.delete(MEMBER_COOKIE);

@@ -24,12 +24,13 @@ export const PREMIUM_PLANS = [
       { bulan: 12, label: '1 Tahun', hemat: 'Hemat 22%', harga: 140000 },
     ],
     fiturRingkas: [
-      'Bebas vote-skip instan',
-      'Antrean 250 lagu',
-      'Volume booster 150%',
-      '10 playlist pribadi',
-      'Co-listener 15 orang',
-      'Badge Emas web & Discord',
+      'Skip lagu instan, tanpa voting mayoritas',
+      'Volume sampai 150% (musik lebih nendang)',
+      'Tumpuk 2 efek audio (bass, nightcore, 8D)',
+      '15 playlist pribadi tersimpan',
+      'Dengar bareng sampai 20 orang',
+      'Riwayat 30 lagu di profil web',
+      'Badge Gold di web & Discord',
     ],
     target: '1 Pengguna',
   },
@@ -57,11 +58,12 @@ export const PREMIUM_PLANS = [
     ],
     fiturRingkas: [
       'Semua fitur NOXA Premium',
-      'Volume 200% + audio up to 320k',
-      'Radio 24/7 nonstop',
-      'Gabung 3 efek audio sekaligus',
-      'Antrean 500 lagu',
-      'Co-listener 25 orang',
+      'Volume sampai 200% (2x suara normal)',
+      'Radio 24/7 tanpa perlu jadi Admin',
+      'Tumpuk 4 efek audio sekaligus',
+      '40 playlist pribadi tersimpan',
+      'Dengar bareng sampai 40 orang',
+      'Riwayat 60 lagu di profil web',
       'Badge Platinum web & Discord',
     ],
     target: '1 Pengguna - Benefit Penuh',
@@ -88,55 +90,64 @@ export const PREMIUM_PLANS = [
       { bulan: 12, label: '1 Tahun', hemat: 'Hemat 31%', harga: 539000 },
     ],
     fiturRingkas: [
-      'Semua benefit Premium+ versi server',
-      'Aktif untuk 1 server pilihan',
-      'Antrean tanpa batas untuk semua member',
-      'Volume 200% + audio up to 320k',
-      'Playlist & co-listener tanpa batas',
+      'Semua benefit Premium+ untuk SEMUA member',
+      'Aktif di 1 server pilihan (bisa diganti, cooldown 7 hari)',
+      'Volume 200% untuk seluruh server',
+      'Radio 24/7 untuk server',
+      'Efek audio & playlist tanpa batas untuk semua member',
+      'Skip instan untuk semua member',
       'Badge Ultraviolet untuk pembeli',
     ],
     target: '1 Server Pilihan',
   },
 ];
 
-// Tabel perbandingan fitur lengkap untuk melihat kenapa paket ini worth-it
+// Tabel perbandingan fitur.
+// ATURAN: hanya fitur yang BENAR-BENAR dibatasi di bot (getPremiumLimit) yang
+// boleh masuk sini. Fitur yang bebas untuk semua tier tidak dijadikan poin
+// jualan, dan fitur yang belum diimplementasikan tidak dicantumkan sama sekali.
 export const FITUR_KOMPARASI = [
   {
-    kategori: 'Pemutaran & Kontrol Audio',
+    kategori: 'Memutar & Mengatur Lagu',
     items: [
-      { nama: 'Bypass Vote-Skip Instan', gratis: false, premium: true, plus: true, ultimate: true },
-      { nama: 'Batas Maksimal Antrean Lagu', gratis: '50 lagu', premium: '250 lagu', plus: '500 lagu', ultimate: 'Tanpa Batas (∞)' },
-      { nama: 'Batas Maksimal Volume Suara', gratis: '100%', premium: '150%', plus: '200%', ultimate: '200% (1 server)' },
-      { nama: 'Lompat Waktu Lagu (.seek instan)', gratis: false, premium: true, plus: true, ultimate: true },
-      { nama: 'Autoplay Rekomendasi NOXA Smart', gratis: true, premium: true, plus: true, ultimate: true },
+      { nama: 'Jumlah Lagu di Antrean', gratis: 'Tanpa Batas (∞)', premium: 'Tanpa Batas (∞)', plus: 'Tanpa Batas (∞)', ultimate: 'Tanpa Batas (∞)' },
+      { nama: 'Volume Maksimal', gratis: '100%', premium: '150%', plus: '200%', ultimate: '200% untuk semua member' },
+      { nama: 'Skip Lagu', gratis: 'Wajib voting mayoritas', premium: 'Langsung', plus: 'Langsung', ultimate: 'Langsung untuk semua member' },
+      { nama: 'Radio 24/7 Nonstop', gratis: 'Hanya Admin server', premium: false, plus: true, ultimate: true },
     ],
   },
   {
-    kategori: 'Kualitas Suara & Efek DSP',
+    kategori: 'Suara & Efek Audio',
     items: [
-      { nama: 'Bitrate Audio Output', gratis: 'Maks server (96k)', premium: 'Maks server (96k)', plus: 'Up to 320k', ultimate: 'Up to 320k (1 server)' },
-      { nama: 'Riwayat Dengar Bareng (Bot)', gratis: '5 orang', premium: '15 orang', plus: '25 orang', ultimate: 'Tanpa Batas (1 server)' },
-      { nama: 'Multi-Stack Efek Audio', gratis: '1 efek', premium: '1 efek', plus: 'Hingga 3 efek', ultimate: 'Bebas gabung semua' },
-      { nama: 'Custom Audio Equalizer 15-Band', gratis: false, premium: false, plus: false, ultimate: true },
-      { nama: 'Akses Efek Audio Beta', gratis: false, premium: true, plus: true, ultimate: true },
+      { nama: 'Efek Audio Aktif Bersamaan', gratis: '1 efek', premium: '2 efek', plus: '4 efek', ultimate: 'Tanpa batas' },
     ],
   },
   {
-    kategori: 'Stabilitas & Server Standby',
+    kategori: 'Ruang Pribadi (Playlist & Riwayat)',
     items: [
-      { nama: 'Mode Radio 24/7 (Non-Disconnect)', gratis: false, premium: false, plus: true, ultimate: true },
-      { nama: 'Cakupan Benefit', gratis: '1 server', premium: 'Pribadi - ikut kamu', plus: 'Pribadi - ikut kamu', ultimate: '1 server pilihan' },
+      { nama: 'Playlist Kustom Tersimpan', gratis: '3 playlist', premium: '15 playlist', plus: '40 playlist', ultimate: 'Tanpa batas (server aktif)' },
+      { nama: 'Dengar Bareng di Profil Web', gratis: '5 orang', premium: '20 orang', plus: '40 orang', ultimate: 'Sesuai paket individumu' },
+      { nama: 'Riwayat Lagu di Profil Web', gratis: '10 teratas', premium: '30 teratas', plus: '60 teratas', ultimate: 'Sesuai paket individumu' },
     ],
   },
   {
-    kategori: 'Personalisasi & Identitas Web (Paket Individu)',
+    kategori: 'Cakupan & Identitas',
     items: [
-      { nama: 'Lencana (Badge) Profil Web & Discord', gratis: false, premium: 'Gold Badge', plus: 'Platinum Badge', ultimate: 'Via Paket Individu' },
-      { nama: 'Simpan Playlist Kustom Pribadi', gratis: '3 playlist', premium: '10 playlist', plus: '25 playlist', ultimate: 'Tanpa Batas (1 server)' },
-      { nama: 'Riwayat Lagu di Profil', gratis: '10 teratas', premium: '25 teratas', plus: '50 teratas', ultimate: 'Via Paket Individu' },
-      { nama: 'Dukungan Tiket di Server Support', gratis: 'Komunitas', premium: 'Prioritas', plus: 'Prioritas Tinggi', ultimate: 'VIP 24/7 Direct' },
+      { nama: 'Cakupan Benefit', gratis: 'Per akun, semua server', premium: 'Pribadi - ikut kamu', plus: 'Pribadi - ikut kamu', ultimate: '1 server pilihan' },
+      { nama: 'Lencana Profil Web & Discord', gratis: false, premium: 'Gold', plus: 'Platinum', ultimate: 'Ultraviolet (pembeli)' },
     ],
   },
+];
+
+/**
+ * Cara pembeli membuktikan sendiri bahwa benefitnya benar-benar aktif di bot.
+ * Semua perintah di bawah memang ada di bot (prefix "."), bukan karangan.
+ */
+export const BUKTI_NYATA = [
+  { perintah: '.premium', judul: 'Lihat status & inventaris benefitmu', desc: 'Bot menampilkan centang per benefit sesuai paket yang benar-benar terbaca dari server.' },
+  { perintah: '.volume 200', judul: 'Uji batas volume', desc: 'Paket gratis ditolak di atas 100%. Premium 150%, Premium+ & Ultimate 200%.' },
+  { perintah: '.skip', judul: 'Uji skip instan', desc: 'Gratis: wajib voting kalau ada pendengar lain. Pemegang NOXA Pass: langsung lewat.' },
+  { perintah: '.radio', judul: 'Uji radio 24/7', desc: 'Hanya Admin server - kecuali kamu pemegang Premium+ atau Ultimate.' },
 ];
 
 // Catatan cakupan web (ditampilkan di tabel komparasi)
@@ -164,8 +175,8 @@ export const LANGKAH_AKTIVASI = [
 
 // Catatan kejujuran bitrate (ditampilkan di halaman premium)
 export const CATATAN_BITRATE =
-  'Bitrate audio mengikuti batas maksimum Discord: server tanpa boost dibatasi 96k, Boost Lv1 128k, Lv2 256k, Lv3 384k. ' +
-  'NOXA Pass Premium+ dan Ultimate menaikkan channel ke 320k hanya jika server mengizinkan - di server tanpa boost, kualitas tetap mengikuti batas Discord.';
+  'Bitrate audio sepenuhnya mengikuti batas Discord: server tanpa boost 96k, Boost Lv1 128k, Lv2 256k, Lv3 384k. ' +
+  'Bot otomatis menaikkan channel ke batas maksimum yang diizinkan server untuk semua tier, jadi NOXA Pass tidak menjanjikan angka di atas itu.';
 
 export function labelHarga(nominal) {
   return `Rp ${Number(nominal).toLocaleString('id-ID')}`;
@@ -181,13 +192,12 @@ export const BENEFIT_INVENTORY = [
   // Inventaris hanya berisi benefit BOT yang nyata diberlakukan.
   // cakupan 'keduanya' = aktif via paket individu (ikut pemiliknya) maupun
   // paket Ultimate (seluruh member 1 server pilihan).
-  { nama: 'Bebas Vote-Skip', emoji: 'lewati', cakupan: 'keduanya', nilai: { free: null, premium: true, 'premium-plus': true, 'premium-ultimate': true } },
-  { nama: 'Batas Antrean Lagu', emoji: 'antrian', cakupan: 'keduanya', nilai: { free: '50 lagu', premium: '250 lagu', 'premium-plus': '500 lagu', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Skip Lagu Instan', emoji: 'lewati', cakupan: 'keduanya', nilai: { free: null, premium: true, 'premium-plus': true, 'premium-ultimate': true } },
+  { nama: 'Mode Radio 24/7', emoji: 'radio', cakupan: 'keduanya', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
   { nama: 'Volume Maksimal', emoji: 'suara', cakupan: 'keduanya', nilai: { free: '100%', premium: '150%', 'premium-plus': '200%', 'premium-ultimate': '200%' } },
-  { nama: 'Efek Audio Aktif Bersamaan', emoji: 'efek', cakupan: 'keduanya', nilai: { free: '1 efek', premium: '1 efek', 'premium-plus': '3 efek', 'premium-ultimate': 'Tanpa batas' } },
-  { nama: 'Playlist Kustom Pribadi', emoji: 'playlist', cakupan: 'keduanya', nilai: { free: '3 playlist', premium: '10 playlist', 'premium-plus': '25 playlist', 'premium-ultimate': 'Tanpa batas' } },
-  { nama: 'Mode Radio 24/7 Nonstop', emoji: 'radio', cakupan: 'keduanya', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
-  { nama: 'Audio Up to 320k', emoji: 'musik', cakupan: 'keduanya', nilai: { free: null, premium: false, 'premium-plus': true, 'premium-ultimate': true } },
+  { nama: 'Efek Audio Aktif Bersamaan', emoji: 'efek', cakupan: 'keduanya', nilai: { free: '1 efek', premium: '2 efek', 'premium-plus': '4 efek', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Playlist Kustom Pribadi', emoji: 'playlist', cakupan: 'keduanya', nilai: { free: '3 playlist', premium: '15 playlist', 'premium-plus': '40 playlist', 'premium-ultimate': 'Tanpa batas' } },
+  { nama: 'Riwayat Lagu di Profil Web', emoji: 'userprofile', cakupan: 'individu', nilai: { free: '10 teratas', premium: '30 teratas', 'premium-plus': '60 teratas', 'premium-ultimate': 'Ikut paket individu' } },
 ];
 
 /** Nilai benefit untuk tier tertentu. */
