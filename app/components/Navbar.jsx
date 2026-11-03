@@ -147,7 +147,7 @@ export default function Navbar({ session, isAdmin = false }) {
           <Link
             href="/premium"
             prefetch={false}
-            className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-purple-500 bg-purple-600 px-2.5 py-1 text-xs font-bold text-white shadow-xs transition hover:-translate-y-px hover:border-purple-300 hover:bg-purple-500 sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
+            className="shimmer inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#B78CF2] bg-gradient-to-r from-[#5B21B6] via-[#7C3AED] to-[#A855F7] px-2.5 py-1 text-xs font-bold text-white shadow-[0_0_14px_rgba(124,58,237,0.45)] transition hover:-translate-y-px hover:brightness-110 sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
               src="/badges/noxa-premium-ultimate.png"
@@ -262,7 +262,7 @@ export default function Navbar({ session, isAdmin = false }) {
                 href="/premium"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between rounded-xl border border-purple-500 bg-purple-600 px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-purple-300 hover:bg-purple-500 transition"
+                className="shimmer relative flex items-center justify-between rounded-xl border border-[#B78CF2] bg-gradient-to-r from-[#5B21B6] via-[#7C3AED] to-[#A855F7] px-3 py-2.5 text-sm font-bold text-white shadow-[0_0_14px_rgba(124,58,237,0.45)] transition hover:brightness-110"
               >
                 <span className="flex items-center gap-2">
                   <img
@@ -275,7 +275,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   />
                   NOXA Pass
                 </span>
-                <span className="rounded-full bg-purple-500 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                <span className="relative rounded-full bg-[#F0A63C] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#241238]">
                   Premium
                 </span>
               </Link>
@@ -286,7 +286,7 @@ export default function Navbar({ session, isAdmin = false }) {
                   href="/admin"
                   prefetch={false}
                   onClick={() => setOpen(false)}
-                  className="flex items-center justify-between rounded-xl border border-purple-500 bg-purple-600 px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-purple-300 hover:bg-purple-500 transition"
+                  className="flex items-center justify-between rounded-xl border border-crimson bg-crimson px-3 py-2.5 text-sm font-bold text-white shadow-xs hover:border-neon hover:bg-[#930E1F] transition"
                 >
                   <span className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
