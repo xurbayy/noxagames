@@ -1,44 +1,44 @@
-// FAQ NOXA Sound. Gaya: jawaban manusia, konkret, ada angka dan perilaku nyata
-// dari bot. Tanpa tanda kurung, tanpa titik dua, tanpa em-dash.
+// FAQ NOXA Sound. Gaya: kalimat pendek, satu ide per kalimat (restyle
+// sederhana ala Soundly/Boogie). Fakta & angka nyata dari bot tetap ada.
 export const faqList = [
   {
     q: 'Bayar tidak?',
-    a: 'Tidak. Semua fitur musik, podcast, dan radio bebas dipakai. NOXA Pass hanya kenyamanan tambahan - tidak mengunci fitur dasar.',
+    a: 'Gratis. Musik, podcast, dan radio bebas dipakai. NOXA Pass cuma kenyamanan tambahan.',
   },
   {
     q: 'Gimana cara mulainya?',
-    a: 'Invite bot, masuk voice channel, ketik .play diikuti judul lagu. Bot menampilkan 10 hasil teratas dalam dropdown, kamu pilih satu, langsung jalan. Tanpa daftar akun, tanpa setup.',
+    a: 'Invite bot, masuk voice, ketik .play plus judul lagu. Pilih dari 10 hasil, langsung jalan.',
   },
   {
     q: 'Panel pemutarnya muncul di mana?',
-    a: 'Di channel tempat kamu mengetik perintah. Bot tidak pernah mengirim panel ke channel lain sembarangan, jadi chat umum tetap rapi.',
+    a: 'Di channel tempat kamu mengetik. Chat lain tetap bersih.',
   },
   {
     q: 'Siapa yang boleh nyalakan radio?',
-    a: 'Hanya admin server. Member biasa yang ingin mematikannya bisa ajukan voting, dan radio berhenti kalau mayoritas setuju. Isinya lagu populer yang tidak diulang sampai pool-nya habis diputar.',
+    a: 'Admin. Member bisa ajukan voting, radio berhenti kalau mayoritas setuju.',
   },
   {
     q: 'Bisa putar dari link?',
-    a: 'Bisa. Tempel link YouTube atau Spotify di belakang .play dan metadata lengkapnya diambil otomatis. Link dari situs lain ditolak, demi keamanan server kamu sendiri.',
+    a: 'Bisa. YouTube dan Spotify dideteksi otomatis. Di luar itu ditolak, demi keamanan servermu.',
   },
   {
-    q: 'Kualitas audionya seberapa bagus?',
-    a: 'Bot memilih stream dengan bitrate tertinggi yang tersedia, lalu menormalkan loudness-nya biar aman didengar keras tanpa pecah. Di server dengan boost, bitrate voice ikut dinaikkan sampai 384k.',
+    q: 'Kualitas audionya?',
+    a: 'Bitrate tertinggi yang tersedia, loudness dinormalkan. Server boost bisa sampai 384k.',
   },
   {
     q: 'Kenapa pesan bot hilang sendiri?',
-    a: 'Itu auto-clean. Pesan bot di channel terhapus otomatis setelah 45 detik supaya chat tidak banjir. Panel pemutar dan pesan bantuan tidak ikut terhapus.',
+    a: 'Auto-clean 45 detik, biar chat tidak banjir. Panel dan pesan bantuan tetap tinggal.',
   },
   {
-    q: 'Liriknya bisa salah lagu nggak?',
-    a: 'Kemungkinannya kecil. Lirik diverifikasi dari beberapa provider sebelum ditampilkan, dan live liriknya menyala per baris mengikuti posisi lagu yang benar-benar berjalan.',
+    q: 'Liriknya bisa salah?',
+    a: 'Jarang. Lirik diverifikasi antar provider dulu, live-iknya menyala per baris.',
   },
   {
-    q: 'Data apa yang disimpan dari aktivitasku?',
-    a: 'ID Discord, username, durasi mendengarkan, dan lagu yang diputar. Data itu yang membentuk halaman Top dan profil pendengarmu. Isi percakapan tidak disimpan.',
+    q: 'Data apa yang disimpan?',
+    a: 'ID, username, durasi dengar, dan judul lagu. Isi percakapan tidak pernah disimpan.',
   },
   {
-    q: 'Bot keluar sendiri dari voice, kenapa?',
-    a: 'Perilaku normal. Saat antrian habis atau semua orang keluar, bot ikut keluar supaya tidak jadi penghuni hantu. Ketik perintah lagi nanti, dia masuk kembali ke channel kamu otomatis.',
+    q: 'Bot keluar dari voice sendiri?',
+    a: 'Normal. Antrian habis atau semua keluar, bot ikut pulang. Dipanggil lagi, dia balik.',
   },
 ];
