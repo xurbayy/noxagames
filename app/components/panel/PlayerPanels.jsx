@@ -210,6 +210,13 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
 
   const popProps = { openPop, setOpenPop, popRef };
 
+  const progressRatio = song.duration > 0 ? Math.min(1, pos / song.duration) : 0;
+  const barLen = 12;
+  const filledBars = Math.min(barLen, Math.max(0, Math.round(progressRatio * barLen)));
+  const leftBar = '▬'.repeat(filledBars);
+  const rightBar = '▬'.repeat(Math.max(0, barLen - filledBars));
+  const progressBarStr = `${formatDiscordTime(pos)} ${leftBar}🔘${rightBar} ${formatDiscordTime(song.duration)}`;
+
   return (
     <div>
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
@@ -220,43 +227,61 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
           title={`${song.name}`}
           titleUrl="#"
           description={
-            <>
-              <span className="inline-flex items-center gap-1.5">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 flex-wrap">
                 <Emoji name="musik" size={16} /> <b>MODE MUSIK</b> • <Emoji name="NOXASmart" size={16} />
-              </span>
-              <br />
-              <span className="inline-flex items-center gap-1.5 flex-wrap">
-                <Emoji name="pemiliklagu" size={16} /> <b>Pemilik Lagu:</b> <CodeText text={song.autoplay ? 'NOXA Smart' : 'demo_tester'} />
-              </span>
-            </>
+              </div>
+              <div className="text-[13px] text-[#DBDEE1] space-y-1">
+                <div>&gt; 🎙️ <b>Artis:</b> <CodeText text={song.uploader} /></div>
+                <div>&gt; <Emoji name="pemiliklagu" size={14} /> <b>Pemilik Lagu:</b> <CodeText text={song.autoplay ? 'NOXA Smart' : 'demo_tester'} /></div>
+                <div>&gt; <Emoji name={likeCount > 0 ? "sukapenuh" : "sukakosong"} size={14} /> <b>Disukai:</b> <CodeText text={`${likeCount} orang`} /></div>
+              </div>
+              <div className="py-1 font-mono text-[13px] text-[#F2F3F5] tracking-wide">
+                <CodeText text={progressBarStr} />
+              </div>
+              <div className="text-[12px] text-[#949BA4] flex flex-wrap items-center gap-1.5">
+                <span>🔊 <CodeText text={`${volume}%`} /></span>
+                <span>•</span>
+                <span>🔁 <CodeText text={`Loop: ${loop.label}`} /></span>
+                <span>•</span>
+                <span>🔀 <CodeText text={`Acak: ${shuffle ? 'Aktif' : 'Mati'}`} /></span>
+                <span>•</span>
+                <span>📻 <CodeText text={`Autoplay: ${autoplay ? 'ON' : 'OFF'}`} /></span>
+                <span>•</span>
+                <span>🎚️ <CodeText text="Standard 96k" /></span>
+              </div>
+              {hasActiveEffects && (
+                <div className="text-[12px] text-[#DBDEE1]">
+                  ✨ <b>Efek:</b> <CodeText text={filters.map(capFilter).join(', ')} />
+                </div>
+              )}
+              {nextSong && (
+                <div className="text-[12px] text-[#DBDEE1]">
+                  ⏭️ <b>Berikutnya:</b> <b>{nextSong.name.substring(0, 35)}...</b> {nextSong.autoplay ? <i>(Autoplay)</i> : <CodeText text={`(${formatDiscordTime(nextSong.duration)})`} />}
+                </div>
+              )}
+              {chat.length > 0 && (
+                <div className="text-[12px] text-[#B5BAC1] border-t border-[#3F4147]/50 pt-1.5 space-y-0.5">
+                  <div className="font-semibold text-white">💬 Live Chat:</div>
+                  {chat.slice(-2).map((c, i) => (
+                    <div key={i} className="italic">&gt; <b>{c.user}:</b> {c.text}</div>
+                  ))}
+                </div>
+              )}
+            </div>
           }
           image={demoArt(idx)}
-          fields={[
-            { name: 'Artis / Uploader', value: <CodeText text={song.uploader} />, inline: true },
-            { name: 'Durasi', value: <CodeText text={`${formatDiscordTime(pos)} / ${formatDiscordTime(song.duration)}`} />, inline: true },
-            { name: 'Disukai oleh', value: <CodeText text={`${likeCount} orang`} />, inline: true },
-            {
-              name: 'Live Chat',
-              value: chat.length
-                ? chat.map((c, i) => <span key={i} className="block italic text-[#B5BAC1]">{`> ${c.user}: ${c.text}`}</span>)
-                : <i className="text-[#B5BAC1]">Kosong. Klik tombol Chat.</i>,
-            },
-            { name: 'Status', value: <CodeText text={statusText} /> },
-            ...(hasActiveEffects
-              ? [{ name: 'Efek Aktif', value: <CodeText text={filters.map(capFilter).join(', ')} />, inline: true }]
-              : []),
-          ]}
           footer={
             nextSong
               ? nextSong.autoplay
                 ? `Berikutnya (Autoplay): ${nextSong.name.substring(0, 35)}...`
                 : `Berikutnya: ${nextSong.name.substring(0, 35)}...`
-              : 'Lagu terakhir di antrean.'
+              : 'Lagu terakhir di antrean • NOXA Sound v2'
           }
           timestamp={jam}
         />
 
-        {/* Baris 1: mundur, jeda, maju, lewati, hentikan */}
+        {/* Baris 1: mundur, jeda, maju, hentikan, lewati */}
         <ActionRow compact={compact}>
           <DiscordButton emoji="mundur" label="Mundur" disabled={isRewindDisabled}
             onClick={() => { setPos((p) => Math.max(0, p - 10)); setOpenPop(null); }} />
@@ -264,66 +289,104 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
             onClick={() => setPaused((p) => !p)} />
           <DiscordButton emoji="maju" label="Maju" disabled={isForwardDisabled}
             onClick={() => { setPos((p) => Math.min(song.duration - 1, p + 10)); setOpenPop(null); }} />
-          <DiscordButton emoji="lewati" label="Lewati" disabled={idx >= DEMO_TRACKS.length - 1 && !autoplay && repeatMode === 0}
-            onClick={nextTrack} />
           <DiscordButton emoji="berhenti" label="Hentikan"
             onClick={() => { onSwitch('standby'); setOpenPop(null); }} />
+          <DiscordButton emoji="lewati" label="Lewati" disabled={idx >= DEMO_TRACKS.length - 1 && !autoplay && repeatMode === 0}
+            onClick={nextTrack} />
         </ActionRow>
 
-        {/* Baris 2: like, ulangi, antrian, lirik, chat */}
+        {/* Baris 2: like, ulangi, tambah */}
         <ActionRow compact={compact}>
           <DiscordButton emoji={likeCount > 0 ? 'sukapenuh' : 'sukakosong'} label={`${likeCount}`}
             onClick={() => setLiked((l) => !l)} title="Suka lagu ini" />
           <DiscordButton emoji={loop.emoji} label={loop.label} style={loop.style}
             onClick={() => setRepeatMode((m) => (m + 1) % 3)} />
-          <PopButton {...popProps} id="queue" emoji="antrian" label="Antrian" disabled={isQueueEmpty}
-            title="Lihat antrian">
-            <QueuePop tracks={DEMO_TRACKS} idx={idx} onJump={(i) => { setIdx(i); setPos(0); setOpenPop(null); }} />
-          </PopButton>
-          <PopButton {...popProps} id="lyrics" emoji="lirik" label="Lirik">
-            <LyricsPop song={song} />
-          </PopButton>
-          <PopButton {...popProps} id="chat" emoji="chat" label="Chat">
-            <ChatPop chat={chat} onSend={(t) => { setChat((c) => [...c, { user: 'kamu', text: t }]); }} />
-          </PopButton>
-        </ActionRow>
-
-        {/* Baris 3: tambah, podcast, suara, autoplay, efek */}
-        <ActionRow compact={compact}>
           <DiscordButton emoji="tambahmusik" label="Tambah"
             onClick={() => { setIdx(0); setPos(0); setPaused(false); setOpenPop(null); }} />
-          <DiscordButton emoji="podcast" label="Podcast" onClick={() => onSwitch('podcast')} />
-          <PopButton {...popProps} id="volume" emoji="suara" label="Suara">
-            <VolumePop value={volume} input={volInput} setInput={setVolInput}
-              onSet={(v) => { setVolume(v); setOpenPop(null); }} />
-          </PopButton>
-          <DiscordButton emoji="autoplay" label="Autoplay" style={autoplay ? 'primary' : 'secondary'}
-            onClick={() => setAutoplay((a) => !a)} />
-          <PopButton {...popProps} id="effects" emoji="efek" label="Efek" style={hasActiveEffects ? 'primary' : 'secondary'}>
-            <EffectsPop filters={filters} onPick={setFilterValue} onReset={() => setFilters([])} />
-          </PopButton>
         </ActionRow>
 
-        {/* Baris 4: profile, playlist, acak, bantuan */}
-        <ActionRow compact={compact}>
-          <PopButton {...popProps} id="profile" emoji="userprofile" label="Profile">
-            <InfoPop judul="Profile">
-              Di Discord, tombol ini menampilkan kartu analitik mendengarkan yang sama dengan profil di halaman <b>/me</b> web ini.
-            </InfoPop>
-          </PopButton>
-          <PopButton {...popProps} id="playlists" emoji="playlist" label="Playlist">
-            <InfoPop judul="Playlist">
-              Di Discord, tombol ini membuka dashboard playlist pribadi, playlist populer member, dan koleksi lagu yang kamu suka.
-            </InfoPop>
-          </PopButton>
-          <DiscordButton emoji="Shuffle" label="Acak" style={shuffle ? 'primary' : 'secondary'} disabled={isShuffleDisabled}
-            onClick={() => setShuffle((s) => !s)} title={isShuffleDisabled ? 'Acak butuh minimal 6 lagu di antrian' : undefined} />
-          <PopButton {...popProps} id="help" emoji="bantuan" label="Bantuan">
-            <InfoPop judul="Bantuan">
-              Di Discord, tombol ini membuka panel panduan lengkap dengan menu kategori, sama seperti halaman <b>/panduan</b> web ini.
-            </InfoPop>
-          </PopButton>
-        </ActionRow>
+        {/* Baris 3: Dropdown Fitur Lengkap */}
+        <div className="relative mt-2" ref={popRef}>
+          <button
+            type="button"
+            onClick={() => setOpenPop(openPop === 'dropdown' ? null : 'dropdown')}
+            className="flex w-full items-center justify-between gap-2 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-3 py-2 text-[13px] text-[#DBDEE1] hover:border-[#4E5058] hover:bg-[#2B2D31] transition cursor-pointer"
+          >
+            <span className="flex items-center gap-2 truncate">
+              <Emoji name="fitur" size={16} />
+              <span>⚡ Fitur Lainnya (Antrian, Lirik, Efek, Volume, dll...)</span>
+            </span>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className={`transition-transform shrink-0 ${openPop === 'dropdown' ? 'rotate-180' : ''}`}>
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
+          </button>
+
+          {openPop === 'dropdown' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30 shadow-2xl">
+              <MenuBox maxHeight="max-h-64">
+                <MenuRow emoji="antrian" label={`Antrian Lagu (${DEMO_TRACKS.length} lagu)`} onClick={() => { setOpenPop('queue'); }} />
+                <MenuRow emoji="lirik" label="Lirik Lagu" onClick={() => { setOpenPop('lyrics'); }} />
+                <MenuRow emoji="efek" label="Efek Suara & EQ" onClick={() => { setOpenPop('effects'); }} />
+                <MenuRow emoji="suara" label={`Atur Volume (${volume}%)`} onClick={() => { setOpenPop('volume'); }} />
+                <MenuRow emoji="autoplay" label={autoplay ? "Matikan Autoplay" : "Aktifkan Autoplay"} onClick={() => { setAutoplay(a => !a); setOpenPop(null); }} />
+                <MenuRow emoji="Shuffle" label={`Acak Antrian (${shuffle ? "Aktif" : "Mati"})`} onClick={() => { setShuffle(s => !s); setOpenPop(null); }} />
+                <MenuRow emoji="chat" label="Live Chat" onClick={() => { setOpenPop('chat'); }} />
+                <MenuRow emoji="podcast" label="Studio Podcast" onClick={() => { onSwitch('podcast'); setOpenPop(null); }} />
+                <MenuRow emoji="playlist" label="Koleksi Playlist" onClick={() => { setOpenPop('playlists'); }} />
+                <MenuRow emoji="userprofile" label="Profil Pendengar" onClick={() => { setOpenPop('profile'); }} />
+                <MenuRow emoji="bantuan" label="Panduan & Bantuan" onClick={() => { setOpenPop('help'); }} />
+              </MenuBox>
+            </div>
+          )}
+
+          {/* Popups yang dibuka lewat dropdown */}
+          {openPop === 'queue' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <QueuePop tracks={DEMO_TRACKS} idx={idx} onJump={(i) => { setIdx(i); setPos(0); setOpenPop(null); }} />
+            </div>
+          )}
+          {openPop === 'lyrics' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <LyricsPop song={song} />
+            </div>
+          )}
+          {openPop === 'volume' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <VolumePop value={volume} input={volInput} setInput={setVolInput} onSet={(v) => { setVolume(v); setOpenPop(null); }} />
+            </div>
+          )}
+          {openPop === 'effects' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <EffectsPop filters={filters} onPick={setFilterValue} onReset={() => setFilters([])} />
+            </div>
+          )}
+          {openPop === 'chat' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <ChatPop chat={chat} onSend={(t) => { setChat((c) => [...c, { user: 'kamu', text: t }]); }} />
+            </div>
+          )}
+          {openPop === 'profile' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <InfoPop judul="Profile">
+                Di Discord, opsi ini menampilkan kartu analitik mendengarkan yang sama dengan profil di halaman <b>/me</b> web ini.
+              </InfoPop>
+            </div>
+          )}
+          {openPop === 'playlists' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <InfoPop judul="Playlist">
+                Di Discord, opsi ini membuka dashboard playlist pribadi, playlist populer member, dan koleksi lagu yang kamu suka.
+              </InfoPop>
+            </div>
+          )}
+          {openPop === 'help' && (
+            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+              <InfoPop judul="Bantuan">
+                Di Discord, opsi ini membuka panel panduan lengkap dengan menu kategori, sama seperti halaman <b>/panduan</b> web ini.
+              </InfoPop>
+            </div>
+          )}
+        </div>
 
         {openPop === 'seek' && null}
       </MessageAndRows>
