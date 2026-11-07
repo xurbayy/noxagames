@@ -350,8 +350,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
         <ActionRow compact={compact}>
           <DiscordButton
             emoji={likeCount > 0 ? "sukapenuh" : "sukakosong"}
-            label={`Suka (${likeCount})`}
-            style={likeCount > 0 ? "success" : "secondary"}
+            label={`${likeCount}`}
             onClick={() => setLiked((l) => !l)}
             title="Suka lagu ini"
           />
