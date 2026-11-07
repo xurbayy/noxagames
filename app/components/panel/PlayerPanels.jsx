@@ -93,6 +93,79 @@ function capFilter(f) {
   return f.charAt(0).toUpperCase() + f.slice(1);
 }
 
+// Komponen kartu Vinyl berputar dengan progress ring dinamis (referensi desain)
+function VinylPlayerCard({ song, pos, paused, accentColor = '#B80012', idx = 0 }) {
+  const progressRatio = song.duration > 0 ? Math.min(1, pos / song.duration) : 0;
+  const radius = 50;
+  const circ = 2 * Math.PI * radius;
+  const strokeDashoffset = circ - progressRatio * circ;
+
+  return (
+    <div className="relative my-3 flex items-center gap-3.5 sm:gap-5 rounded-3xl border border-white/10 bg-gradient-to-r from-[#211013] via-[#160D10] to-[#0C090B] p-3 sm:p-4 shadow-xl overflow-hidden">
+      {/* Vinyl dengan cincin progress ring */}
+      <div className="relative flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center">
+        {/* SVG Progress Ring */}
+        <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r={radius} fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="6" />
+          <circle
+            cx="60"
+            cy="60"
+            r={radius}
+            fill="none"
+            stroke={accentColor}
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={strokeDashoffset}
+            className="transition-all duration-300"
+          />
+        </svg>
+
+        {/* Piringan Vinyl berputar */}
+        <div
+          className={`relative flex h-20 w-20 sm:h-22 sm:w-22 items-center justify-center rounded-full bg-[#121214] shadow-inner border border-[#252528] ${
+            paused ? '' : 'animate-spin'
+          }`}
+          style={{ animationDuration: '3.5s', animationTimingFunction: 'linear' }}
+        >
+          {/* Alur vinyl (grooves) */}
+          <div className="absolute inset-1.5 rounded-full border border-white/5" />
+          <div className="absolute inset-3 rounded-full border border-white/5" />
+          <div className="absolute inset-4.5 rounded-full border border-white/5" />
+          {/* Label tengah (artwork album) */}
+          <div className="relative h-9 w-9 sm:h-10 sm:w-10 overflow-hidden rounded-full border border-white/20 shadow-md">
+            <img src={demoArt(idx)} alt="" className="h-full w-full object-cover" />
+          </div>
+          {/* Lubang poros tengah */}
+          <div className="absolute h-2 w-2 rounded-full bg-[#0B0B0E] border border-white/60" />
+        </div>
+      </div>
+
+      {/* Info Lagu */}
+      <div className="min-w-0 flex-1">
+        <h4 className="truncate font-display text-base sm:text-lg font-bold text-white">
+          {song.name}
+        </h4>
+        <p className="truncate text-xs sm:text-sm font-medium text-[#A4A4AC]">
+          {song.uploader}
+        </p>
+        <p className="mt-1 font-mono text-xs sm:text-sm font-semibold text-[#D4D4DC]">
+          {formatDiscordTime(pos)} / {formatDiscordTime(song.duration)}
+        </p>
+      </div>
+
+      {/* Gelombang suara di kanan */}
+      <div className="mr-2 hidden items-end gap-1 sm:flex h-8 shrink-0">
+        <span className={`w-1 rounded-full ${paused ? 'h-3' : 'h-4 animate-pulse'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-5' : 'h-7 animate-pulse delay-75'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-7' : 'h-5 animate-pulse delay-150'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-4' : 'h-8 animate-pulse delay-100'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-6' : 'h-3 animate-pulse delay-200'}`} style={{ backgroundColor: accentColor }} />
+      </div>
+    </div>
+  );
+}
+
 // ---------- Showcase ----------
 export default function PlayerShowcase({ singleMode = null, botAvatar = null, compact = false }) {
   const [tab, setTab] = useState(singleMode || 'music');
@@ -256,6 +329,9 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
           timestamp={jam}
         />
 
+        {/* Piringan Vinyl Berputar dengan Cincin Progress */}
+        <VinylPlayerCard song={song} pos={pos} paused={paused} accentColor="#B80012" idx={idx} />
+
         {/* Baris 1: mundur, jeda, maju, hentikan, lewati */}
         <ActionRow compact={compact}>
           <DiscordButton emoji="mundur" label="Mundur" disabled={isRewindDisabled}
@@ -270,7 +346,24 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
             onClick={nextTrack} />
         </ActionRow>
 
-        {/* Baris 2: Dropdown Fitur Lainnya */}
+        {/* Baris 2: Tombol Like & Ulangi */}
+        <ActionRow compact={compact}>
+          <DiscordButton
+            emoji={likeCount > 0 ? "sukapenuh" : "sukakosong"}
+            label={`Suka (${likeCount})`}
+            style={likeCount > 0 ? "success" : "secondary"}
+            onClick={() => setLiked((l) => !l)}
+            title="Suka lagu ini"
+          />
+          <DiscordButton
+            emoji={loop.emoji}
+            label={loop.label}
+            style={loop.style}
+            onClick={() => setRepeatMode((m) => (m + 1) % 3)}
+          />
+        </ActionRow>
+
+        {/* Baris 3: Dropdown Fitur Lainnya */}
         <div className="relative mt-2" ref={popRef}>
           <button
             type="button"
@@ -279,7 +372,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
           >
             <span className="flex items-center gap-2 truncate">
               <Emoji name="fitur" size={16} />
-              <span>⚡ Fitur Lainnya (Like, Antrian, Lirik, Efek, dll...)</span>
+              <span>⚡ Fitur Lainnya (Antrian, Lirik, Efek, Volume, dll...)</span>
             </span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className={`transition-transform shrink-0 ${openPop === 'dropdown' ? 'rotate-180' : ''}`}>
               <path d="M7 10l5 5 5-5z" />
@@ -289,8 +382,6 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
           {openPop === 'dropdown' && (
             <div className="absolute inset-x-0 bottom-full mb-1.5 z-30 shadow-2xl">
               <MenuBox maxHeight="max-h-64">
-                <MenuRow emoji={likeCount > 0 ? "sukapenuh" : "sukakosong"} label={`Like Lagu (${likeCount})`} onClick={() => { setLiked((l) => !l); setOpenPop(null); }} />
-                <MenuRow emoji={loop.emoji} label={loop.label} onClick={() => { setRepeatMode((m) => (m + 1) % 3); setOpenPop(null); }} />
                 <MenuRow emoji="antrian" label={`Antrian Lagu (${DEMO_TRACKS.length} lagu)`} onClick={() => { setOpenPop('queue'); }} />
                 <MenuRow emoji="lirik" label="Lirik Lagu" onClick={() => { setOpenPop('lyrics'); }} />
                 <MenuRow emoji="chat" label="Live Chat" onClick={() => { setOpenPop('chat'); }} />
