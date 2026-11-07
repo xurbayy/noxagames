@@ -363,14 +363,14 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
           />
         </ActionRow>
 
-        {/* Baris 3: Dropdown Fitur Lainnya (Aesthetic & Clean, tanpa emoji) */}
+        {/* Baris 3: Dropdown Fitur Lainnya */}
         <div className="relative mt-2" ref={popRef}>
           <button
             type="button"
             onClick={() => setOpenPop(openPop === 'dropdown' ? null : 'dropdown')}
             className="flex w-full items-center justify-between gap-2 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-3 py-2 text-[13px] text-[#DBDEE1] hover:border-[#4E5058] hover:bg-[#2B2D31] transition cursor-pointer"
           >
-            <span className="truncate">Pilih fitur lainnya...</span>
+            <span className="truncate">Fitur Lainnya</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className={`transition-transform shrink-0 ${openPop === 'dropdown' ? 'rotate-180' : ''}`}>
               <path d="M7 10l5 5 5-5z" />
             </svg>
@@ -379,18 +379,18 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
           {openPop === 'dropdown' && (
             <div className="absolute inset-x-0 bottom-full mb-1.5 z-30 shadow-2xl">
               <MenuBox maxHeight="max-h-64">
-                <MenuRow label="Antrian Lagu" onClick={() => { setOpenPop('queue'); }} />
-                <MenuRow label="Lirik Lagu" onClick={() => { setOpenPop('lyrics'); }} />
-                <MenuRow label="Live Chat" onClick={() => { setOpenPop('chat'); }} />
-                <MenuRow label="Tambah Lagu" onClick={() => { setIdx(0); setPos(0); setPaused(false); setOpenPop(null); }} />
-                <MenuRow label="Studio Podcast" onClick={() => { onSwitch('podcast'); setOpenPop(null); }} />
-                <MenuRow label="Atur Volume" onClick={() => { setOpenPop('volume'); }} />
-                <MenuRow label="Autoplay" onClick={() => { setAutoplay(a => !a); setOpenPop(null); }} />
-                <MenuRow label="Efek Suara & EQ" onClick={() => { setOpenPop('effects'); }} />
-                <MenuRow label="Profil Pendengar" onClick={() => { setOpenPop('profile'); }} />
-                <MenuRow label="Koleksi Playlist" onClick={() => { setOpenPop('playlists'); }} />
-                <MenuRow label="Acak Antrian" onClick={() => { setShuffle(s => !s); setOpenPop(null); }} />
-                <MenuRow label="Panduan & Bantuan" onClick={() => { setOpenPop('help'); }} />
+                <MenuRow emoji="antrian" label="Antrian Lagu" onClick={() => { setOpenPop('queue'); }} />
+                <MenuRow emoji="lirik" label="Lirik Lagu" onClick={() => { setOpenPop('lyrics'); }} />
+                <MenuRow emoji="chat" label="Live Chat" onClick={() => { setOpenPop('chat'); }} />
+                <MenuRow emoji="tambahmusik" label="Tambah Lagu" onClick={() => { setIdx(0); setPos(0); setPaused(false); setOpenPop(null); }} />
+                <MenuRow emoji="podcast" label="Studio Podcast" onClick={() => { onSwitch('podcast'); setOpenPop(null); }} />
+                <MenuRow emoji="suara" label="Atur Volume" onClick={() => { setOpenPop('volume'); }} />
+                <MenuRow emoji="autoplay" label="Autoplay" onClick={() => { setAutoplay(a => !a); setOpenPop(null); }} />
+                <MenuRow emoji="efek" label="Efek Suara & EQ" onClick={() => { setOpenPop('effects'); }} />
+                <MenuRow emoji="userprofile" label="Profil Pendengar" onClick={() => { setOpenPop('profile'); }} />
+                <MenuRow emoji="playlist" label="Koleksi Playlist" onClick={() => { setOpenPop('playlists'); }} />
+                <MenuRow emoji="Shuffle" label="Acak Antrian" onClick={() => { setShuffle(s => !s); setOpenPop(null); }} />
+                <MenuRow emoji="bantuan" label="Panduan & Bantuan" onClick={() => { setOpenPop('help'); }} />
               </MenuBox>
             </div>
           )}
