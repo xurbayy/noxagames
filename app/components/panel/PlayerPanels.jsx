@@ -346,7 +346,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
             onClick={nextTrack} />
         </ActionRow>
 
-        {/* Baris 2: Tombol Like & Ulangi */}
+        {/* Baris 2: Tombol Like, Ulangi, Tambah */}
         <ActionRow compact={compact}>
           <DiscordButton
             emoji={likeCount > 0 ? "sukapenuh" : "sukakosong"}
@@ -360,6 +360,11 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
             label={loop.label}
             style={loop.style}
             onClick={() => setRepeatMode((m) => (m + 1) % 3)}
+          />
+          <DiscordButton
+            emoji="tambahmusik"
+            label="Tambah"
+            onClick={() => { setIdx(0); setPos(0); setPaused(false); setOpenPop(null); }}
           />
         </ActionRow>
 
@@ -382,7 +387,6 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
                 <MenuRow emoji="antrian" label="Antrian Lagu" onClick={() => { setOpenPop('queue'); }} />
                 <MenuRow emoji="lirik" label="Lirik Lagu" onClick={() => { setOpenPop('lyrics'); }} />
                 <MenuRow emoji="chat" label="Live Chat" onClick={() => { setOpenPop('chat'); }} />
-                <MenuRow emoji="tambahmusik" label="Tambah Lagu" onClick={() => { setIdx(0); setPos(0); setPaused(false); setOpenPop(null); }} />
                 <MenuRow emoji="podcast" label="Studio Podcast" onClick={() => { onSwitch('podcast'); setOpenPop(null); }} />
                 <MenuRow emoji="suara" label="Atur Volume" onClick={() => { setOpenPop('volume'); }} />
                 <MenuRow emoji="autoplay" label="Autoplay" onClick={() => { setAutoplay(a => !a); setOpenPop(null); }} />
