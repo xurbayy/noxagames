@@ -1,34 +1,32 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import BackButton from '../components/BackButton';
 import TopTabsView from '../components/top/TopTabsView';
 import { getSession } from '../lib/session';
-import { getSnapshot, botAlive, ageLabel, topSongs, topServers, topListeners } from '../lib/snapshot';
+import { getSnapshot, botAlive, ageLabel, topSongs, topListeners } from '../lib/snapshot';
 import { pageMeta, SUPPORT_INVITE } from '../lib/site';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata = pageMeta({
-  title: 'Top Lagu, Server & Listener',
-  description: 'Lagu paling banyak didengar, server paling aktif, dan pendengar paling setia di seluruh server yang memakai NOXA Sound.',
+  title: 'Top Lagu & Listener',
+  description: 'Lagu paling banyak didengar dan pendengar paling setia di seluruh server yang memakai NOXA Sound.',
   path: '/top',
 });
 
 export default async function TopPage() {
   const session = await getSession().catch(() => null);
+  // Halaman Top hanya untuk member yang login.
+  if (!session) redirect('/login');
   const snap = await getSnapshot();
   const lagu = topSongs(snap?.data).slice(0, 10);
-  // Hanya tampilkan server yang memiliki link invite (bisa dikunjungi).
-  // Server privat / tanpa invite tidak ditampilkan.
-  const server = topServers(snap?.data)
-    .filter((g) => Boolean(g && g.inviteUrl && (Number(g.duration) > 0 || Number(g.users) > 0)))
-    .slice(0, 10);
   // Bot kadang masih menyertakan pendengar dengan 0 lagu selesai / 0 durasi
   // (baris statistik kosong). Entri seperti itu tidak layak masuk peringkat.
   const listener = topListeners(snap?.data)
     .filter((u) => Number(u.plays) > 0 && Number(u.duration) > 0)
     .slice(0, 10);
   const hidup = botAlive(snap);
-  const adaData = lagu.length > 0 || server.length > 0 || listener.length > 0;
+  const adaData = lagu.length > 0 || listener.length > 0;
 
   return (
     <div className="mx-auto max-w-4xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)]">
@@ -45,7 +43,6 @@ export default async function TopPage() {
         <TopTabsView
           lagu={lagu}
           listener={listener}
-          server={server}
           session={session}
         />
       )}

@@ -6,9 +6,9 @@
 // Label kategori UI tetap teks polos tanpa emoji unicode.
 export const NOXA_EMOJIS = {
   // Lencana NOXA Pass (premium tier)
-  noxapremium: '1565753704089657455',
-  noxapremiumplus: '1565753939133989065',
-  noxapremiumultimate: '1565753687916281996',
+  noxapremium: '1570070339499724800',
+  noxapremiumplus: '1570070356620877865',
+  noxapremiumultimate: '1570070371598737438',
   // Kontrol pemutar
   jeda: '1563498733075824740',
   mulai: '1563498851678167100',

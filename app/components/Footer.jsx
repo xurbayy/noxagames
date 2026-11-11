@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SITE_NAME, SUPPORT_INVITE } from '../lib/site';
 
-export default function Footer() {
+export default function Footer({ loggedIn = false }) {
   // Halaman login dibuat berdiri sendiri: tanpa footer supaya fokus ke kartu
   // masuk dan halamannya tidak terasa "ikut halaman lain".
   const pathname = usePathname();
@@ -37,7 +37,9 @@ export default function Footer() {
           <div className="text-xs font-bold uppercase tracking-wider text-faint">Jelajahi</div>
           <ul className="mt-3 space-y-2 text-sm">
             <li><Link href="/panduan" className="text-muted hover:text-neon transition-colors">Panduan Perintah</Link></li>
-            <li><Link href="/top" className="text-muted hover:text-neon transition-colors">Top Lagu & Listener</Link></li>
+            {loggedIn && (
+              <li><Link href="/top" className="text-muted hover:text-neon transition-colors">Top Lagu & Listener</Link></li>
+            )}
             <li><Link href="/komunitas" className="text-muted hover:text-neon transition-colors">Komunitas Server</Link></li>
             <li><Link href="/tentang" className="text-muted hover:text-neon transition-colors">Tentang NOXA</Link></li>
             <li><Link href="/premium" className="text-muted hover:text-neon transition-colors">NOXA Pass</Link></li>

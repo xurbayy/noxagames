@@ -105,7 +105,7 @@ export default function FeedbackButton() {
                   onClick={() => setJenis(j.id)}
                   className={`rounded-lg border px-1 py-1.5 text-[10px] font-bold transition cursor-pointer sm:text-[11px] ${
                     jenis === j.id
-                      ? 'border-crimson bg-[#3B0004] text-neon'
+                      ? 'border-crimson bg-crimson/15 text-neon'
                       : 'border-line bg-surface3 text-muted hover:text-ink'
                   }`}
                 >

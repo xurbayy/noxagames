@@ -1,18 +1,23 @@
 'use client';
 
 // Replika 1:1 panel pemutar Discord NOXA (musik, radio 24/7, podcast, standby)
-// lengkap dengan SEMUA tombolnya. Tombol berfungsi sebagai pratinjau interaktif
-// (state demo di browser) - kontrol asli tetap ada di Discord. Ini dicantumkan
-// jujur di caption halaman.
-//
-// Bentuk embed, urutan baris tombol, label, emoji, gaya warna tombol, dan
-// kondisi disabled disalin dari utils/player.js + utils/podcastPlayer.js bot.
+// Desain UI/UX baru: Lebih Clean, Modern, dan Aesthetic khas web bot Discord musik premium
+// dengan tetap mempertahankan 100% semua emoji, tombol, info, dan fitur interaktifnya.
 import { useEffect, useRef, useState } from 'react';
 import Emoji from '../Emoji';
 import { formatDiscordTime } from '../../lib/format';
-import { DiscordButton, ActionRow, PanelEmbed, CodeText, DiscordMessage, MenuBox, MenuRow } from './discord-ui';
+import {
+  DiscordButton,
+  ActionRow,
+  PanelEmbed,
+  CodeText,
+  DiscordMessage,
+  DiscordSelectMenu,
+  MenuBox,
+  MenuRow,
+} from './discord-ui';
 
-// ---------- Data demo ----------
+// ---------- Data demo lengkap ----------
 const DEMO_TRACKS = [
   { name: 'Senja di Kota Tua', uploader: 'Demo Studio - Topic', duration: 224, provider: 'ytm', autoplay: false },
   { name: 'Langit Ketujuh', uploader: 'Demo Band Official', duration: 198, provider: 'spotify', autoplay: false },
@@ -23,8 +28,8 @@ const DEMO_TRACKS = [
 ];
 
 const DEMO_PODCASTS = [
-  { name: 'Rahasia Studio Broadcast', uploader: 'NOXA Podcast Demo', duration: 4112, theme: 'obrolansantai', lang: 'Bahasa Asli' },
-  { name: 'Malam Pemburu Bintang', uploader: 'NOXA Podcast Demo', duration: 2760, theme: 'fiksi', lang: 'Bahasa Asli' },
+  { name: 'Rahasia Studio Broadcast', uploader: 'NOXA Podcast Demo', duration: 4112, theme: 'obrolansantai', lang: 'Bahasa Asli', provider: 'youtube' },
+  { name: 'Malam Pemburu Bintang', uploader: 'NOXA Podcast Demo', duration: 2760, theme: 'fiksi', lang: 'Bahasa Asli', provider: 'youtube' },
 ];
 
 const DEMO_RADIO = { name: 'Radio Populer NOXA 24/7', uploader: 'Siaran NOXA Sound', owner: 'demo_host' };
@@ -62,58 +67,59 @@ const FILTER_OTHER = [
 const BASS_SET = new Set(['lowbass', 'mediumbass', 'extremebass', 'earrape']);
 const SPEED_SET = new Set(['slowed', 'nightcore', 'double']);
 
-const PROVIDER_EMOJI = { ytm: 'ytm', spotify: 'spotify', Youtube: 'Youtube', soundcloud: 'soundcloud', tidal: 'tidal', deezer: 'deezer', jiosaavn: 'jiosaavn', applemusic: 'applemusic' };
-
-// Sampul demo: SVG gradasi merah-hitam dengan bar equalizer (data URI, aman CSP).
-function demoArt(seed = 0) {
-  const hue = 350 + (seed % 4) * 6;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180">
-    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="hsl(${hue},100%,12%)"/><stop offset="0.55" stop-color="#3B0004"/><stop offset="1" stop-color="#B80012"/>
-    </linearGradient></defs>
-    <rect width="320" height="180" fill="url(#g)"/>
-    <g fill="#FF101F" opacity="0.85">
-      <rect x="128" y="86" width="10" height="40" rx="3"/>
-      <rect x="144" y="66" width="10" height="60" rx="3"/>
-      <rect x="160" y="76" width="10" height="50" rx="3"/>
-      <rect x="176" y="56" width="10" height="70" rx="3"/>
-      <rect x="192" y="90" width="10" height="36" rx="3"/>
-    </g>
-  </svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
+const PROVIDER_EMOJI = {
+  ytm: 'ytm',
+  spotify: 'spotify',
+  Youtube: 'Youtube',
+  soundcloud: 'soundcloud',
+  tidal: 'tidal',
+  deezer: 'deezer',
+  jiosaavn: 'jiosaavn',
+  applemusic: 'applemusic',
+};
 
 const LOOP = {
   0: { label: 'Ulangi', emoji: 'ulangi', style: 'secondary', status: 'Mati' },
-  1: { label: 'Ulangi: Lagu Ini', emoji: 'ulangilaguini', style: 'primary', status: 'Lagu Ini' },
-  2: { label: 'Ulangi: Antrian', emoji: 'ulangi', style: 'success', status: 'Semua Antrian' },
+  1: { label: 'Ulangi Lagu Ini', emoji: 'ulangilaguini', style: 'secondary', status: 'Lagu Ini' },
+  2: { label: 'Ulangi Semua', emoji: 'ulangisemua', style: 'secondary', status: 'Semua Antrian' },
 };
 
-function capFilter(f) {
-  return f.charAt(0).toUpperCase() + f.slice(1);
+// Banner equalizer animasi di dalam embed (replika persis bot)
+function EqualizerBanner({ paused = false, color = '#FF101F' }) {
+  return (
+    <div className="relative mt-3 h-36 sm:h-44 w-full overflow-hidden rounded-xl border border-[#383A40]/70 bg-gradient-to-b from-[#1E1F22] via-[#17181A] to-[#101114] flex items-center justify-center select-none shadow-inner">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,16,31,0.25)_0%,transparent_75%)] pointer-events-none" />
+      <div className="relative z-10 flex items-center gap-2 sm:gap-3">
+        <span className={`w-2.5 sm:w-3 rounded-full bg-[#FF101F] shadow-[0_0_14px_rgba(255,16,31,0.8)] transition-all duration-300 ${paused ? 'h-10' : 'h-12 animate-pulse'}`} />
+        <span className={`w-2.5 sm:w-3 rounded-full bg-[#FF101F] shadow-[0_0_14px_rgba(255,16,31,0.8)] transition-all duration-300 ${paused ? 'h-16' : 'h-20 animate-pulse delay-75'}`} />
+        <span className={`w-2.5 sm:w-3 rounded-full bg-[#FF101F] shadow-[0_0_16px_rgba(255,16,31,0.95)] transition-all duration-300 ${paused ? 'h-24' : 'h-28 animate-pulse delay-150'}`} />
+        <span className={`w-2.5 sm:w-3 rounded-full bg-[#FF101F] shadow-[0_0_14px_rgba(255,16,31,0.8)] transition-all duration-300 ${paused ? 'h-18' : 'h-22 animate-pulse delay-100'}`} />
+        <span className={`w-2.5 sm:w-3 rounded-full bg-[#FF101F] shadow-[0_0_14px_rgba(255,16,31,0.8)] transition-all duration-300 ${paused ? 'h-11' : 'h-14 animate-pulse delay-200'}`} />
+      </div>
+    </div>
+  );
 }
 
-// Komponen kartu Vinyl berputar dengan progress ring dinamis (referensi desain)
-function VinylPlayerCard({ song, pos, paused, accentColor = '#B80012', idx = 0 }) {
+// Komponen kartu Vinyl berputar dengan progress ring dinamis (Aesthetic Card)
+function VinylPlayerCard({ song, pos, paused, accentColor = '#FF101F', volume = 100, loopLabel = 'Mati', autoplay = false }) {
   const progressRatio = song.duration > 0 ? Math.min(1, pos / song.duration) : 0;
-  const radius = 50;
+  const radius = 46;
   const circ = 2 * Math.PI * radius;
   const strokeDashoffset = circ - progressRatio * circ;
 
   return (
-    <div className="relative my-3 flex items-center gap-3.5 sm:gap-5 rounded-3xl border border-white/10 bg-gradient-to-r from-[#211013] via-[#160D10] to-[#0C090B] p-3 sm:p-4 shadow-xl overflow-hidden">
+    <div className="relative my-3 flex items-center gap-3.5 sm:gap-5 rounded-2xl border border-white/10 bg-gradient-to-r from-[#141517] via-[#1A1C1F] to-[#121315] p-3.5 sm:p-4.5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] overflow-hidden">
       {/* Vinyl dengan cincin progress ring */}
-      <div className="relative flex h-24 w-24 sm:h-28 sm:w-28 shrink-0 items-center justify-center">
-        {/* SVG Progress Ring */}
-        <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r={radius} fill="none" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="6" />
+      <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 shrink-0 items-center justify-center">
+        <svg className="absolute inset-0 h-full w-full -rotate-90" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r={radius} fill="none" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="5" />
           <circle
-            cx="60"
-            cy="60"
+            cx="55"
+            cy="55"
             r={radius}
             fill="none"
             stroke={accentColor}
-            strokeWidth="6"
+            strokeWidth="5"
             strokeLinecap="round"
             strokeDasharray={circ}
             strokeDashoffset={strokeDashoffset}
@@ -123,7 +129,7 @@ function VinylPlayerCard({ song, pos, paused, accentColor = '#B80012', idx = 0 }
 
         {/* Piringan Vinyl berputar */}
         <div
-          className={`relative flex h-20 w-20 sm:h-22 sm:w-22 items-center justify-center rounded-full bg-[#121214] shadow-inner border border-[#252528] ${
+          className={`relative flex h-17 w-17 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-[#0E0F12] shadow-2xl border border-white/10 ${
             paused ? '' : 'animate-spin'
           }`}
           style={{ animationDuration: '3.5s', animationTimingFunction: 'linear' }}
@@ -132,41 +138,118 @@ function VinylPlayerCard({ song, pos, paused, accentColor = '#B80012', idx = 0 }
           <div className="absolute inset-1.5 rounded-full border border-white/5" />
           <div className="absolute inset-3 rounded-full border border-white/5" />
           <div className="absolute inset-4.5 rounded-full border border-white/5" />
-          {/* Label tengah (artwork album) */}
-          <div className="relative h-9 w-9 sm:h-10 sm:w-10 overflow-hidden rounded-full border border-white/20 shadow-md">
-            <img src={demoArt(idx)} alt="" className="h-full w-full object-cover" />
+          
+          {/* Label tengah (Logo NOXA) */}
+          <div className="relative h-7 w-7 sm:h-8 sm:w-8 overflow-hidden rounded-full border border-white/20 bg-black shadow-md flex items-center justify-center">
+            <img src="/logo.png" alt="NOXA" className="h-full w-full object-cover" />
           </div>
-          {/* Lubang poros tengah */}
-          <div className="absolute h-2 w-2 rounded-full bg-[#0B0B0E] border border-white/60" />
+          {/* Lubang poros */}
+          <div className="absolute h-1.5 w-1.5 rounded-full bg-[#0B0B0E] border border-white/60" />
         </div>
       </div>
 
       {/* Info Lagu */}
       <div className="min-w-0 flex-1">
-        <h4 className="truncate font-display text-base sm:text-lg font-bold text-white">
+        <h4 className="truncate font-bold text-white text-base sm:text-lg tracking-tight">
           {song.name}
         </h4>
-        <p className="truncate text-xs sm:text-sm font-medium text-[#A4A4AC]">
+        <p className="truncate text-xs sm:text-sm font-medium text-[#949BA4] mt-0.5">
           {song.uploader}
-        </p>
-        <p className="mt-1 font-mono text-xs sm:text-sm font-semibold text-[#D4D4DC]">
-          {formatDiscordTime(pos)} / {formatDiscordTime(song.duration)}
         </p>
       </div>
 
-      {/* Gelombang suara di kanan */}
-      <div className="mr-2 hidden items-end gap-1 sm:flex h-8 shrink-0">
-        <span className={`w-1 rounded-full ${paused ? 'h-3' : 'h-4 animate-pulse'}`} style={{ backgroundColor: accentColor }} />
-        <span className={`w-1 rounded-full ${paused ? 'h-5' : 'h-7 animate-pulse delay-75'}`} style={{ backgroundColor: accentColor }} />
-        <span className={`w-1 rounded-full ${paused ? 'h-7' : 'h-5 animate-pulse delay-150'}`} style={{ backgroundColor: accentColor }} />
-        <span className={`w-1 rounded-full ${paused ? 'h-4' : 'h-8 animate-pulse delay-100'}`} style={{ backgroundColor: accentColor }} />
-        <span className={`w-1 rounded-full ${paused ? 'h-6' : 'h-3 animate-pulse delay-200'}`} style={{ backgroundColor: accentColor }} />
+      {/* Baris status — sama seperti baris status di canvas bot (Vol/Loop/Acak/Autoplay) */}
+      <div className="mr-1 hidden shrink-0 sm:block text-right text-[10.5px] font-medium leading-relaxed text-[#949BA4] tabular-nums">
+        <div>Vol: {volume ?? 100}%</div>
+        <div>Loop: {loopLabel ?? 'Mati'}</div>
+        <div>Autoplay: {autoplay ? 'ON' : 'OFF'}</div>
       </div>
     </div>
   );
 }
 
-// ---------- Showcase ----------
+// Komponen kartu Banner Podcast khusus (Aesthetic Card)
+function PodcastPlayerCard({ ep, themeLabel, pos, paused, accentColor = '#B80012' }) {
+  const pakaiJam = ep.duration >= 3600;
+  return (
+    <div className="relative my-3 flex items-center gap-3.5 sm:gap-5 rounded-2xl border border-white/10 bg-gradient-to-r from-[#141517] via-[#1A1C1F] to-[#121315] p-3.5 sm:p-4.5 shadow-[0_8px_30px_rgba(0,0,0,0.5)] overflow-hidden">
+      {/* Artwork Studio */}
+      <div className="relative flex h-20 w-20 sm:h-24 sm:w-24 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#26282D] via-[#1E1F22] to-black border border-white/10 overflow-hidden shadow-inner">
+        <div className="flex flex-col items-center justify-center text-center p-1">
+          <Emoji name="podcast" size={34} />
+        </div>
+      </div>
+
+      {/* Info Episode */}
+      <div className="min-w-0 flex-1">
+        <h4 className="truncate font-bold text-white text-base sm:text-lg tracking-tight">
+          {ep.name}
+        </h4>
+        <p className="truncate text-xs sm:text-sm font-medium text-[#949BA4] mt-0.5">
+          {ep.uploader}
+        </p>
+      </div>
+
+      {/* Vocal Audio Visualizer */}
+      <div className="mr-1 flex items-end gap-1 h-7 shrink-0 select-none">
+        <span className={`w-1 rounded-full ${paused ? 'h-3' : 'h-4 animate-pulse'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-5' : 'h-7 animate-pulse delay-75'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-4' : 'h-5 animate-pulse delay-150'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-6' : 'h-8 animate-pulse delay-100'}`} style={{ backgroundColor: accentColor }} />
+        <span className={`w-1 rounded-full ${paused ? 'h-3' : 'h-4 animate-pulse delay-200'}`} style={{ backgroundColor: accentColor }} />
+      </div>
+    </div>
+  );
+}
+
+// Komponen Standalone Progress Bar Capsule (Aesthetic Glassmorphic Capsule)
+function CapsuleProgressBar({ pos, duration, paused = false, color = '#FF101F', onSeek, compact = false }) {
+  const barRef = useRef(null);
+  const progressRatio = duration > 0 ? Math.min(1, Math.max(0, pos / duration)) : 0;
+  const pakaiJam = duration >= 3600;
+
+  const handleClick = (e) => {
+    if (!onSeek || !barRef.current || duration <= 0) return;
+    const rect = barRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+    onSeek(Math.floor(ratio * duration));
+  };
+
+  return (
+    <div
+      className="relative my-2 sm:my-2.5 flex items-center gap-3 sm:gap-4 rounded-full border border-white/10 bg-[#141517]/90 backdrop-blur-md px-3.5 sm:px-4 py-2 shadow-[0_4px_20px_rgba(0,0,0,0.45)] select-none"
+    >
+      <span className="font-mono text-[11px] sm:text-[12px] font-semibold text-[#948B8D] shrink-0 min-w-[36px] sm:min-w-[42px]">
+        {formatDiscordTime(pos, pakaiJam)}
+      </span>
+
+      <div
+        ref={barRef}
+        onClick={handleClick}
+        className="relative flex-1 h-1.5 sm:h-2 bg-white/15 rounded-full cursor-pointer group flex items-center"
+      >
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-white via-white to-white transition-all duration-150"
+          style={{ width: `${progressRatio * 100}%` }}
+        />
+        <div
+          className="absolute -ml-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5 rounded-full bg-white transition-all duration-150 pointer-events-none"
+          style={{
+            left: `${progressRatio * 100}%`,
+            boxShadow: `0 0 12px ${color}, 0 0 4px #FFFFFF`,
+          }}
+        />
+      </div>
+
+      <span className="font-mono text-[11px] sm:text-[12px] font-semibold text-[#948B8D] shrink-0 min-w-[36px] sm:min-w-[42px] text-right">
+        {formatDiscordTime(duration, pakaiJam)}
+      </span>
+    </div>
+  );
+}
+
+// ---------- Showcase Utama ----------
 export default function PlayerShowcase({ singleMode = null, botAvatar = null, compact = false }) {
   const [tab, setTab] = useState(singleMode || 'music');
   const [jam, setJam] = useState('Hari ini');
@@ -179,26 +262,29 @@ export default function PlayerShowcase({ singleMode = null, botAvatar = null, co
   return (
     <div>
       {!singleMode && (
-        <div className="mb-5 flex flex-wrap gap-2">
-          {[
-            ['music', 'Musik', 'musik'],
-            ['radio', 'Radio 24/7', 'radio'],
-            ['podcast', 'Podcast', 'podcast'],
-            ['standby', 'Standby', 'finish'],
-          ].map(([key, label, emoji]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setTab(key)}
-              className={`inline-flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
-                tab === key
-                  ? 'border-crimson bg-[#3B0004] text-ink'
-                  : 'border-line bg-surface2 text-muted hover:border-linebright hover:text-ink'
-              }`}
-            >
-              <Emoji name={emoji} size={16} /> {label}
-            </button>
-          ))}
+        <div className="mb-6 flex items-center justify-center sm:justify-start">
+          <div className="inline-flex items-center gap-1 sm:gap-1.5 p-1.5 rounded-2xl bg-[#141517]/90 border border-white/10 backdrop-blur-md shadow-lg shadow-black/40 overflow-x-auto max-w-full">
+            {[
+              ['music', 'Musik', 'musik'],
+              ['radio', 'Radio 24/7', 'radio'],
+              ['podcast', 'Podcast', 'podcast'],
+              ['standby', 'Standby', 'finish'],
+            ].map(([key, label, emoji]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setTab(key)}
+                className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 select-none cursor-pointer whitespace-nowrap ${
+                  tab === key
+                    ? 'bg-gradient-to-r from-[#B80012] via-[#D60015] to-[#FF101F] text-white shadow-[0_2px_14px_rgba(255,16,31,0.4)] scale-[1.02]'
+                    : 'text-[#949BA4] hover:text-[#F2F3F5] hover:bg-white/5'
+                }`}
+              >
+                <Emoji name={emoji} size={16} />
+                <span>{label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
@@ -210,7 +296,7 @@ export default function PlayerShowcase({ singleMode = null, botAvatar = null, co
   );
 }
 
-// ---------- Panel MUSIK (4 baris, 19 tombol, urutan sama dengan bot) ----------
+// ---------- Panel MUSIK (Persis Bot NOXA V2 Container) ----------
 function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const [idx, setIdx] = useState(0);
   const [pos, setPos] = useState(38);
@@ -233,35 +319,31 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const nextSong = DEMO_TRACKS[idx + 1] || null;
   const likeCount = song.autoplay ? 12 : liked ? 7 : 6;
   const loop = LOOP[repeatMode];
-  const isQueueEmpty = idx >= DEMO_TRACKS.length - 1 && !autoplay && repeatMode === 0;
-  const isShuffleDisabled = DEMO_TRACKS.length <= 5;
   const isRewindDisabled = pos < 10;
   const isForwardDisabled = song.duration - pos < 10;
-  const hasActiveEffects = filters.length > 0;
-  const statusText = `Vol: ${volume}% | Standard 96k | Loop: ${loop.status} | Acak: ${shuffle ? 'Aktif' : 'Mati'} | Autoplay: ${autoplay ? 'ON' : 'OFF'}`;
+  const isQueueEmpty = idx >= DEMO_TRACKS.length - 1 && !autoplay && repeatMode === 0;
   const providerEmoji = PROVIDER_EMOJI[song.provider];
 
-  // Waktu berjalan saat tidak dijeda; pindah lagu saat habis (logika loop/autoplay demo).
+  // Waktu berjalan saat tidak dijeda
   useEffect(() => {
     if (paused) return;
     const t = setInterval(() => {
       setPos((p) => {
         if (p + 1 < song.duration) return p + 1;
-        return p; // pindah lagu ditangani efek terpisah
+        return p;
       });
     }, 1000);
     return () => clearInterval(t);
   }, [paused, song.duration, idx]);
 
   useEffect(() => {
-    if (!paused || pos < song.duration) return;
-    // Lagu habis: terapkan logika loop/autoplay yang sama dengan bot.
+    if (pos < song.duration) return;
     if (repeatMode === 1) { setPos(0); return; }
     if (idx + 1 < DEMO_TRACKS.length) { setIdx(idx + 1); setPos(0); return; }
     if (repeatMode === 2) { setIdx(0); setPos(0); return; }
     if (autoplay) { setIdx(DEMO_TRACKS.length - 1); setPos(0); return; }
     setPaused(true);
-  }, [pos, paused, idx, repeatMode, autoplay, song.duration]);
+  }, [pos, idx, repeatMode, autoplay, song.duration]);
 
   function nextTrack() {
     if (idx + 1 < DEMO_TRACKS.length) setIdx(idx + 1);
@@ -269,6 +351,7 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
     setPos(0);
     setOpenPop(null);
   }
+
   function setFilterValue(v) {
     setFilters((cur) => {
       let next = cur;
@@ -281,219 +364,223 @@ function MusicPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
     });
   }
 
-  const popProps = { openPop, setOpenPop, popRef };
+  const upcomingCount = Math.max(0, DEMO_TRACKS.length - 1 - idx);
+  const footerText = nextSong
+    ? nextSong.autoplay
+      ? `Berikutnya (Autoplay): ${nextSong.name.substring(0, 45)}...`
+      : `Berikutnya: ${nextSong.name.substring(0, 45)}... • ${upcomingCount} di antrean`
+    : autoplay && song.duration - pos <= 30
+      ? 'Lagu hampir habis'
+      : 'Berikutnya: Tidak ada (Musik terakhir di antrean)';
 
   return (
     <div>
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
+        {/* Container Utama dengan Section Accessory di Pojok Kanan Atas */}
         <PanelEmbed
           compact={compact}
           color="#B80012"
           author="NOXA Sound • Sedang Memutar"
-          title={`${song.name}`}
+          title={providerEmoji ? `${song.name} ` : song.name}
+          titleEmoji={providerEmoji}
           titleUrl="#"
           description={
-            <>
-              <span className="inline-flex items-center gap-1.5">
-                <Emoji name="musik" size={16} /> <b>MODE MUSIK</b> • <Emoji name="NOXASmart" size={16} />
-              </span>
-              <br />
-              <span className="inline-flex items-center gap-1.5 flex-wrap">
-                <Emoji name="pemiliklagu" size={16} /> <b>Pemilik Lagu:</b> <CodeText text={song.autoplay ? 'NOXA Smart' : 'demo_tester'} />
-              </span>
-            </>
+            <div className="flex items-center gap-1.5 font-bold text-[#F2F3F5]">
+              <Emoji name="musik" size={16} /> <b>MODE MUSIK</b> <span>•</span> <Emoji name="NOXASmart" size={16} />
+            </div>
           }
-          image={demoArt(idx)}
+          accessory={
+            <DiscordButton
+              emoji="podcast"
+              label="Podcast"
+              onClick={() => onSwitch('podcast')}
+              title="Alihkan ke Mode Podcast"
+              compact={compact}
+            />
+          }
           fields={[
-            { name: 'Artis / Uploader', value: <CodeText text={song.uploader} />, inline: true },
-            { name: 'Durasi', value: <CodeText text={`${formatDiscordTime(pos)} / ${formatDiscordTime(song.duration)}`} />, inline: true },
-            { name: 'Disukai oleh', value: <CodeText text={`${likeCount} orang`} />, inline: true },
             {
-              name: 'Live Chat',
-              value: chat.length
-                ? chat.map((c, i) => <span key={i} className="block italic text-[#B5BAC1]">{`> ${c.user}: ${c.text}`}</span>)
-                : <i className="text-[#B5BAC1]">Kosong. Klik tombol Chat.</i>,
+              name: 'Pemilik',
+              value: song.autoplay ? (
+                <span className="italic text-[#949BA4]">Rekomendasi Otomatis (Autoplay)</span>
+              ) : (
+                <span className="text-[#DBDEE1]">@demo_tester</span>
+              ),
+              inline: true,
             },
-            { name: 'Status', value: <CodeText text={statusText} /> },
-            ...(hasActiveEffects
-              ? [{ name: 'Efek Aktif', value: <CodeText text={filters.map(capFilter).join(', ')} />, inline: true }]
+            ...(chat.length
+              ? [
+                  {
+                    name: 'Live Chat',
+                    value: (
+                      <div className="space-y-0.5 italic text-[#B5BAC1]">
+                        {chat.map((c, i) => (
+                          <div key={i}>{`> ${c.user}: ${c.text}`}</div>
+                        ))}
+                      </div>
+                    ),
+                  },
+                ]
               : []),
           ]}
-          footer={
-            nextSong
-              ? nextSong.autoplay
-                ? `Berikutnya (Autoplay): ${nextSong.name.substring(0, 35)}...`
-                : `Berikutnya: ${nextSong.name.substring(0, 35)}...`
-              : 'Lagu terakhir di antrean.'
-          }
+          footer={footerText}
           timestamp={jam}
         />
 
-        {/* Piringan Vinyl Berputar dengan Cincin Progress */}
-        <VinylPlayerCard song={song} pos={pos} paused={paused} accentColor="#B80012" idx={idx} />
+        {/* 1. Vinyl Card Berputar */}
+        <VinylPlayerCard
+          song={song}
+          pos={pos}
+          paused={paused}
+          accentColor="#FF101F"
+          volume={volume}
+          loopLabel={LOOP[repeatMode]?.status || 'Mati'}
+          autoplay={autoplay}
+        />
 
-        {/* Baris 1: mundur, jeda, maju, hentikan, lewati */}
-        <ActionRow compact={compact}>
-          <DiscordButton emoji="mundur" label="Mundur" disabled={isRewindDisabled}
-            onClick={() => { setPos((p) => Math.max(0, p - 10)); setOpenPop(null); }} />
-          <DiscordButton emoji={paused ? 'mulai' : 'jeda'} label={paused ? 'Lanjut' : 'Jeda'} style={paused ? 'primary' : 'secondary'}
-            onClick={() => setPaused((p) => !p)} />
-          <DiscordButton emoji="maju" label="Maju" disabled={isForwardDisabled}
-            onClick={() => { setPos((p) => Math.min(song.duration - 1, p + 10)); setOpenPop(null); }} />
-          <DiscordButton emoji="berhenti" label="Hentikan"
-            onClick={() => { onSwitch('standby'); setOpenPop(null); }} />
-          <DiscordButton emoji="lewati" label="Lewati" disabled={idx >= DEMO_TRACKS.length - 1 && !autoplay && repeatMode === 0}
-            onClick={nextTrack} />
-        </ActionRow>
+        {/* 2. Floating Capsule Progress Bar */}
+        <CapsuleProgressBar
+          pos={pos}
+          duration={song.duration}
+          paused={paused}
+          color="#FF101F"
+          onSeek={(newPos) => setPos(newPos)}
+          compact={compact}
+        />
 
-        {/* Baris 2: Tombol Like, Ulangi, Tambah */}
+        {/* Baris 1: Suka, Loop, Tambah Lagu */}
         <ActionRow compact={compact}>
           <DiscordButton
-            emoji={likeCount > 0 ? "sukapenuh" : "sukakosong"}
+            emoji={likeCount > 0 ? 'sukapenuh' : 'sukakosong'}
             label={`${likeCount}`}
             onClick={() => setLiked((l) => !l)}
             title="Suka lagu ini"
+            compact={compact}
           />
           <DiscordButton
             emoji={loop.emoji}
             label={loop.label}
-            style={loop.style}
             onClick={() => setRepeatMode((m) => (m + 1) % 3)}
+            title={`Loop: ${loop.status}`}
+            compact={compact}
           />
           <DiscordButton
             emoji="tambahmusik"
-            label="Tambah"
+            label="Tambah Lagu"
             onClick={() => { setIdx(0); setPos(0); setPaused(false); setOpenPop(null); }}
+            title="Tambah Lagu ke Antrian"
+            compact={compact}
           />
         </ActionRow>
 
-        {/* Baris 3: Dropdown Fitur Lainnya */}
-        <div className="relative mt-2" ref={popRef}>
-          <button
-            type="button"
-            onClick={() => setOpenPop(openPop === 'dropdown' ? null : 'dropdown')}
-            className="flex w-full items-center justify-between gap-2 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-3 py-2 text-[13px] text-[#DBDEE1] hover:border-[#4E5058] hover:bg-[#2B2D31] transition cursor-pointer"
-          >
-            <span className="truncate">Fitur Lainnya</span>
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" className={`transition-transform shrink-0 ${openPop === 'dropdown' ? 'rotate-180' : ''}`}>
-              <path d="M7 10l5 5 5-5z" />
-            </svg>
-          </button>
+        {/* Baris 2: Mundur, Jeda/Lanjut, Maju, Berhenti, Lewati */}
+        <ActionRow compact={compact}>
+          <DiscordButton
+            emoji="mundur"
+            label="Mundur"
+            disabled={isRewindDisabled}
+            onClick={() => { setPos((p) => Math.max(0, p - 10)); setOpenPop(null); }}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji={paused ? 'mulai' : 'jeda'}
+            label={paused ? 'Lanjut' : 'Jeda'}
+            style={paused ? 'primary' : 'secondary'}
+            onClick={() => setPaused((p) => !p)}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji="maju"
+            label="Maju"
+            disabled={isForwardDisabled}
+            onClick={() => { setPos((p) => Math.min(song.duration - 1, p + 10)); setOpenPop(null); }}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji="berhenti"
+            label="Berhenti"
+            onClick={() => { onSwitch('standby'); setOpenPop(null); }}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji="lewati"
+            label="Lewati"
+            disabled={isQueueEmpty}
+            onClick={nextTrack}
+            compact={compact}
+          />
+        </ActionRow>
 
-          {openPop === 'dropdown' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30 shadow-2xl">
+        {/* Baris 3: Dropdown Fitur Lainnya (9 Pilihan Menu Persis Bot) */}
+        <div className="relative" ref={popRef}>
+          <DiscordSelectMenu
+            placeholder="Fitur Lainnya"
+            isOpen={openPop === 'dropdown'}
+            onToggle={() => setOpenPop(openPop === 'dropdown' ? null : 'dropdown')}
+            compact={compact}
+          >
+            <div className="absolute inset-x-0 bottom-full mb-2 z-30 shadow-2xl">
               <MenuBox maxHeight="max-h-64">
-                <MenuRow emoji="antrian" label="Antrian Lagu" onClick={() => { setOpenPop('queue'); }} />
-                <MenuRow emoji="lirik" label="Lirik Lagu" onClick={() => { setOpenPop('lyrics'); }} />
-                <MenuRow emoji="chat" label="Live Chat" onClick={() => { setOpenPop('chat'); }} />
-                <MenuRow emoji="podcast" label="Studio Podcast" onClick={() => { onSwitch('podcast'); setOpenPop(null); }} />
-                <MenuRow emoji="suara" label="Atur Volume" onClick={() => { setOpenPop('volume'); }} />
-                <MenuRow emoji="autoplay" label="Autoplay" onClick={() => { setAutoplay(a => !a); setOpenPop(null); }} />
-                <MenuRow emoji="efek" label="Efek Suara & EQ" onClick={() => { setOpenPop('effects'); }} />
-                <MenuRow emoji="userprofile" label="Profil Pendengar" onClick={() => { setOpenPop('profile'); }} />
-                <MenuRow emoji="playlist" label="Koleksi Playlist" onClick={() => { setOpenPop('playlists'); }} />
-                <MenuRow emoji="Shuffle" label="Acak Antrian" onClick={() => { setShuffle(s => !s); setOpenPop(null); }} />
-                <MenuRow emoji="bantuan" label="Panduan & Bantuan" onClick={() => { setOpenPop('help'); }} />
+                <MenuRow emoji="antrian" label="Antrian Lagu" onClick={() => setOpenPop('queue')} />
+                <MenuRow emoji="lirik" label="Lirik Lagu" onClick={() => setOpenPop('lyrics')} />
+                <MenuRow emoji="chat" label="Live Chat" onClick={() => setOpenPop('chat')} />
+                <MenuRow emoji="suara" label="Atur Volume" onClick={() => setOpenPop('volume')} />
+                <MenuRow emoji="autoplay" label={`Autoplay (${autoplay ? 'ON' : 'OFF'})`} onClick={() => { setAutoplay(a => !a); setOpenPop(null); }} />
+                <MenuRow emoji="efek" label="Efek Suara & EQ" onClick={() => setOpenPop('effects')} />
+                <MenuRow emoji="userprofile" label="Profil Pendengar" onClick={() => setOpenPop('profile')} />
+                <MenuRow emoji="playlist" label="Koleksi Playlist" onClick={() => setOpenPop('playlists')} />
+                <MenuRow emoji="Shuffle" label={`Acak Antrian (${shuffle ? 'Aktif' : 'Mati'})`} onClick={() => { setShuffle(s => !s); setOpenPop(null); }} />
               </MenuBox>
             </div>
-          )}
+          </DiscordSelectMenu>
 
-          {/* Popups yang dibuka lewat dropdown */}
+          {/* Popups yang dibuka lewat menu dropdown */}
           {openPop === 'queue' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+            <PopupModal title="Antrian Lagu" onClose={() => setOpenPop(null)}>
               <QueuePop tracks={DEMO_TRACKS} idx={idx} onJump={(i) => { setIdx(i); setPos(0); setOpenPop(null); }} />
-            </div>
+            </PopupModal>
           )}
           {openPop === 'lyrics' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+            <PopupModal title="Lirik Lagu" onClose={() => setOpenPop(null)}>
               <LyricsPop song={song} />
-            </div>
-          )}
-          {openPop === 'volume' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
-              <VolumePop value={volume} input={volInput} setInput={setVolInput} onSet={(v) => { setVolume(v); setOpenPop(null); }} />
-            </div>
-          )}
-          {openPop === 'effects' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
-              <EffectsPop filters={filters} onPick={setFilterValue} onReset={() => setFilters([])} />
-            </div>
+            </PopupModal>
           )}
           {openPop === 'chat' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
+            <PopupModal title="Live Chat Pemutar" onClose={() => setOpenPop(null)}>
               <ChatPop chat={chat} onSend={(t) => { setChat((c) => [...c, { user: 'kamu', text: t }]); }} />
-            </div>
+            </PopupModal>
+          )}
+          {openPop === 'volume' && (
+            <PopupModal title="Atur Volume" onClose={() => setOpenPop(null)}>
+              <VolumePop value={volume} input={volInput} setInput={setVolInput} onSet={(v) => { setVolume(v); setOpenPop(null); }} />
+            </PopupModal>
+          )}
+          {openPop === 'effects' && (
+            <PopupModal title="Efek Suara & Equalizer" onClose={() => setOpenPop(null)}>
+              <EffectsPop filters={filters} onPick={setFilterValue} onReset={() => setFilters([])} />
+            </PopupModal>
           )}
           {openPop === 'profile' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
-              <InfoPop judul="Profile">
+            <PopupModal title="Profil Pendengar" onClose={() => setOpenPop(null)}>
+              <InfoPop judul="Kartu Analitik Profil">
                 Di Discord, opsi ini menampilkan kartu analitik mendengarkan yang sama dengan profil di halaman <b>/me</b> web ini.
               </InfoPop>
-            </div>
+            </PopupModal>
           )}
           {openPop === 'playlists' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
-              <InfoPop judul="Playlist">
-                Di Discord, opsi ini membuka dashboard playlist pribadi, playlist populer member, dan koleksi lagu yang kamu suka.
+            <PopupModal title="Koleksi Playlist" onClose={() => setOpenPop(null)}>
+              <InfoPop judul="Dashboard Playlist">
+                Di Discord, opsi ini membuka dashboard playlist pribadi, playlist populer server, dan lagu favorit kamu.
               </InfoPop>
-            </div>
-          )}
-          {openPop === 'help' && (
-            <div className="absolute inset-x-0 bottom-full mb-1.5 z-30">
-              <InfoPop judul="Bantuan">
-                Di Discord, opsi ini membuka panel panduan lengkap dengan menu kategori, sama seperti halaman <b>/panduan</b> web ini.
-              </InfoPop>
-            </div>
+            </PopupModal>
           )}
         </div>
-
-        {openPop === 'seek' && null}
       </MessageAndRows>
     </div>
   );
 }
 
-// ---------- Panel RADIO 24/7 (1 tombol) ----------
-function RadioPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
-  const [openPop, setOpenPop] = useState(null);
-  return (
-    <div>
-      <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
-        <PanelEmbed
-          compact={compact}
-          color="#5C0008"
-          title={DEMO_RADIO.name}
-          titleUrl="#"
-          description={
-            <>
-              <span className="inline-flex items-center gap-1.5 flex-wrap">
-                <Emoji name="radio" size={16} /> <b>MODE RADIO 24/7</b> • <Emoji name="NOXASmart" size={16} /> <b>Lagu Populer Nonstop</b>
-              </span>
-              <br />
-              <span>Siaran lagu populer 24 jam nonstop tanpa pengulangan.</span>
-              <br />
-              <span className="inline-flex items-center gap-1.5">
-                <Emoji name="pemiliklagu" size={16} /> <b>Penyiar:</b> <CodeText text={DEMO_RADIO.owner} />
-              </span>
-            </>
-          }
-          image={demoArt(2)}
-          fields={[
-            { name: 'Status', value: <CodeText text="Siaran Langsung 24/7" />, inline: true },
-            { name: 'Penghentian & Alih Mode', value: 'Admin langsung stop/alihkan. Member lain via voting mayoritas.', inline: false },
-          ]}
-          footer="NOXA SOUND • 24/7 POPULAR RADIO"
-          timestamp={jam}
-        />
-        <ActionRow compact={compact}>
-          <DiscordButton emoji="berhenti" label="Hentikan Radio" onClick={() => onSwitch('standby')} />
-        </ActionRow>
-      </MessageAndRows>
-    </div>
-  );
-}
-
-// ---------- Panel PODCAST (3 baris, 13 tombol) ----------
+// ---------- Panel PODCAST (Persis Bot NOXA Podcast Container) ----------
 function PodcastPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const [idx, setIdx] = useState(0);
   const [pos, setPos] = useState(935);
@@ -508,10 +595,10 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const popRef = useRef(null);
 
   const ep = DEMO_PODCASTS[idx];
+  const providerEmoji = PROVIDER_EMOJI[ep.provider];
   const likeCount = liked ? 5 : 4;
-  const themeLabel = PODCAST_TEMA.find(([n, e]) => e === theme)?.[0] || '';
-  const statusText = `Vol: ${volume}% | Standard 96k | Antrean: ${DEMO_PODCASTS.length - 1} | Pemilik: demo_tester`;
-  const pakaiJam = ep.duration >= 3600;
+  const themeLabel = PODCAST_TEMA.find(([_, e]) => e === theme)?.[0] || 'Obrolan Santai';
+  const hasUpcoming = idx < DEMO_PODCASTS.length - 1;
 
   useEffect(() => {
     if (paused) return;
@@ -527,103 +614,224 @@ function PodcastPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
     if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
     return null;
   }
-  const popProps = { openPop, setOpenPop, popRef };
+
+  const upcomingPodCount = Math.max(0, DEMO_PODCASTS.length - 1 - idx);
+  const podFooter = hasUpcoming
+    ? `Berikutnya: ${DEMO_PODCASTS[idx + 1].name.substring(0, 45)}... • ${upcomingPodCount} di antrean`
+    : 'Berikutnya: Tidak ada (Episode terakhir di antrean)';
 
   return (
     <div>
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
+        {/* Section Header dengan Accessory Musik di Pojok Kanan Atas */}
         <PanelEmbed
           compact={compact}
-          color="#3B0004"
-          author="NOXA Sound • Studio Podcast"
-          title={ep.name}
+          color="#B80012"
+          author="NOXA Sound • Sedang Memutar"
+          title={providerEmoji ? `${ep.name} ` : ep.name}
+          titleEmoji={providerEmoji}
           titleUrl="#"
           description={
-            <>
-              <span className="inline-flex items-center gap-1.5 flex-wrap">
-                <Emoji name="podcast" size={16} /> <b>MODE PODCAST</b> • <b>Tema: {themeLabel}</b> • <Emoji name="NOXASmart" size={16} />
-              </span>
-              <br />
-              <span className="inline-flex items-center gap-1.5">
-                <Emoji name="pemiliklagu" size={16} /> <b>Pemilik Podcast:</b> <CodeText text="demo_tester" />
-              </span>
-            </>
+            <div className="flex items-center gap-1.5 font-bold text-[#F2F3F5] flex-wrap">
+              <Emoji name="podcast" size={16} /> <b>MODE PODCAST</b> • <b>Tema: {themeLabel}</b> • <Emoji name="NOXASmart" size={16} />
+            </div>
           }
-          thumbnail={demoArt(idx + 1)}
+          accessory={
+            <DiscordButton
+              emoji="musik"
+              label="Musik"
+              onClick={() => onSwitch('music')}
+              title="Alihkan ke Mode Musik"
+              compact={compact}
+            />
+          }
           fields={[
-            { name: 'Channel', value: <CodeText text={ep.uploader} />, inline: true },
-            { name: 'Durasi', value: <CodeText text={`${formatDiscordTime(pos, pakaiJam)} / ${formatDiscordTime(ep.duration, pakaiJam)}`} />, inline: true },
-            { name: 'Bahasa', value: <CodeText text={lang} />, inline: true },
-            { name: 'Disukai oleh', value: <CodeText text={`${likeCount} orang`} />, inline: true },
-            { name: 'Status', value: <CodeText text={statusText} />, inline: false },
+            { name: 'Pemilik Podcast', value: <span className="text-[#DBDEE1]">@demo_tester</span>, inline: true },
           ]}
+          footer={podFooter}
           timestamp={jam}
         />
 
-        {/* Baris 1 */}
+        {/* 1. Main Podcast Card Banner */}
+        <PodcastPlayerCard
+          ep={ep}
+          themeLabel={themeLabel}
+          pos={pos}
+          paused={paused}
+          accentColor="#B80012"
+        />
+
+        {/* 2. Floating Capsule Progress Bar */}
+        <CapsuleProgressBar
+          pos={pos}
+          duration={ep.duration}
+          paused={paused}
+          color="#B80012"
+          onSeek={(newPos) => setPos(newPos)}
+          compact={compact}
+        />
+
+        {/* Baris 1: Mundur 30d, Jeda/Lanjut, Maju 30d, Berhenti, Lewati */}
         <ActionRow compact={compact}>
-          <DiscordButton emoji="mundurpodcast" label="Mundur 30d"
-            onClick={() => setPos((p) => Math.max(0, p - 30))} />
-          <DiscordButton emoji={paused ? 'mulai' : 'jeda'} label={paused ? 'Lanjut' : 'Jeda'} style={paused ? 'primary' : 'secondary'}
-            onClick={() => setPaused((p) => !p)} />
-          <DiscordButton emoji="majuupodcast" label="Maju 30d"
-            onClick={() => setPos((p) => Math.min(ep.duration, p + 30))} />
-          <DiscordButton emoji="lewati" label="Lewati"
-            disabled={idx >= DEMO_PODCASTS.length - 1}
-            onClick={() => { setIdx((i) => Math.min(DEMO_PODCASTS.length - 1, i + 1)); setPos(0); }} />
-          <DiscordButton emoji="berhenti" label="Hentikan" onClick={() => onSwitch('standby')} />
+          <DiscordButton
+            emoji="mundurpodcast"
+            label="Mundur"
+            onClick={() => setPos((p) => Math.max(0, p - 30))}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji={paused ? 'mulai' : 'jeda'}
+            label={paused ? 'Lanjut' : 'Jeda'}
+            style={paused ? 'primary' : 'secondary'}
+            onClick={() => setPaused((p) => !p)}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji="majuupodcast"
+            label="Maju"
+            onClick={() => setPos((p) => Math.min(ep.duration, p + 30))}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji="berhenti"
+            label="Berhenti"
+            onClick={() => onSwitch('standby')}
+            compact={compact}
+          />
+          <DiscordButton
+            emoji="lewati"
+            label="Lewati"
+            disabled={!hasUpcoming}
+            onClick={() => { setIdx((i) => Math.min(DEMO_PODCASTS.length - 1, i + 1)); setPos(0); }}
+            compact={compact}
+          />
         </ActionRow>
 
-        {/* Baris 2 */}
+        {/* Baris 2: Tombol Suka */}
         <ActionRow compact={compact}>
-          <DiscordButton emoji={likeCount > 0 ? 'sukapenuh' : 'sukakosong'} label={`${likeCount}`} onClick={() => setLiked((l) => !l)} />
-          <PopButton {...popProps} id="seek" emoji="waktu" label="Lompat Waktu">
-            <SeekPop input={seekInput} setInput={setSeekInput}
-              onSubmit={(raw) => {
-                const s = parseSeek(raw);
-                if (s != null) { setPos(Math.max(0, Math.min(ep.duration, s))); setOpenPop(null); setSeekInput(''); }
-              }} />
-          </PopButton>
-          <PopButton {...popProps} id="volume" emoji="suara" label="Suara">
-            <VolumePop value={volume} input={volInput} setInput={setVolInput}
-              onSet={(v) => { setVolume(v); setOpenPop(null); }} />
-          </PopButton>
-          <PopButton {...popProps} id="queue" emoji="antrian" label="Antrian">
-            <QueuePop tracks={DEMO_PODCASTS.map((p) => ({ name: p.name, uploader: p.uploader }))} idx={idx}
-              onJump={(i) => { setIdx(i); setPos(0); setOpenPop(null); }} podcast />
-          </PopButton>
-          <PopButton {...popProps} id="theme" emoji="podcast" label="Tema">
-            <ThemePop current={theme} onPick={(t) => { setTheme(t); setOpenPop(null); }} />
-          </PopButton>
+          <DiscordButton
+            emoji={likeCount > 0 ? 'sukapenuh' : 'sukakosong'}
+            label={`${likeCount}`}
+            onClick={() => setLiked((l) => !l)}
+            title="Suka episode ini"
+            compact={compact}
+          />
         </ActionRow>
 
-        {/* Baris 3 */}
-        <ActionRow compact={compact}>
-          <PopButton {...popProps} id="lang" emoji="bahasa" label="Bahasa">
-            <LangPop current={lang} onPick={(l) => { setLang(l); setOpenPop(null); }} />
-          </PopButton>
-          <PopButton {...popProps} id="help" emoji="bantuan" label="Bantuan">
-            <InfoPop judul="Bantuan">
-              Di Discord, tombol ini membuka panel panduan lengkap, sama seperti halaman <b>/panduan</b> web ini.
-            </InfoPop>
-          </PopButton>
-          <DiscordButton emoji="musik" label="Mode Musik" onClick={() => onSwitch('music')} />
-        </ActionRow>
+        {/* Baris 3: Dropdown Fitur Podcast (5 Menu Persis Bot) */}
+        <div className="relative" ref={popRef}>
+          <DiscordSelectMenu
+            placeholder="Fitur Lainnya"
+            isOpen={openPop === 'dropdown'}
+            onToggle={() => setOpenPop(openPop === 'dropdown' ? null : 'dropdown')}
+            compact={compact}
+          >
+            <div className="absolute inset-x-0 bottom-full mb-2 z-30 shadow-2xl">
+              <MenuBox maxHeight="max-h-56">
+                <MenuRow emoji="waktu" label="Lompat Waktu" onClick={() => setOpenPop('seek')} />
+                <MenuRow emoji="suara" label="Atur Volume" onClick={() => setOpenPop('volume')} />
+                <MenuRow emoji="antrian" label="Antrian Podcast" onClick={() => setOpenPop('queue')} />
+                <MenuRow emoji="podcast" label="Tema Podcast" onClick={() => setOpenPop('theme')} />
+                <MenuRow emoji="bahasa" label="Pilih Bahasa" onClick={() => setOpenPop('lang')} />
+              </MenuBox>
+            </div>
+          </DiscordSelectMenu>
+
+          {openPop === 'seek' && (
+            <PopupModal title="Lompat Waktu" onClose={() => setOpenPop(null)}>
+              <SeekPop
+                input={seekInput}
+                setInput={setSeekInput}
+                onSubmit={(raw) => {
+                  const s = parseSeek(raw);
+                  if (s != null) { setPos(Math.max(0, Math.min(ep.duration, s))); setOpenPop(null); setSeekInput(''); }
+                }}
+              />
+            </PopupModal>
+          )}
+          {openPop === 'volume' && (
+            <PopupModal title="Atur Volume" onClose={() => setOpenPop(null)}>
+              <VolumePop value={volume} input={volInput} setInput={setVolInput} onSet={(v) => { setVolume(v); setOpenPop(null); }} />
+            </PopupModal>
+          )}
+          {openPop === 'queue' && (
+            <PopupModal title="Antrian Podcast" onClose={() => setOpenPop(null)}>
+              <QueuePop
+                tracks={DEMO_PODCASTS.map((p) => ({ name: p.name, uploader: p.uploader }))}
+                idx={idx}
+                onJump={(i) => { setIdx(i); setPos(0); setOpenPop(null); }}
+                podcast
+              />
+            </PopupModal>
+          )}
+          {openPop === 'theme' && (
+            <PopupModal title="Pilih Tema Podcast" onClose={() => setOpenPop(null)}>
+              <ThemePop current={theme} onPick={(t) => { setTheme(t); setOpenPop(null); }} />
+            </PopupModal>
+          )}
+          {openPop === 'lang' && (
+            <PopupModal title="Bahasa Audio" onClose={() => setOpenPop(null)}>
+              <LangPop current={lang} onPick={(l) => { setLang(l); setOpenPop(null); }} />
+            </PopupModal>
+          )}
+        </div>
       </MessageAndRows>
     </div>
   );
 }
 
-// ---------- Panel STANDBY (1 baris, 3 tombol) ----------
-function StandbyPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
+// ---------- Panel RADIO 24/7 (Persis Bot NOXA createRadioPlayer) ----------
+function RadioPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
   const [openPop, setOpenPop] = useState(null);
-  const popRef = useRef(null);
   return (
     <div>
       <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
         <PanelEmbed
           compact={compact}
           color="#B80012"
+          author="NOXA Sound • Radio 24/7"
+          title={DEMO_RADIO.name}
+          titleUrl="#"
+          description={
+            <>
+              <div className="flex items-center gap-1.5 font-bold text-[#F2F3F5]">
+                <Emoji name="radio" size={16} /> <b>MODE RADIO 24/7</b> • <Emoji name="NOXASmart" size={16} /> <b>Lagu Populer Nonstop</b>
+              </div>
+              <div className="mt-1 text-sm text-[#DBDEE1]">
+                Siaran lagu populer 24 jam nonstop tanpa jeda.
+              </div>
+            </>
+          }
+          image={<EqualizerBanner paused={false} color="#B80012" />}
+          fields={[
+            { name: 'Penyiar', value: <span className="text-[#DBDEE1]">@{DEMO_RADIO.owner}</span>, inline: true },
+          ]}
+          footer="NOXA Sound • Radio 24/7"
+          timestamp={jam}
+        />
+        <ActionRow compact={compact}>
+          <DiscordButton emoji="lirik" label="Lirik Lagu" onClick={() => setOpenPop('lyrics')} compact={compact} />
+          <DiscordButton emoji="berhenti" label="Hentikan Radio" onClick={() => onSwitch('standby')} compact={compact} />
+        </ActionRow>
+
+        {openPop === 'lyrics' && (
+          <PopupModal title="Lirik Lagu Radio" onClose={() => setOpenPop(null)}>
+            <LyricsPop song={{ name: 'Radio Populer Nonstop', uploader: 'Siaran NOXA Sound' }} />
+          </PopupModal>
+        )}
+      </MessageAndRows>
+    </div>
+  );
+}
+
+// ---------- Panel STANDBY (Persis Bot NOXA createStandbyPayload: 2 tombol) ----------
+function StandbyPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
+  return (
+    <div>
+      <MessageAndRows jam={jam} botAvatar={botAvatar} compact={compact}>
+        <PanelEmbed
+          compact={compact}
+          color="#2B2D31"
           title="Sesi Selesai"
           titleEmoji="finish"
           description={
@@ -635,20 +843,15 @@ function StandbyPanelDemo({ jam, botAvatar, onSwitch, compact = false }) {
           timestamp={jam}
         />
         <ActionRow compact={compact}>
-          <DiscordButton emoji="tambahmusik" label="Tambah Lagu" onClick={() => onSwitch('music')} />
-          <DiscordButton emoji="podcast" label="Podcast" onClick={() => onSwitch('podcast')} />
-          <PopButton openPop={openPop} setOpenPop={setOpenPop} popRef={popRef} id="help" emoji="bantuan" label="Bantuan">
-            <InfoPop judul="Bantuan">
-              Di Discord, tombol ini membuka panel panduan lengkap dengan menu kategori.
-            </InfoPop>
-          </PopButton>
+          <DiscordButton emoji="tambahmusik" label="Tambah Lagu" onClick={() => onSwitch('music')} compact={compact} />
+          <DiscordButton emoji="podcast" label="Podcast" onClick={() => onSwitch('podcast')} compact={compact} />
         </ActionRow>
       </MessageAndRows>
     </div>
   );
 }
 
-// ---------- Bagian bersama ----------
+// ---------- Pembungkus Pesan & Modal Responsif ----------
 function MessageAndRows({ jam, botAvatar, compact = false, children }) {
   return (
     <DiscordMessage botAvatar={botAvatar} jam={jam} compact={compact}>
@@ -659,67 +862,50 @@ function MessageAndRows({ jam, botAvatar, compact = false, children }) {
   );
 }
 
-function PopButton({ openPop, setOpenPop, popRef, id, emoji, label, style = 'secondary', disabled = false, title, children }) {
-  const isOpen = openPop === id;
-  const isRightAligned = ['lyrics', 'chat', 'effects', 'theme', 'help', 'lang'].includes(id);
-
+function PopupModal({ title, onClose, children }) {
   useEffect(() => {
-    if (!isOpen) return;
     const handleKey = (e) => {
-      if (e.key === 'Escape') setOpenPop(null);
+      if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [isOpen, setOpenPop]);
+  }, [onClose]);
 
   return (
-    <div className="relative" ref={popRef}>
-      <DiscordButton emoji={emoji} label={label} style={style} disabled={disabled} title={title}
-        onClick={() => setOpenPop(isOpen ? null : id)} />
-      {isOpen && (
-        <>
-          {/* Dismiss overlay outside on desktop */}
-          <div
-            className="hidden sm:block fixed inset-0 z-20 cursor-default"
-            onClick={() => setOpenPop(null)}
-            aria-hidden="true"
-          />
-          {/* Backdrop gelap di mobile */}
-          <div
-            className="block sm:hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-xs"
-            onClick={() => setOpenPop(null)}
-            aria-hidden="true"
-          />
-          {/* Wadah popup: di HP centered modal terjamin aman di viewport, di desktop dropdown di bawah tombol */}
-          <div
-            className={`rounded-xl border border-[#26272B] bg-[#111214] p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.85)]
-              fixed inset-x-3.5 top-1/2 -translate-y-1/2 z-50 max-w-sm mx-auto max-h-[82vh] overflow-y-auto
-              sm:absolute sm:inset-auto sm:top-11 sm:translate-y-0 sm:z-30 sm:w-80 sm:max-w-[85vw] sm:max-h-[72vh] sm:mx-0
-              ${isRightAligned ? 'sm:right-0 sm:left-auto' : 'sm:left-0 sm:right-auto'}
-            `}
-          >
-            {/* Header mobile dengan tombol tutup */}
-            <div className="flex sm:hidden items-center justify-between pb-2 mb-2.5 border-b border-[#26272B]">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#F2F3F5] flex items-center gap-1.5">
-                {emoji && <Emoji name={emoji} size={15} />}
-                <span>{label}</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => setOpenPop(null)}
-                className="text-[#949BA4] hover:text-white px-2 py-0.5 text-xs font-bold rounded cursor-pointer bg-[#1E1F22] border border-[#2B2D31]"
-              >
-                ✕ Tutup
-              </button>
-            </div>
-            {children}
+    <>
+      {/* Backdrop Frosted Glass */}
+      <div
+        className="fixed inset-0 z-40 bg-black/75 backdrop-blur-sm cursor-default transition-opacity"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      {/* Modal Dialog Card */}
+      <div
+        className="rounded-2xl border border-white/10 bg-[#16171A] p-4 sm:p-5 shadow-[0_20px_60px_rgba(0,0,0,0.9)]
+          fixed inset-x-4 top-1/2 -translate-y-1/2 z-50 max-w-sm sm:max-w-md mx-auto max-h-[85vh] overflow-y-auto"
+      >
+        <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#FF101F] shadow-[0_0_8px_#FF101F]" />
+            <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-white">
+              {title || 'Menu NOXA'}
+            </span>
           </div>
-        </>
-      )}
-    </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-[#949BA4] hover:text-white px-2.5 py-1 text-xs font-bold rounded-lg cursor-pointer bg-[#232428] border border-white/10 transition-colors"
+          >
+            ✕ Tutup
+          </button>
+        </div>
+        {children}
+      </div>
+    </>
   );
 }
 
+// ---------- Isi Dialog & Menu Tambahan ----------
 function LyricsPop({ song }) {
   const [mode, setMode] = useState('live');
   const title = song?.name || 'Senja di Kota Tua';
@@ -727,63 +913,63 @@ function LyricsPop({ song }) {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <PopTitle>NOXA Smart • Lirik</PopTitle>
-        <span className="text-[10px] text-[#949BA4] font-mono">Spotify • Musixmatch</span>
+      <div className="flex items-center justify-between text-[11px] text-[#949BA4]">
+        <span className="font-semibold text-white/90">NOXA Smart Lyrics</span>
+        <span className="font-mono">Spotify • Musixmatch</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-[#1E1F22] border border-[#2B2D31]">
+      <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[#1E1F22] border border-white/5">
         <button
           type="button"
           onClick={() => setMode('live')}
-          className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded text-[11.5px] font-semibold transition cursor-pointer ${
-            mode === 'live' ? 'bg-[#4E5058] text-white shadow-xs' : 'text-[#949BA4] hover:text-white'
+          className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
+            mode === 'live' ? 'bg-[#5865F2] text-white shadow-xs' : 'text-[#949BA4] hover:text-white'
           }`}
         >
-          <Emoji name="livelirik" size={13} />
+          <Emoji name="livelirik" size={14} />
           <span>Live Karaoke</span>
         </button>
         <button
           type="button"
           onClick={() => setMode('script')}
-          className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded text-[11.5px] font-semibold transition cursor-pointer ${
-            mode === 'script' ? 'bg-[#4E5058] text-white shadow-xs' : 'text-[#949BA4] hover:text-white'
+          className={`flex items-center justify-center gap-1.5 py-2 px-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer ${
+            mode === 'script' ? 'bg-[#5865F2] text-white shadow-xs' : 'text-[#949BA4] hover:text-white'
           }`}
         >
-          <Emoji name="songlyrics" size={13} />
+          <Emoji name="songlyrics" size={14} />
           <span>Skrip Penuh</span>
         </button>
       </div>
 
-      <div className="rounded-md bg-[#1E1F22] px-2.5 py-1.5 border border-[#2B2D31] flex items-center justify-between gap-2">
+      <div className="rounded-xl bg-[#1E1F22] p-2.5 border border-white/5 flex items-center justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="text-[12px] font-bold text-white truncate">{title}</div>
-          <div className="text-[10.5px] text-[#949BA4] truncate">{uploader}</div>
+          <div className="text-[12.5px] font-bold text-white truncate">{title}</div>
+          <div className="text-[11px] text-[#949BA4] truncate">{uploader}</div>
         </div>
-        <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#248046] text-white">
+        <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
           Terverifikasi
         </span>
       </div>
 
       {mode === 'live' ? (
-        <div className="rounded-lg bg-[#1E1F22] border border-[#2B2D31] p-3 text-[12px] leading-relaxed space-y-2 select-none">
+        <div className="rounded-xl bg-[#1E1F22] border border-white/5 p-3.5 text-[12px] leading-relaxed space-y-2 select-none">
           <div className="text-[#80848E] text-[11px]">[00:18] Di antara deru kota yang terlelap...</div>
           <div className="text-[#949BA4] text-[11.5px]">[00:26] Ku melangkah mencari arti senyumanmu...</div>
-          <div className="rounded bg-[#FF4B2B]/20 border border-[#FF4B2B]/50 px-2 py-1.5 text-white font-semibold flex items-center gap-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-[#FF4B2B] animate-pulse shrink-0" />
-            <span className="min-w-0 flex-1 text-[12px] break-words">▶ [00:38] Senja datang membawa semua bayanganmu</span>
+          <div className="rounded-lg bg-[#FF101F]/15 border border-[#FF101F]/50 px-3 py-2 text-white font-semibold flex items-center gap-2.5 shadow-[0_0_15px_rgba(255,16,31,0.2)]">
+            <span className="inline-block h-2 w-2 rounded-full bg-[#FF101F] animate-pulse shrink-0" />
+            <span className="min-w-0 flex-1 text-[12.5px] break-words">▶ [00:38] Senja datang membawa semua bayanganmu</span>
           </div>
           <div className="text-[#949BA4] text-[11.5px]">[00:47] Menemani sepi malam yang sunyi...</div>
           <div className="text-[#80848E] text-[11px]">[00:58] Dan ku tahu waktu kan menjawabnya...</div>
         </div>
       ) : (
-        <div className="rounded-lg bg-[#1E1F22] border border-[#2B2D31] p-3 text-[11.5px] leading-relaxed text-[#DBDEE1] max-h-48 overflow-y-auto space-y-2.5 font-sans">
+        <div className="rounded-xl bg-[#1E1F22] border border-white/5 p-3.5 text-[12px] leading-relaxed text-[#DBDEE1] max-h-48 overflow-y-auto space-y-2.5 font-sans">
           <p>
             Di antara deru kota yang terlelap<br />
             Ku melangkah mencari arti senyumanmu<br />
             Malam berlari mengejar bayang rindu
           </p>
-          <p className="text-white font-medium border-l-2 border-[#FF4B2B] pl-2">
+          <p className="text-white font-medium border-l-2 border-[#FF101F] pl-2.5">
             Senja datang membawa semua bayanganmu<br />
             Menemani sepi malam yang sunyi<br />
             Dan ku tahu waktu kan menjawabnya
@@ -797,7 +983,7 @@ function LyricsPop({ song }) {
       )}
 
       <div className="text-[11px] leading-relaxed text-[#949BA4]">
-        Di Discord, klik tombol <b className="text-white">Lirik</b> di player untuk sinkronisasi otomatis karaoke atau skrip penuh.
+        Di Discord, klik menu <b className="text-white">Lirik Lagu</b> di player untuk sinkronisasi otomatis karaoke atau skrip penuh.
       </div>
     </div>
   );
@@ -811,13 +997,15 @@ function QueuePop({ tracks, idx, onJump, podcast = false }) {
   return (
     <div>
       <PopTitle>{podcast ? 'Episode dalam antrean' : 'Lagu dalam antrean'}</PopTitle>
-      <MenuBox maxHeight="max-h-56">
+      <MenuBox maxHeight="max-h-60">
         {tracks.map((t, i) => (
-          <MenuRow key={i}
+          <MenuRow
+            key={i}
             emoji={i === idx ? (podcast ? 'podcast' : 'musik') : null}
             label={`${i + 1}. ${t.name}`}
             selected={i === idx}
-            onClick={() => i !== idx && onJump(i)} />
+            onClick={() => i !== idx && onJump(i)}
+          />
         ))}
       </MenuBox>
     </div>
@@ -826,20 +1014,56 @@ function QueuePop({ tracks, idx, onJump, podcast = false }) {
 
 function VolumePop({ value, input, setInput, onSet }) {
   return (
-    <div>
-      <PopTitle>Atur Volume (0-150)</PopTitle>
-      <div className="mb-2 text-[13px] text-[#B5BAC1]">Volume sekarang: <b className="text-white">{value}%</b></div>
-      <div className="flex gap-2">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between text-xs text-[#949BA4]">
+        <span>Volume Sekarang</span>
+        <b className="text-white text-sm font-mono">{value}%</b>
+      </div>
+
+      <div className="space-y-2">
         <input
-          type="number" min={0} max={150} value={input}
+          type="range"
+          min={0}
+          max={150}
+          value={input}
           onChange={(e) => setInput(e.target.value)}
-          className="min-w-0 flex-1 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-2.5 py-1.5 text-sm text-white outline-none focus:border-[#5865F2]"
+          className="w-full accent-[#FF101F] cursor-pointer"
         />
-        <button type="button"
+
+        {/* Preset volume pills */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {[25, 50, 80, 100, 125, 150].map((v) => (
+            <button
+              key={v}
+              type="button"
+              onClick={() => { setInput(v); onSet(v); }}
+              className={`px-2.5 py-1 rounded-md text-xs font-semibold cursor-pointer transition ${
+                Number(input) === v
+                  ? 'bg-[#FF101F] text-white'
+                  : 'bg-[#232428] text-[#949BA4] hover:text-white hover:bg-[#2B2D31]'
+              }`}
+            >
+              {v}%
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex gap-2 pt-1">
+        <input
+          type="number"
+          min={0}
+          max={150}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="min-w-0 flex-1 rounded-xl border border-[#383A40] bg-[#1E1F22] px-3 py-2 text-sm text-white outline-none focus:border-[#5865F2]"
+        />
+        <button
+          type="button"
           onClick={() => onSet(Math.max(0, Math.min(150, Math.floor(Number(input) || 0))))}
-          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer shrink-0"
+          className="rounded-xl bg-[#5865F2] hover:bg-[#4752C4] px-4 py-2 text-sm font-semibold text-white cursor-pointer shrink-0 transition"
         >
-          Set
+          Terapkan
         </button>
       </div>
     </div>
@@ -848,21 +1072,38 @@ function VolumePop({ value, input, setInput, onSet }) {
 
 function SeekPop({ input, setInput, onSubmit }) {
   return (
-    <div>
-      <PopTitle>Lompat ke Posisi</PopTitle>
-      <div className="mb-2 text-[12px] leading-relaxed text-[#B5BAC1]">
-        Format sama seperti Discord: <code className="rounded bg-[#1E1F22] px-1 font-mono">45</code> detik,{' '}
-        <code className="rounded bg-[#1E1F22] px-1 font-mono">m:ss</code>, atau{' '}
-        <code className="rounded bg-[#1E1F22] px-1 font-mono">h:mm:ss</code>
+    <div className="space-y-3">
+      <div className="text-[12px] leading-relaxed text-[#B5BAC1]">
+        Lompat ke detik atau menit: <code className="rounded bg-[#1E1F22] px-1.5 py-0.5 font-mono text-white">45</code> detik,{' '}
+        <code className="rounded bg-[#1E1F22] px-1.5 py-0.5 font-mono text-white">1:30</code>, atau{' '}
+        <code className="rounded bg-[#1E1F22] px-1.5 py-0.5 font-mono text-white">1:15:00</code>
       </div>
+
+      {/* Quick Jump Shortcuts */}
+      <div className="flex flex-wrap gap-1.5">
+        {['30', '1:00', '2:30', '5:00', '10:00'].map((val) => (
+          <button
+            key={val}
+            type="button"
+            onClick={() => { setInput(val); onSubmit(val); }}
+            className="px-2.5 py-1 rounded-md bg-[#232428] hover:bg-[#2B2D31] text-xs font-semibold text-[#949BA4] hover:text-white cursor-pointer transition border border-white/5"
+          >
+            {val}
+          </button>
+        ))}
+      </div>
+
       <div className="flex gap-2">
         <input
-          value={input} onChange={(e) => setInput(e.target.value)}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="cth: 1:15:00"
-          className="min-w-0 flex-1 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-2.5 py-1.5 text-sm text-white outline-none focus:border-[#5865F2]"
+          className="min-w-0 flex-1 rounded-xl border border-[#383A40] bg-[#1E1F22] px-3 py-2 text-sm text-white outline-none focus:border-[#5865F2]"
         />
-        <button type="button" onClick={() => onSubmit(input)}
-          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer shrink-0"
+        <button
+          type="button"
+          onClick={() => onSubmit(input)}
+          className="rounded-xl bg-[#5865F2] hover:bg-[#4752C4] px-4 py-2 text-sm font-semibold text-white cursor-pointer shrink-0 transition"
         >
           Lompat
         </button>
@@ -872,42 +1113,54 @@ function SeekPop({ input, setInput, onSubmit }) {
 }
 
 function EffectsPop({ filters, onPick, onReset }) {
-  // Struktur sama persis dengan menu Efek di bot: 3 dropdown (Bass, Kecepatan,
-  // Lainnya multi maks 3) + tombol Reset Semua Efek.
   return (
     <div className="space-y-3">
       <div>
         <PopTitle>Bass Boost</PopTitle>
-        <MenuBox maxHeight="max-h-48">
+        <MenuBox maxHeight="max-h-40">
           {FILTER_BASS.map(([label, emoji, val]) => (
-            <MenuRow key={val} emoji={emoji} label={label}
+            <MenuRow
+              key={val}
+              emoji={emoji}
+              label={label}
               selected={BASS_SET.has(val) && filters.includes(val)}
-              onClick={() => onPick(val)} />
+              onClick={() => onPick(val)}
+            />
           ))}
         </MenuBox>
       </div>
       <div>
         <PopTitle>Kecepatan</PopTitle>
-        <MenuBox maxHeight="max-h-40">
+        <MenuBox maxHeight="max-h-36">
           {FILTER_SPEED.map(([label, emoji, val]) => (
-            <MenuRow key={val} emoji={emoji} label={label}
+            <MenuRow
+              key={val}
+              emoji={emoji}
+              label={label}
               selected={SPEED_SET.has(val) && filters.includes(val)}
-              onClick={() => onPick(val)} />
+              onClick={() => onPick(val)}
+            />
           ))}
         </MenuBox>
       </div>
       <div>
-        <PopTitle>Efek Lainnya (maks 3)</PopTitle>
-        <MenuBox maxHeight="max-h-56">
+        <PopTitle>Efek Lainnya (Maks 3)</PopTitle>
+        <MenuBox maxHeight="max-h-44">
           {FILTER_OTHER.map(([label, emoji, val]) => (
-            <MenuRow key={val} emoji={emoji} label={label}
+            <MenuRow
+              key={val}
+              emoji={emoji}
+              label={label}
               selected={filters.includes(val)}
-              onClick={() => onPick(val)} />
+              onClick={() => onPick(val)}
+            />
           ))}
         </MenuBox>
       </div>
-      <button type="button" onClick={onReset}
-        className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#4E5058] px-3 py-2 text-[13px] font-medium text-white hover:bg-[#6D6F78] cursor-pointer"
+      <button
+        type="button"
+        onClick={onReset}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#3B3E45] hover:bg-[#4E5058] px-3 py-2.5 text-[13px] font-semibold text-white cursor-pointer transition shadow-xs"
       >
         <Emoji name="reseteffect" size={14} /> Reset Semua Efek
       </button>
@@ -919,11 +1172,15 @@ function ThemePop({ current, onPick }) {
   return (
     <div>
       <PopTitle>Pilih Tema Podcast</PopTitle>
-      <MenuBox maxHeight="max-h-64">
+      <MenuBox maxHeight="max-h-60">
         {PODCAST_TEMA.map(([nama, emoji]) => (
-          <MenuRow key={emoji} emoji={emoji} label={nama}
+          <MenuRow
+            key={emoji}
+            emoji={emoji}
+            label={nama}
             selected={current === emoji}
-            onClick={() => onPick(emoji)} />
+            onClick={() => onPick(emoji)}
+          />
         ))}
       </MenuBox>
     </div>
@@ -937,12 +1194,15 @@ function LangPop({ current, onPick }) {
       <PopTitle>Bahasa Audio</PopTitle>
       <MenuBox maxHeight="max-h-56">
         {LANGS.map((l) => (
-          <MenuRow key={l} label={l}
+          <MenuRow
+            key={l}
+            label={l}
             selected={current === l}
-            onClick={() => onPick(l)} />
+            onClick={() => onPick(l)}
+          />
         ))}
       </MenuBox>
-      <div className="mt-2 text-[11px] leading-relaxed text-[#949BA4]">
+      <div className="mt-2.5 text-[11px] leading-relaxed text-[#949BA4]">
         Bahasa mengikuti track multi-language yang tersedia di episode.
       </div>
     </div>
@@ -952,22 +1212,27 @@ function LangPop({ current, onPick }) {
 function ChatPop({ chat, onSend }) {
   const [t, setT] = useState('');
   return (
-    <div>
-      <PopTitle>Live Chat Pemutar</PopTitle>
-      <div className="mb-2 space-y-1">
-        {chat.slice(-3).map((c, i) => (
-          <div key={i} className="text-[12px] italic text-[#B5BAC1] break-words">{c.user}: {c.text}</div>
+    <div className="space-y-3">
+      <div className="space-y-1.5 max-h-40 overflow-y-auto p-2 rounded-xl bg-[#1E1F22] border border-white/5">
+        {chat.slice(-4).map((c, i) => (
+          <div key={i} className="text-[12px] text-[#DBDEE1] break-words flex items-start gap-1.5">
+            <span className="font-semibold text-emerald-400 shrink-0">{c.user}:</span>
+            <span className="italic text-[#B5BAC1]">{c.text}</span>
+          </div>
         ))}
       </div>
       <div className="flex gap-2">
-        <input value={t} onChange={(e) => setT(e.target.value)}
+        <input
+          value={t}
+          onChange={(e) => setT(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter' && t.trim()) { onSend(t.trim()); setT(''); } }}
-          placeholder="Tulis pesan singkat"
-          className="min-w-0 flex-1 rounded-lg border border-[#3F4147] bg-[#1E1F22] px-2.5 py-1.5 text-sm text-white outline-none focus:border-[#5865F2]"
+          placeholder="Tulis pesan live chat..."
+          className="min-w-0 flex-1 rounded-xl border border-[#383A40] bg-[#1E1F22] px-3 py-2 text-sm text-white outline-none focus:border-[#5865F2]"
         />
-        <button type="button"
+        <button
+          type="button"
           onClick={() => { if (t.trim()) { onSend(t.trim()); setT(''); } }}
-          className="rounded-lg bg-[#5865F2] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#4752C4] cursor-pointer shrink-0"
+          className="rounded-xl bg-[#5865F2] hover:bg-[#4752C4] px-4 py-2 text-sm font-semibold text-white cursor-pointer shrink-0 transition"
         >
           Kirim
         </button>
@@ -978,7 +1243,7 @@ function ChatPop({ chat, onSend }) {
 
 function InfoPop({ judul, children }) {
   return (
-    <div>
+    <div className="space-y-2">
       <PopTitle>{judul}</PopTitle>
       <div className="text-[12.5px] leading-relaxed text-[#B5BAC1]">{children}</div>
     </div>

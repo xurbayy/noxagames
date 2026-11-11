@@ -39,6 +39,8 @@ function DiscordIcon({ size = 16 }) {
 
 export default function Navbar({ session, isAdmin = false }) {
   const pathname = usePathname();
+  // Menu Top hanya relevan untuk member yang login (permintaan pemilik).
+  const linksTampil = session ? LINKS : LINKS.filter((l) => l.href !== '/top');
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -96,7 +98,7 @@ export default function Navbar({ session, isAdmin = false }) {
 
         {/* Menu desktop */}
         <ul className="hidden items-center gap-6 md:flex lg:gap-7">
-          {LINKS.map((l) => (
+          {linksTampil.map((l) => (
             <li key={l.href}>{tautan(l)}</li>
           ))}
           <li className="relative">
@@ -147,7 +149,7 @@ export default function Navbar({ session, isAdmin = false }) {
           <Link
             href="/premium"
             prefetch={false}
-            className="shimmer inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[#B78CF2] bg-gradient-to-r from-[#5B21B6] via-[#7C3AED] to-[#A855F7] px-2.5 py-1 text-xs font-bold text-white shadow-[0_0_14px_rgba(124,58,237,0.45)] transition hover:-translate-y-px hover:brightness-110 sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
+            className="shimmer inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-neon/50 bg-gradient-to-r from-[#7A0009] via-[#B80012] to-[#FF101F] px-2.5 py-1 text-xs font-bold text-white shadow-[0_0_14px_rgba(255,16,31,0.35)] transition hover:-translate-y-px hover:brightness-110 sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
               src="/badges/noxa-premium-ultimate.png"
@@ -235,7 +237,7 @@ export default function Navbar({ session, isAdmin = false }) {
       {open && (
         <div className="border-t border-line bg-bg backdrop-blur-xl md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
           <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-4 sm:px-5 py-4">
-            {LINKS.map((l) => (
+            {linksTampil.map((l) => (
               <li key={l.href}>
                 {l.href.includes('#') ? (
                   <a
@@ -262,7 +264,7 @@ export default function Navbar({ session, isAdmin = false }) {
                 href="/premium"
                 prefetch={false}
                 onClick={() => setOpen(false)}
-                className="shimmer relative flex items-center justify-between rounded-xl border border-[#B78CF2] bg-gradient-to-r from-[#5B21B6] via-[#7C3AED] to-[#A855F7] px-3 py-2.5 text-sm font-bold text-white shadow-[0_0_14px_rgba(124,58,237,0.45)] transition hover:brightness-110"
+                className="shimmer relative flex items-center justify-between rounded-xl border border-neon/50 bg-gradient-to-r from-[#7A0009] via-[#B80012] to-[#FF101F] px-3 py-2.5 text-sm font-bold text-white shadow-[0_0_14px_rgba(255,16,31,0.35)] transition hover:brightness-110"
               >
                 <span className="flex items-center gap-2">
                   <img

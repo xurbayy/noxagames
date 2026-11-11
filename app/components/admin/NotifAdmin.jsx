@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const IKON = {
   pembelian: { label: 'PEMBELIAN', kelas: 'bg-[#14532D] text-[#86EFAC] border-[#22C55E]' },
   feedback: { label: 'FEEDBACK', kelas: 'bg-[#1E232A] text-[#CBD5E1] border-slate-400' },
-  penting: { label: 'PENTING', kelas: 'bg-[#3B0004] text-neon border-crimson' },
+  penting: { label: 'PENTING', kelas: 'bg-crimson/15 text-neon border-crimson' },
   info: null,
 };
 

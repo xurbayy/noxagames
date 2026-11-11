@@ -89,7 +89,7 @@ export default async function RootLayout({ children }) {
         />
         <Navbar session={session} isAdmin={Boolean(session && isAdminDiscordId(session.discordId))} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer loggedIn={Boolean(session)} />
         <CookieConsent />
         <ConsentNotif />
       </body>

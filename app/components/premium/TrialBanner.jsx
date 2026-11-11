@@ -64,7 +64,7 @@ export default function TrialBanner({ session = null }) {
     <>
       <div className="card p-4 sm:p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-crimson bg-[#3B0004]">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-crimson bg-crimson/15">
             <Emoji name="cool" size={22} />
           </span>
           <div className="min-w-0">
@@ -95,7 +95,7 @@ export default function TrialBanner({ session = null }) {
             >
               ✕
             </button>
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#3B0004] border border-crimson">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-crimson/15 border border-crimson">
               <Emoji name="cool" size={30} />
             </div>
             <h3 className="mt-4 font-display text-lg font-bold text-ink">
@@ -119,7 +119,7 @@ export default function TrialBanner({ session = null }) {
                   checked={setuju}
                   disabled={sibuk}
                   onChange={(e) => setSetuju(e.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 accent-[#B11226]"
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-[#B80012]"
                 />
                 <span className="text-[11px] leading-relaxed text-muted">
                   Saya menyetujui{' '}

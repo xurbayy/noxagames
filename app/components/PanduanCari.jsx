@@ -60,7 +60,7 @@ export default function PanduanCari({ kategori }) {
             type="button"
             onClick={() => setFilter('semua')}
             className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition cursor-pointer ${
-              filter === 'semua' ? 'border-crimson bg-[#3B0004] text-neon' : 'border-line bg-surface2 text-muted hover:text-ink'
+              filter === 'semua' ? 'border-crimson bg-crimson/15 text-neon' : 'border-line bg-surface2 text-muted hover:text-ink'
             }`}
           >
             Semua
@@ -71,7 +71,7 @@ export default function PanduanCari({ kategori }) {
               type="button"
               onClick={() => setFilter(kat.key)}
               className={`rounded-full border px-3 py-1 text-[11px] font-semibold transition cursor-pointer ${
-                filter === kat.key ? 'border-crimson bg-[#3B0004] text-neon' : 'border-line bg-surface2 text-muted hover:text-ink'
+                filter === kat.key ? 'border-crimson bg-crimson/15 text-neon' : 'border-line bg-surface2 text-muted hover:text-ink'
               }`}
             >
               {kat.label}
@@ -110,7 +110,7 @@ export default function PanduanCari({ kategori }) {
               <p className="mt-2 text-xs leading-relaxed text-muted">{kat.intro}</p>
               <ul className="mt-4 space-y-3">
                 {kat.items.map((it) => (
-                  <li key={it.cmd} className="border-l-2 border-darkcrimson pl-3">
+                  <li key={it.cmd} className="border-l-2 border-crimson/40 pl-3">
                     <div className="text-sm font-semibold">
                       {it.cmd.startsWith('.') ? <span className="cmd">{it.cmd}</span> : it.cmd}
                       {it.alias ? <span className="ml-2 text-xs font-normal text-faint">alias {it.alias}</span> : null}

@@ -147,7 +147,7 @@ export default async function Home() {
           <SectionHead title="Bukan Sekadar Bot Musik." sub="Jalan sendiri di servermu." />
         </Reveal>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2">
           <Reveal delay={60}><FiturCard emoji="musik" title="Musik dari 8 Platform" desc="Ketik judul, pilih dari 10 hasil teratas." /></Reveal>
           <Reveal delay={120}><FiturCard emoji="NOXASmart" title="NOXA Smart" desc="Cover palsu disaring, lagu lintas platform dicocok otomatis." /></Reveal>
           <Reveal delay={180}><FiturCard emoji="radio" title="Radio 24 Jam" desc="Lagu populer nonstop 24 jam, tidak ada yang diulang." /></Reveal>
@@ -158,12 +158,12 @@ export default async function Home() {
           <Reveal delay={240}><FiturCard emoji="chat" title="Live Chat di Panel" desc="Pesan dari voice langsung muncul di panel." /></Reveal>
         </div>
 
-        {/* Provider strip */}
-        <Reveal delay={300} className="mt-8 card p-4">
+        {/* Provider strip - tanpa kotak, cukup baris tenang */}
+        <Reveal delay={300} className="mt-10">
           <div className="mb-3 text-xs font-bold uppercase tracking-wider text-faint">Sumber musik</div>
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="flex flex-wrap gap-x-6 gap-y-3">
             {providers.map((p) => (
-              <span key={p.nama} className="flex items-center gap-2 rounded-lg border border-line bg-surface px-3 py-2.5 text-sm text-muted">
+              <span key={p.nama} className="flex items-center gap-2 text-sm text-muted">
                 <Emoji name={p.emoji} size={18} /> {p.nama}
               </span>
             ))}
@@ -191,16 +191,18 @@ export default async function Home() {
           <SectionHead title="Mau Dengar Apa Malam Ini?" sub="15 tema. Yang nyamar sudah disaring." />
         </Reveal>
         <Reveal delay={80}>
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 sm:grid-cols-3 md:grid-cols-5">
-            {podcastTema.map((tema) => (
-              <div
-                key={tema.nama}
-                className="card card-hover flex items-center gap-2.5 sm:gap-3 px-3 py-3 sm:px-4 sm:py-3.5"
-              >
-                <Emoji name={tema.emoji} size={22} className="shrink-0" />
-                <span className="text-xs sm:text-sm font-semibold text-ink leading-snug break-words">{tema.nama}</span>
-              </div>
-            ))}
+          <div className="card p-4 sm:p-6">
+            <div className="flex flex-wrap gap-2.5">
+              {podcastTema.map((tema) => (
+                <span
+                  key={tema.nama}
+                  className="flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-2 text-xs sm:text-sm font-semibold text-ink"
+                >
+                  <Emoji name={tema.emoji} size={20} className="shrink-0" />
+                  <span className="whitespace-nowrap">{tema.nama}</span>
+                </span>
+              ))}
+            </div>
           </div>
         </Reveal>
       </section>

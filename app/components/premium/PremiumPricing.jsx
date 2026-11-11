@@ -328,7 +328,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
                   <ul className="space-y-2.5 text-sm md:text-[15px] flex-1">
                     {plan.fiturRingkas.map((f, i) => (
                       <li key={i} className="flex items-start gap-2.5 leading-snug">
-                        <span className="mt-0.5 shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#3B0004] border border-crimson text-neon">
+                        <span className="mt-0.5 shrink-0 flex h-4 w-4 items-center justify-center rounded-full bg-crimson/15 border border-crimson text-neon">
                           <svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor">
                             <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
                           </svg>
