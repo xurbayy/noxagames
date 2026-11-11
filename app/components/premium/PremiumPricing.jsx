@@ -173,7 +173,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
             <span className={`absolute inset-y-0 left-0 w-1.5 ${isPlus ? 'bg-slate-300' : 'bg-amber-400'}`} aria-hidden="true" />
             <div className="flex items-center gap-3 pl-1.5">
               <img
-                src={isPlus ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
+                src={isPlus ? '/badges/noxa-premium-plus.png?v=2' : '/badges/noxa-premium.png?v=2'}
                 alt=""
                 width={40}
                 height={40}
@@ -202,7 +202,7 @@ export default function PremiumPricing({ session = null, activeSubscription = nu
           <div className="card relative overflow-hidden p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-3xl mx-auto w-full">
             <span className="absolute inset-y-0 left-0 w-1.5 bg-purple-500" aria-hidden="true" />
             <div className="flex items-center gap-3 pl-1.5">
-              <img src="/badges/noxa-premium-ultimate.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
+              <img src="/badges/noxa-premium-ultimate.png?v=2" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
               <div>
                 <div className="text-sm font-bold text-ink">{activeServer.tier_name} (Server) sedang aktif</div>
                 <div className="text-xs text-muted">

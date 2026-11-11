@@ -155,7 +155,7 @@ export default function Navbar({ session, isAdmin = false }) {
             className="shimmer inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/12 bg-gradient-to-r from-[#121014] via-[#1A1116] to-[#241016] px-2.5 py-1 text-xs font-bold text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_2px_10px_rgba(0,0,0,0.45)] transition hover:-translate-y-px hover:border-neon/40 hover:from-[#181116] hover:to-[#2C1119] sm:px-3.5 sm:py-1.5 sm:text-sm active:translate-y-0"
           >
             <img
-              src="/badges/noxa-premium-ultimate.png"
+              src="/badges/noxa-premium-ultimate.png?v=2"
               alt=""
               width={18}
               height={18}
@@ -271,7 +271,7 @@ export default function Navbar({ session, isAdmin = false }) {
               >
                 <span className="flex items-center gap-2">
                   <img
-                    src="/badges/noxa-premium-ultimate.png"
+                    src="/badges/noxa-premium-ultimate.png?v=2"
                     alt=""
                     width={18}
                     height={18}

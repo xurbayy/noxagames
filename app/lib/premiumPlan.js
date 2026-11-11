@@ -6,7 +6,7 @@ export const PREMIUM_PLANS = [
     id: 'premium',
     nama: 'NOXA Premium',
     btnLabel: 'Pilih Premium',
-    badge: '/badges/noxa-premium.png',
+    badge: '/badges/noxa-premium.png?v=2',
     badgeAlt: 'Lencana NOXA Premium Gold',
     tagline: 'Benefit individu, ikut kamu di server mana pun',
     warna: {
@@ -38,7 +38,7 @@ export const PREMIUM_PLANS = [
     id: 'premium-plus',
     nama: 'NOXA Premium+',
     btnLabel: 'Pilih Premium+',
-    badge: '/badges/noxa-premium-plus.png',
+    badge: '/badges/noxa-premium-plus.png?v=2',
     badgeAlt: 'Lencana NOXA Premium+ Platinum',
     populer: true,
     tagline: 'Benefit penuh versi individu - ikut kamu ke mana pun',
@@ -72,7 +72,7 @@ export const PREMIUM_PLANS = [
     id: 'premium-ultimate',
     nama: 'NOXA Premium Ultimate',
     btnLabel: 'Pilih Ultimate',
-    badge: '/badges/noxa-premium-ultimate.png',
+    badge: '/badges/noxa-premium-ultimate.png?v=2',
     badgeAlt: 'Lencana NOXA Premium Ultimate Ultraviolet',
     tagline: 'Semua member di 1 server pilihan menikmati benefit penuh',
     warna: {

@@ -153,10 +153,10 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
     ? 'border-slate-300 bg-slate-200 text-black font-bold'
     : 'border-amber-400 bg-amber-400 text-black font-bold';
   const badgeGambar = badgeTier === 'premium-ultimate'
-    ? '/badges/noxa-premium-ultimate.png'
+    ? '/badges/noxa-premium-ultimate.png?v=2'
     : badgeTier === 'premium-plus'
-    ? '/badges/noxa-premium-plus.png'
-    : '/badges/noxa-premium.png';
+    ? '/badges/noxa-premium-plus.png?v=2'
+    : '/badges/noxa-premium.png?v=2';
   // Permintaan yang menggantung lebih dari 90 detik berarti bot tidak memproses
   // antrean (offline/mati) - jangan biarkan halaman berputar selamanya.
   const basi = Boolean(state.pending && state.pendingSince && Date.now() - state.pendingSince > 90 * 1000);
@@ -313,7 +313,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           <span className={`absolute inset-y-0 left-0 w-1.5 ${stripAktif}`} aria-hidden="true" />
           <div className="flex items-center gap-3.5 pl-1.5">
             <img
-              src={subscription.plan_id === 'premium-ultimate' ? '/badges/noxa-premium-ultimate.png' : subscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png' : '/badges/noxa-premium.png'}
+              src={subscription.plan_id === 'premium-ultimate' ? '/badges/noxa-premium-ultimate.png?v=2' : subscription.plan_id === 'premium-plus' ? '/badges/noxa-premium-plus.png?v=2' : '/badges/noxa-premium.png?v=2'}
               alt=""
               width={42}
               height={42}
@@ -382,7 +382,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
           <span className="absolute inset-y-0 left-0 w-1.5 bg-purple-500" aria-hidden="true" />
           <div className="flex items-center gap-3.5 pl-1.5">
             <img
-              src="/badges/noxa-premium-ultimate.png"
+              src="/badges/noxa-premium-ultimate.png?v=2"
               alt=""
               width={42}
               height={42}
@@ -452,7 +452,7 @@ export default function MeClient({ initialUser, initialProfile = null, isAdmin =
                 <div className="flex flex-col gap-4 px-4 py-4 pr-10 sm:flex-row sm:items-center sm:justify-between sm:gap-5 sm:px-5 sm:py-5 sm:pr-12">
                   <div className="flex items-start gap-3.5">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/badges/noxa-premium.png" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" draggable={false} />
+                    <img src="/badges/noxa-premium.png?v=2" alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" draggable={false} />
                     <div className="min-w-0">
                       <p className="font-display text-base leading-snug text-ink sm:text-lg">Buka semua fitur dengan NOXA Pass.</p>
                       <p className="mt-1 text-sm leading-relaxed text-muted">

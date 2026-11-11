@@ -38,10 +38,10 @@ export function DiscordButton({
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       title={title || label}
-      className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-lg border font-medium transition-all select-none ${
+      className={`inline-flex min-w-0 items-center justify-center gap-1.5 sm:gap-2 rounded-lg border font-medium transition-all select-none ${
         compact
           ? 'h-8 sm:h-9 px-2 sm:px-2.5 text-[11px] sm:text-[12px]'
-          : 'h-8.5 sm:h-9.5 px-3 sm:px-3.5 text-[12px] sm:text-[13px]'
+          : 'h-8 px-2.5 text-[11px] sm:h-9.5 sm:px-3.5 sm:text-[13px]'
       } ${STYLE_CLASS[style] || STYLE_CLASS.secondary} ${
         disabled
           ? 'opacity-40 cursor-not-allowed pointer-events-none'

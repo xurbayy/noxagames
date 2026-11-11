@@ -96,9 +96,9 @@ const TIER_STYLE = {
 };
 
 const BADGE_SRC = {
-  premium: '/badges/noxa-premium.png',
-  'premium-plus': '/badges/noxa-premium-plus.png',
-  'premium-ultimate': '/badges/noxa-premium-ultimate.png',
+  premium: '/badges/noxa-premium.png?v=2',
+  'premium-plus': '/badges/noxa-premium-plus.png?v=2',
+  'premium-ultimate': '/badges/noxa-premium-ultimate.png?v=2',
 };
 
 // Warna medali peringkat: emas, perak, perunggu, lalu merah NOXA.

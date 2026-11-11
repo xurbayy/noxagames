@@ -513,7 +513,7 @@ export default function PlayerShowcase({ singleMode = null, botAvatar = null, co
     <div>
       {!singleMode && (
         <div className="mb-6 flex items-center justify-center sm:justify-start">
-          <div className="inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-white/10 bg-[#141517]/90 p-1.5 shadow-lg shadow-black/40 backdrop-blur-md sm:gap-1.5">
+          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-1 rounded-2xl border border-white/10 bg-[#141517]/90 p-1.5 shadow-lg shadow-black/40 backdrop-blur-md sm:gap-1.5 sm:justify-start">
             {[
               ['music', 'Musik', 'musik'],
               ['radio', 'Radio 24/7', 'radio'],

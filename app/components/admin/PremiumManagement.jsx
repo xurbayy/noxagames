@@ -372,10 +372,10 @@ export default function PremiumManagement() {
           <div className="space-y-3">
             {subs.map((s) => {
               const badgeImg = s.planId === 'premium-ultimate'
-                ? '/badges/noxa-premium-ultimate.png'
+                ? '/badges/noxa-premium-ultimate.png?v=2'
                 : s.planId === 'premium-plus'
-                ? '/badges/noxa-premium-plus.png'
-                : '/badges/noxa-premium.png';
+                ? '/badges/noxa-premium-plus.png?v=2'
+                : '/badges/noxa-premium.png?v=2';
 
               return (
                 <div
