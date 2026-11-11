@@ -32,6 +32,56 @@ const WARNA = {
   bronze: '#D08A4E',
 };
 
+// Aksen per tier NOXA Pass - dipakai untuk cincin avatar, baris lagu, dan
+// sentuhan warna di kartu profil supaya pemegang Premium terasa beda.
+const AKSEN_TIER = {
+  free: '#FF101F',
+  premium: '#F5A524',
+  'premium-plus': '#D7DEE8',
+  'premium-ultimate': '#A855F7',
+};
+
+/**
+ * Dua identitas kartu:
+ *   profil - "kartu pendengar": latar obsidian hangat + aksen warna tier,
+ *            ornamen lingkaran konsentris, fokus ke orangnya.
+ *   rank   - "papan peringkat": latar biru-malam ke amber, berkas cahaya
+ *            diagonal, plat nomor peringkat di header, aksen warna medali.
+ * Teks/kontennya identik di kedua mode - yang beda hanya bahasa visual.
+ */
+const TEMA = {
+  profil: {
+    bgTop: '#0C0910',
+    bgMid: '#170B13',
+    bgBottom: '#2B0B12',
+    bandFill: 'rgba(255,255,255,0.055)',
+    bandStroke: 'rgba(255,255,255,0.14)',
+    surface: 'rgba(255,255,255,0.05)',
+    surface2: 'rgba(255,255,255,0.09)',
+    line: 'rgba(255,255,255,0.12)',
+    hex: 'rgba(255,255,255,0.05)',
+    faint: '#A79BA2',
+    ink: '#F8F4F5',
+    beams: false,
+    ornamen: true,
+  },
+  rank: {
+    bgTop: '#06060B',
+    bgMid: '#0E0A19',
+    bgBottom: '#1F1407',
+    bandFill: 'rgba(255,255,255,0.05)',
+    bandStroke: 'rgba(255,255,255,0.12)',
+    surface: 'rgba(255,255,255,0.045)',
+    surface2: 'rgba(255,255,255,0.085)',
+    line: 'rgba(255,255,255,0.10)',
+    hex: 'rgba(255,214,120,0.055)',
+    faint: '#9C9689',
+    ink: '#FBF6EA',
+    beams: true,
+    ornamen: false,
+  },
+};
+
 const W = 1080;
 const H = 1350;
 const PAD = 96;
@@ -270,12 +320,13 @@ function panel(ctx, x, y, w, h, r, { fill = WARNA.surface, stroke = WARNA.line, 
 }
 
 /** Pola sarang lebah tipis khas NOXA (pengganti titik-titik generik). */
-function hexGrid(ctx, alpha = 0.05) {
+function hexGrid(ctx, alpha = 0.05, warnaGaris = 'rgba(255,43,58,1)') {
   const r = 34;
   const h = Math.sqrt(3) * r;
   const stepX = r * 1.5;
   ctx.save();
-  ctx.strokeStyle = `rgba(255,43,58,${alpha})`;
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = warnaGaris;
   ctx.lineWidth = 1.4;
   for (let col = -1; col * stepX < W + r * 2; col += 1) {
     for (let row = -1; row * h < H + h; row += 1) {
@@ -311,8 +362,9 @@ function watermark(ctx, logoImg, cx, cy, size, alpha = 0.14) {
 }
 
 /** Kotak statistik: emoji/ikon + label kecil + nilai besar, aksen kiri. */
-function kotakStat(ctx, x, y, w, h, { label, nilai, emoji, ikon, aksen = WARNA.neon }) {
-  panel(ctx, x, y, w, h, 22);
+function kotakStat(ctx, x, y, w, h, { label, nilai, emoji, ikon, aksen = WARNA.neon, tema = TEMA.profil }) {
+  panel(ctx, x, y, w, h, 22, { fill: tema.surface2, stroke: tema.line });
+
   ctx.fillStyle = aksen;
   roundRect(ctx, x + 18, y + 24, 5, h - 48, 3);
   ctx.fill();
@@ -327,11 +379,11 @@ function kotakStat(ctx, x, y, w, h, { label, nilai, emoji, ikon, aksen = WARNA.n
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = WARNA.faint;
+  ctx.fillStyle = tema.faint;
   ctx.font = '700 17px "Segoe UI", system-ui, sans-serif';
   ctx.fillText(label, x + 102, y + 42);
 
-  ctx.fillStyle = WARNA.ink;
+  ctx.fillStyle = tema.ink;
   ctx.font = 'bold 44px "Segoe UI", system-ui, sans-serif';
   tulisMuat(ctx, nilai, x + 102, y + 94, w - 126, 44, 24, 'bold', 'left');
 }
@@ -401,29 +453,29 @@ function pillRank(ctx, medali, centerX, y, icon) {
 }
 
 /** Baris server favorit: emoji radio, nama, durasi, aksen kiri. */
-function barisServer(ctx, y, nama, durasi, emoji) {
+function barisServer(ctx, y, nama, durasi, emoji, tema = TEMA.profil, aksen = WARNA.neon) {
   if (!nama) return;
   const h = 104;
-  panel(ctx, PAD, y, LEBAR, h, 22, { fill: WARNA.surface2, stroke: 'rgba(184,0,18,0.55)' });
+  panel(ctx, PAD, y, LEBAR, h, 22, { fill: tema.surface2, stroke: tema.line });
 
-  ctx.fillStyle = WARNA.neon;
+  ctx.fillStyle = aksen;
   roundRect(ctx, PAD + 18, y + 22, 5, h - 44, 3);
   ctx.fill();
 
   if (emoji) ctx.drawImage(emoji, PAD + 48, y + 34, 36, 36);
-  else ikonServer(ctx, PAD + 66, y + h / 2, 34, WARNA.neon);
+  else ikonServer(ctx, PAD + 66, y + h / 2, 34, aksen);
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = WARNA.faint;
+  ctx.fillStyle = tema.faint;
   ctx.font = '700 17px "Segoe UI", system-ui, sans-serif';
   ctx.fillText('TOP SERVER FAVORIT', PAD + 104, y + 40);
-  ctx.fillStyle = WARNA.ink;
+  ctx.fillStyle = tema.ink;
   tulisMuat(ctx, nama, PAD + 104, y + 78, LEBAR - 330, 30, 18, 'bold', 'left');
 
   if (durasi) {
     ctx.textAlign = 'right';
-    ctx.fillStyle = WARNA.neon;
+    ctx.fillStyle = aksen;
     ctx.font = 'bold 30px "Segoe UI", system-ui, sans-serif';
     ctx.fillText(durasi, PAD + LEBAR - 28, y + 64);
   }
@@ -431,13 +483,13 @@ function barisServer(ctx, y, nama, durasi, emoji) {
 }
 
 /** Satu baris lagu favorit + bar panjang dengar proporsional. */
-async function barisLagu(ctx, y, i, lagu, maksDurasi, emoji) {
+async function barisLagu(ctx, y, i, lagu, maksDurasi, emoji, tema = TEMA.profil, aksen = WARNA.neon) {
   const h = 76;
-  panel(ctx, PAD, y, LEBAR, h, 18, { fill: i === 0 ? WARNA.surface2 : WARNA.surface });
+  panel(ctx, PAD, y, LEBAR, h, 18, { fill: i === 0 ? tema.surface2 : tema.surface, stroke: i === 0 ? tema.line : null });
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = i === 0 ? WARNA.neon : WARNA.faint;
+  ctx.fillStyle = i === 0 ? aksen : tema.faint;
   ctx.font = 'bold 26px "Segoe UI", system-ui, sans-serif';
   ctx.fillText(`#${i + 1}`, PAD + 22, y + 44);
 
@@ -453,23 +505,23 @@ async function barisLagu(ctx, y, i, lagu, maksDurasi, emoji) {
     ctx.drawImage(thumb, tx, ty, ts, ts);
     ctx.restore();
   } else {
-    panel(ctx, tx, ty, ts, ts, 12, { fill: WARNA.surface2, stroke: null });
+    panel(ctx, tx, ty, ts, ts, 12, { fill: tema.surface2, stroke: null });
     if (emoji) ctx.drawImage(emoji, tx + 12, ty + 12, 28, 28);
-    else ikonMusik(ctx, tx + ts / 2, ty + ts / 2, 26, WARNA.faint);
+    else ikonMusik(ctx, tx + ts / 2, ty + ts / 2, 26, tema.faint);
   }
 
   // Judul + detail
   const infoX = tx + ts + 18;
-  ctx.fillStyle = WARNA.ink;
+  ctx.fillStyle = tema.ink;
   tulisPotong(ctx, lagu.name || 'Lagu', infoX, y + 34, LEBAR - 390, 24, '600', 'left');
-  ctx.fillStyle = WARNA.faint;
+  ctx.fillStyle = tema.faint;
   ctx.font = '500 18px "Segoe UI", system-ui, sans-serif';
   ctx.fillText(lagu.count ? `${lagu.count} kali diputar` : 'lagu favorit', infoX, y + 58);
 
   // Durasi
   if (lagu.durationLabel) {
     ctx.textAlign = 'right';
-    ctx.fillStyle = WARNA.neon;
+    ctx.fillStyle = aksen;
     ctx.font = 'bold 21px "Segoe UI", system-ui, sans-serif';
     ctx.fillText(lagu.durationLabel, PAD + LEBAR - 24, y + 44);
   }
@@ -480,17 +532,25 @@ async function barisLagu(ctx, y, i, lagu, maksDurasi, emoji) {
   ctx.fillStyle = 'rgba(255,255,255,0.07)';
   roundRect(ctx, PAD + 24, y + h - 13, barL, 4, 2);
   ctx.fill();
-  ctx.fillStyle = i === 0 ? WARNA.neon : WARNA.crimson;
+  ctx.fillStyle = i === 0 ? aksen : 'rgba(255,255,255,0.28)';
   roundRect(ctx, PAD + 24, y + h - 13, Math.max(10, Math.round(barL * rasio)), 4, 2);
   ctx.fill();
   ctx.textAlign = 'center';
 }
 
+/** Ubah hex (#RRGGBB) jadi rgba() dengan alpha tertentu. */
+function rgba(hex, alpha) {
+  const h = String(hex || '#FF101F').replace('#', '');
+  const n = parseInt(h.length === 3 ? h.replace(/(.)/g, '$1$1') : h, 16);
+  if (!Number.isFinite(n)) return `rgba(255,16,31,${alpha})`;
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
 /** Label kecil bertracking lebar di atas sebuah blok. */
-function labelBlok(ctx, teks, x, y, align = 'left') {
+function labelBlok(ctx, teks, x, y, align = 'left', tema = TEMA.profil) {
   ctx.textAlign = align;
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = WARNA.faint;
+  ctx.fillStyle = tema.faint;
   ctx.font = '700 19px "Segoe UI", system-ui, sans-serif';
   ctx.fillText(teks, x, y);
 }
@@ -548,7 +608,7 @@ function tulisNama(ctx, teks, cx, y, maksLebar, ukuran) {
  * Strip waveform dekoratif: mengisi ruang kosong di bawah tanpa teks
  * tambahan. Tinggi bar deterministik (bukan acak) supaya hasil selalu sama.
  */
-function waveform(ctx, y, tinggi = 70) {
+function waveform(ctx, y, tinggi = 70, aksen = WARNA.neon) {
   const jumlah = 54;
   const gap = 8;
   const lebarBar = Math.floor((LEBAR - gap * (jumlah - 1)) / jumlah);
@@ -557,7 +617,7 @@ function waveform(ctx, y, tinggi = 70) {
     const gelombang = Math.abs(Math.sin(i * 0.9)) * 0.55 + Math.abs(Math.sin(i * 0.23 + 1.4)) * 0.45;
     const h = Math.max(6, Math.round(tinggi * gelombang));
     const x = PAD + i * (lebarBar + gap);
-    ctx.fillStyle = t > 0.5 ? 'rgba(255,16,31,0.45)' : 'rgba(184,0,18,0.55)';
+    ctx.fillStyle = t > 0.5 ? rgba(aksen, 0.5) : rgba(aksen, 0.24);
     roundRect(ctx, x, y + Math.round((tinggi - h) / 2), lebarBar, h, Math.max(2, Math.floor(lebarBar / 2)));
     ctx.fill();
   }
@@ -565,12 +625,13 @@ function waveform(ctx, y, tinggi = 70) {
 
 /** Lingkaran avatar dengan cincin aksen + glow tipis (tanpa blur teks). */
 async function avatar(ctx, cx, cy, r, url, username, aksen) {
-  const ringGlow = ctx.createRadialGradient(cx, cy, r - 12, cx, cy, r + 52);
-  ringGlow.addColorStop(0, 'rgba(255,16,31,0.36)');
-  ringGlow.addColorStop(1, 'rgba(255,16,31,0)');
+  const warnaAksen = aksen || '#FF101F';
+  const ringGlow = ctx.createRadialGradient(cx, cy, r - 12, cx, cy, r + 56);
+  ringGlow.addColorStop(0, rgba(warnaAksen, 0.34));
+  ringGlow.addColorStop(1, rgba(warnaAksen, 0));
   ctx.fillStyle = ringGlow;
   ctx.beginPath();
-  ctx.arc(cx, cy, r + 52, 0, Math.PI * 2);
+  ctx.arc(cx, cy, r + 56, 0, Math.PI * 2);
   ctx.fill();
 
   const av = await loadImg(avatarHiRes(url));
@@ -583,8 +644,8 @@ async function avatar(ctx, cx, cy, r, url, username, aksen) {
     ctx.restore();
   } else {
     const fallback = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
-    fallback.addColorStop(0, '#5C0008');
-    fallback.addColorStop(1, WARNA.crimson);
+    fallback.addColorStop(0, rgba(warnaAksen, 0.45));
+    fallback.addColorStop(1, rgba(warnaAksen, 0.9));
     ctx.fillStyle = fallback;
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -596,12 +657,12 @@ async function avatar(ctx, cx, cy, r, url, username, aksen) {
     ctx.fillText(String(username || 'A').slice(0, 1).toUpperCase(), cx, cy + r * 0.32);
   }
 
-  ctx.strokeStyle = aksen || WARNA.crimson;
+  ctx.strokeStyle = warnaAksen;
   ctx.lineWidth = 7;
   ctx.beginPath();
   ctx.arc(cx, cy, r + 6, 0, Math.PI * 2);
   ctx.stroke();
-  ctx.strokeStyle = 'rgba(255,16,31,0.4)';
+  ctx.strokeStyle = rgba(warnaAksen, 0.35);
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.arc(cx, cy, r + 18, 0, Math.PI * 2);
@@ -639,7 +700,6 @@ export async function renderShareCard({
   const rankMode = mode === 'rank';
   const tier = TIER_STYLE[premiumTier] ? premiumTier : 'free';
   const medali = medaliUntuk(rank);
-  const aksen = rankMode ? medali.bg : WARNA.crimson;
 
   // Nama emoji lencana tier (sama dengan registry web & bot).
   const tierEmojiName = tier === 'premium'
@@ -662,20 +722,57 @@ export async function renderShareCard({
     rankMode && medali.emoji ? emojiImg(medali.emoji) : null,
   ]);
 
+  // ---------- Identitas visual per mode ----------
+  const tema = rankMode ? TEMA.rank : TEMA.profil;
+  const aksenTier = AKSEN_TIER[tier];
+  const aksen = rankMode ? medali.bg : aksenTier;
+
   // ---------- Latar ----------
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, WARNA.bgTop);
-  grad.addColorStop(0.55, WARNA.bgMid);
-  grad.addColorStop(1, WARNA.bgBottom);
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, tema.bgTop);
+  grad.addColorStop(0.55, tema.bgMid);
+  grad.addColorStop(1, tema.bgBottom);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  hexGrid(ctx, 0.05);
+  hexGrid(ctx, 0.05, tema.hex);
 
-  // Glow radial lembut di area identitas.
+  if (tema.beams) {
+    // Kartu peringkat: berkas cahaya diagonal, kesan panggung/papan skor.
+    ctx.save();
+    for (let i = 0; i < 5; i += 1) {
+      const bx = -260 + i * 320;
+      const beam = ctx.createLinearGradient(bx, 0, bx + 320, H);
+      beam.addColorStop(0, rgba(aksen, 0.10));
+      beam.addColorStop(0.5, rgba(aksen, 0.02));
+      beam.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(bx, 0);
+      ctx.lineTo(bx + 150, 0);
+      ctx.lineTo(bx + 470, H);
+      ctx.lineTo(bx + 320, H);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  } else if (tema.ornamen) {
+    // Kartu profil: lingkaran konsentris lembut di belakang identitas.
+    ctx.save();
+    for (let i = 0; i < 4; i += 1) {
+      ctx.beginPath();
+      ctx.arc(540, 360, 190 + i * 96, 0, Math.PI * 2);
+      ctx.strokeStyle = rgba(aksenTier, 0.07);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // Glow radial lembut di area identitas (warna tier / warna medali).
   const glow = ctx.createRadialGradient(540, 430, 60, 540, 430, 700);
-  glow.addColorStop(0, 'rgba(184, 0, 18, 0.32)');
-  glow.addColorStop(1, 'rgba(184, 0, 18, 0)');
+  glow.addColorStop(0, rgba(aksen, 0.30));
+  glow.addColorStop(1, rgba(aksen, 0));
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, 1200);
 
@@ -684,42 +781,106 @@ export async function renderShareCard({
   // terasa seperti avatar menyatu dengan lambang NOXA (pola NEXO Games).
   watermark(ctx, logoImg, 540, 360, 900, 0.10);
 
-  // Bar aksen atas.
-  ctx.fillStyle = WARNA.neon;
-  ctx.fillRect(0, 0, W, 10);
+  // Nomor peringkat raksasa sebagai tekstur (kartu papan skor saja).
+  if (rankMode && rank) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = rgba(medali.bg, 0.10);
+    ctx.font = '900 420px "Segoe UI", system-ui, sans-serif';
+    ctx.fillText(`#${rank}`, 540, 470);
+    ctx.restore();
+  }
 
-  // ---------- Header band (pola kartu NEXO: blok gelap + avatar menumpuk) ----------
+  // Bar aksen atas.
+  if (rankMode) {
+    const topbar = ctx.createLinearGradient(0, 0, W, 0);
+    topbar.addColorStop(0, medali.bg);
+    topbar.addColorStop(0.6, rgba(medali.bg, 0.45));
+    topbar.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = topbar;
+    ctx.fillRect(0, 0, W, 12);
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillRect(0, 12, W, 2);
+  } else {
+    const topbar = ctx.createLinearGradient(0, 0, W, 0);
+    topbar.addColorStop(0, aksenTier);
+    topbar.addColorStop(0.7, rgba(aksenTier, 0.5));
+    topbar.addColorStop(1, rgba(aksenTier, 0.15));
+    ctx.fillStyle = topbar;
+    ctx.fillRect(0, 0, W, 10);
+  }
+
+  // ---------- Header band ----------
+  // Profil: band lembut + logo NOXA + bar aksen warna tier.
+  // Peringkat: band gelap + PLAT NOMOR PERINGKAT besar (identitas papan skor).
   const BAND_Y = 36;
   const BAND_H = 200;
-  panel(ctx, PAD, BAND_Y, LEBAR, BAND_H, 28, { fill: WARNA.surface2, stroke: 'rgba(184,0,18,0.5)' });
-  ctx.fillStyle = WARNA.neon;
-  roundRect(ctx, PAD + 20, BAND_Y + 40, 6, BAND_H - 80, 3);
-  ctx.fill();
+  panel(ctx, PAD, BAND_Y, LEBAR, BAND_H, rankMode ? 22 : 28, {
+    fill: tema.bandFill,
+    stroke: tema.bandStroke,
+    tebal: 2,
+  });
 
-  if (logoImg) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(PAD + 92, BAND_Y + 88, 36, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.drawImage(logoImg, PAD + 56, BAND_Y + 52, 72, 72);
-    ctx.restore();
-    ctx.strokeStyle = 'rgba(255,16,31,0.55)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(PAD + 92, BAND_Y + 88, 37, 0, Math.PI * 2);
+  const teksX = rankMode ? PAD + 186 : PAD + 150;
+
+  if (rankMode) {
+    const plateX = PAD + 20;
+    const plateY = BAND_Y + 34;
+    const plateS = 132;
+    ctx.fillStyle = rgba(medali.bg, 0.20);
+    roundRect(ctx, plateX, plateY, plateS, plateS, 26);
+    ctx.fill();
+    ctx.strokeStyle = rgba(medali.bg, 0.85);
+    ctx.lineWidth = 2.5;
+    roundRect(ctx, plateX, plateY, plateS, plateS, 26);
     ctx.stroke();
+    ctx.fillStyle = rgba(medali.bg, 0.9);
+    ctx.fillRect(plateX + 18, plateY + plateS - 22, plateS - 36, 4);
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = medali.bg;
+    const labelRank = rank ? `#${rank}` : 'TOP';
+    let ukRank = 62;
+    ctx.font = `900 ${ukRank}px "Segoe UI", system-ui, sans-serif`;
+    while (ctx.measureText(labelRank).width > plateS - 44 && ukRank > 26) {
+      ukRank -= 4;
+      ctx.font = `900 ${ukRank}px "Segoe UI", system-ui, sans-serif`;
+    }
+    ctx.fillText(labelRank, plateX + plateS / 2, plateY + plateS / 2 + 2);
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+  } else {
+    ctx.fillStyle = aksenTier;
+    roundRect(ctx, PAD + 20, BAND_Y + 40, 6, BAND_H - 80, 3);
+    ctx.fill();
+
+    if (logoImg) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(PAD + 92, BAND_Y + 88, 36, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(logoImg, PAD + 56, BAND_Y + 52, 72, 72);
+      ctx.restore();
+      ctx.strokeStyle = rgba(aksenTier, 0.75);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(PAD + 92, BAND_Y + 88, 37, 0, Math.PI * 2);
+      ctx.stroke();
+    }
   }
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = WARNA.ink;
+  ctx.fillStyle = tema.ink;
   ctx.font = '800 36px "Segoe UI", system-ui, sans-serif';
-  ctx.fillText('NOXA Sound', PAD + 150, BAND_Y + 82);
-  ctx.fillStyle = WARNA.faint;
+  ctx.fillText('NOXA Sound', teksX, BAND_Y + 82);
+  ctx.fillStyle = tema.faint;
   ctx.font = '700 17px "Segoe UI", system-ui, sans-serif';
   ctx.fillText(
     rankMode ? 'LEADERBOARD  \u00b7  TOP LISTENER' : 'KARTU PROFIL  \u00b7  PENDENGAR NOXA',
-    PAD + 150,
+    teksX,
     BAND_Y + 114,
   );
 
@@ -750,7 +911,7 @@ export async function renderShareCard({
   }
 
   // Nama (dua baris kalau kepanjangan).
-  ctx.fillStyle = WARNA.ink;
+  ctx.fillStyle = tema.ink;
   const nameY = avY + avR + 60;
   const namaBawah = tulisNama(ctx, username, 540, nameY, 880, 54);
 
@@ -778,14 +939,16 @@ export async function renderShareCard({
     nilai: durationLabel,
     emoji: eJam,
     ikon: ikonJam,
-    aksen: WARNA.neon,
+    aksen,
+    tema,
   });
   kotakStat(ctx, PAD + tileW + gap, tileY, tileW, tileH, {
     label: 'LAGU SELESAI',
     nilai: String(plays || 0),
     emoji: eMusik,
     ikon: ikonMusik,
-    aksen: WARNA.amber,
+    aksen: rankMode ? medali.bg : aksenTier,
+    tema,
   });
 
   // ---------- Isi per mode ----------
@@ -796,7 +959,7 @@ export async function renderShareCard({
   let y = tileY + tileH + 24;
 
   if (serverName) {
-    barisServer(ctx, y, serverName, serverDuration, eRadio);
+    barisServer(ctx, y, serverName, serverDuration, eRadio, tema, aksen);
     y += rankMode ? 124 : 132;
   }
 
@@ -807,8 +970,8 @@ export async function renderShareCard({
     const ctaBottom = waveY - 24;
     const ctaH = Math.max(96, Math.min(230, ctaBottom - y));
     panel(ctx, PAD, y, LEBAR, ctaH, 22, {
-      fill: 'rgba(255,16,31,0.10)',
-      stroke: 'rgba(255,16,31,0.45)',
+      fill: rgba(medali.bg, 0.14),
+      stroke: rgba(medali.bg, 0.55),
     });
     const podium = rank >= 1 && rank <= 3;
     const ctaEmoji = podium ? eParty : eMusik;
@@ -817,7 +980,7 @@ export async function renderShareCard({
     else ikonMahkota(ctx, PAD + 57, midY, 34, medali.bg);
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = WARNA.ink;
+    ctx.fillStyle = tema.ink;
     ctx.font = '600 27px "Segoe UI", system-ui, sans-serif';
     ctx.fillText(podium ? 'Masuk podium! Terus dengar, terus naik.' : 'Terus dengar, terus naik.', PAD + 104, midY + 1);
     ctx.textAlign = 'center';
@@ -827,21 +990,21 @@ export async function renderShareCard({
     const daftar = Array.isArray(songs) ? songs.slice(0, 3) : [];
     if (daftar.length === 0) {
       // Pendengar baru: jangan biarkan kartu terlihat rusak/kosong.
-      panel(ctx, PAD, y + 8, LEBAR, 104, 22, { fill: WARNA.surface, stroke: 'rgba(255,255,255,0.10)' });
+      panel(ctx, PAD, y + 8, LEBAR, 104, 22, { fill: tema.surface, stroke: tema.line });
       if (eMusik) ctx.drawImage(eMusik, PAD + 52, y + 42, 32, 32);
-      else ikonMusik(ctx, PAD + 68, y + 60, 30, WARNA.faint);
+      else ikonMusik(ctx, PAD + 68, y + 60, 30, tema.faint);
       ctx.textAlign = 'left';
       ctx.textBaseline = 'alphabetic';
-      ctx.fillStyle = WARNA.muted;
+      ctx.fillStyle = tema.ink;
       ctx.font = '600 24px "Segoe UI", system-ui, sans-serif';
       ctx.fillText('Belum ada lagu selesai.', PAD + 106, y + 52);
-      ctx.fillStyle = WARNA.faint;
+      ctx.fillStyle = tema.faint;
       ctx.font = '500 19px "Segoe UI", system-ui, sans-serif';
       ctx.fillText('Mulai dengar di Discord, riwayatmu muncul di sini.', PAD + 106, y + 82);
       ctx.textAlign = 'center';
       y += 132;
     } else {
-      labelBlok(ctx, 'LAGU PALING SERING DIDENGAR', PAD, y + 14);
+      labelBlok(ctx, 'LAGU PALING SERING DIDENGAR', PAD, y + 14, 'left', tema);
       y += 32;
       const maksDurasi = Math.max(...daftar.map((s) => Number(s.duration) || 0), 1);
       const rowH = 76;
@@ -854,7 +1017,7 @@ export async function renderShareCard({
         ? Math.min(baseGap + 46, Math.max(baseGap, Math.floor((avail - maxRows * rowH) / (maxRows - 1))))
         : baseGap;
       for (let i = 0; i < maxRows; i += 1) {
-        await barisLagu(ctx, y, i, daftar[i], maksDurasi, eMusik);
+        await barisLagu(ctx, y, i, daftar[i], maksDurasi, eMusik, tema, aksen);
         y += rowH + gap;
       }
     }
@@ -863,12 +1026,19 @@ export async function renderShareCard({
   // ---------- Waveform jangkar: di tengah ruang sisa di atas footer ----------
   const sisaRuang = FOOT_Y - 24 - y;
   if (sisaRuang > 100) {
-    waveform(ctx, y + Math.round((sisaRuang - 70) / 2), 70);
+    waveform(ctx, y + Math.round((sisaRuang - 70) / 2), 70, aksen);
   }
 
-  // ---------- Footer (strip gelap ala pita CTA NEXO) ----------
+  // ---------- Footer ----------
   const footH = 74;
-  panel(ctx, PAD, FOOT_Y, LEBAR, footH, 22, { fill: WARNA.surface2, stroke: 'rgba(184,0,18,0.55)' });
+  panel(ctx, PAD, FOOT_Y, LEBAR, footH, rankMode ? 18 : 22, {
+    fill: tema.surface2,
+    stroke: tema.line,
+  });
+  // Penanda identitas: profil = garis warna tier, peringkat = garis warna medali.
+  ctx.fillStyle = aksen;
+  roundRect(ctx, PAD + 16, FOOT_Y + 18, 5, footH - 36, 2.5);
+  ctx.fill();
 
   // Logo bulat kecil di kiri strip.
   if (logoImg) {
@@ -878,7 +1048,7 @@ export async function renderShareCard({
     ctx.clip();
     ctx.drawImage(logoImg, PAD + 24, FOOT_Y + footH / 2 - 20, 40, 40);
     ctx.restore();
-    ctx.strokeStyle = 'rgba(255,16,31,0.5)';
+    ctx.strokeStyle = rgba(aksen, 0.7);
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.arc(PAD + 44, FOOT_Y + footH / 2, 21, 0, Math.PI * 2);
@@ -887,15 +1057,15 @@ export async function renderShareCard({
 
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = WARNA.ink;
+  ctx.fillStyle = tema.ink;
   ctx.font = '800 22px "Segoe UI", system-ui, sans-serif';
   ctx.fillText('NOXA Sound', PAD + 78, FOOT_Y + footH / 2 - 11);
-  ctx.fillStyle = WARNA.faint;
+  ctx.fillStyle = tema.faint;
   ctx.font = '500 15px "Segoe UI", system-ui, sans-serif';
   ctx.fillText('Musik, Podcast, Radio 24 Jam', PAD + 78, FOOT_Y + footH / 2 + 14);
 
   ctx.textAlign = 'right';
-  ctx.fillStyle = WARNA.neon;
+  ctx.fillStyle = aksen;
   ctx.font = '700 20px "Segoe UI", system-ui, sans-serif';
   ctx.fillText(hostTampil(), PAD + LEBAR - 28, FOOT_Y + footH / 2);
   ctx.textAlign = 'center';
