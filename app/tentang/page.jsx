@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Reveal from '../components/Reveal';
+import DiscordIcon from '../components/DiscordIcon';
 import { getSession } from '../lib/session';
 import { pageMeta, SUPPORT_INVITE, SITE_NAME, BOT_INVITE } from '../lib/site';
 
@@ -119,8 +120,9 @@ export default async function TentangPage() {
               href={SUPPORT_INVITE}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="btn-ghost"
+              className="btn-ghost inline-flex items-center gap-2"
             >
+              <DiscordIcon size={14} />
               Gabung Server Support
             </a>
             <Link href="/panduan" className="btn-ghost">

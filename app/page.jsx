@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Emoji from './components/Emoji';
+import DiscordIcon from './components/DiscordIcon';
 import PlayerShowcase from './components/panel/PlayerPanels';
 import Reveal from './components/Reveal';
 import { getSession } from './lib/session';
@@ -220,7 +221,8 @@ export default async function Home() {
               <p className="mt-1.5 flex-1 text-sm leading-relaxed text-muted">
                 Buka tiket, admin dan member lain siap bantu.
               </p>
-              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-ghost mt-4 self-start !px-4 !py-2 text-sm">
+              <a href={SUPPORT_INVITE} target="_blank" rel="noopener noreferrer nofollow" className="btn-ghost mt-4 inline-flex items-center gap-2 self-start !px-4 !py-2 text-sm">
+                <DiscordIcon size={14} />
                 Gabung Server
               </a>
             </div>

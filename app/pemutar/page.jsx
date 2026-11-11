@@ -31,9 +31,6 @@ export default function PemutarPage() {
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
             Tampilan Pemutar Musik
           </h1>
-          <p className="mt-2 text-sm sm:text-base leading-relaxed text-[#949BA4] max-w-2xl">
-            Simulasi interaktif panel pemutar Discord NOXA. Coba semua tombol, putar piringan hitam, atur volume, lirik karaoke sinkron, hingga filter audio studio langsung di sini.
-          </p>
         </div>
 
         {/* Showcase Utama Player */}

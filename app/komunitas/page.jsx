@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import BackButton from '../components/BackButton';
 import Emoji from '../components/Emoji';
+import DiscordIcon from '../components/DiscordIcon';
 import SafeImg from '../components/SafeImg';
 import Reveal from '../components/Reveal';
 import { getSnapshot, botAlive, topServers, durasi } from '../lib/snapshot';
@@ -34,8 +35,6 @@ export default async function KomunitasPage() {
     .filter((g) => g && g.inviteUrl && (Number(g.duration) > 0 || jumlahPendengar(g) > 0))
     .slice(0, 30);
 
-  const totalDurasi = gabung.reduce((a, g) => a + (Number(g.duration) || 0), 0);
-
   return (
     <div className="mx-auto max-w-4xl px-4 pb-20 pt-28 min-h-[calc(100vh-6rem)] sm:px-5">
       <div className="flex items-center justify-between gap-4">
@@ -45,12 +44,6 @@ export default async function KomunitasPage() {
         </div>
         <BackButton href="/" className="hidden sm:inline-flex" />
       </div>
-
-      <p className="mt-5 text-[15px] leading-relaxed text-muted md:text-lg">
-        {gabung.length > 0
-          ? `${gabung.length} server aktif memakai NOXA Sound dengan total ${durasi(totalDurasi)} waktu dengar bareng. Pilih satu dan langsung gabung - atau bawa botnya ke servermu sendiri.`
-          : 'Belum ada server dengan link invite yang tampil di sini. Botnya bisa kamu pasang sendiri di servermu - gratis.'}
-      </p>
 
       {gabung.length > 0 ? (
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
@@ -83,8 +76,9 @@ export default async function KomunitasPage() {
                   href={g.inviteUrl}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  className="btn-solid btn-solid-accent shrink-0 !px-3 !py-1.5 text-[11px]"
+                  className="btn-solid btn-solid-accent inline-flex shrink-0 items-center gap-1.5 !px-3 !py-1.5 text-[11px]"
                 >
+                  <DiscordIcon size={12} />
                   Gabung
                 </a>
               </div>
